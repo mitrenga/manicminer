@@ -1,0 +1,39 @@
+/**/
+const { GameApp } = await import('./gameApp.js?ver='+window.srcVersion);
+/*/
+import GameApp from './gameApp-if.js';
+/**/
+
+var gameApp = new GameApp(window.wsURL);
+var startGameAnimationTimestamp = 0;
+var audio = null;
+
+function resizeGame() {
+  var elementRoot = document.documentElement;
+  if (window.innerHeight != gameApp.element.height) {
+    elementRoot.style.setProperty('--app-height', window.innerHeight+'px');
+  }
+  gameApp.resizeApp();
+} // resizeGame
+
+// main loop
+function loopGame() {
+  requestAnimationFrame(loopGame);
+  gameApp.loopApp();
+} // loopGame
+
+// disable right click popup me
+gameApp.element.oncontextmenu = function (e) {
+  e.preventDefault();
+};
+
+// join mouse events
+gameApp.element.onclick = function (e) { 
+  gameApp.onClick(e);
+};
+
+// join resize event
+window.addEventListener('resize', resizeGame);
+
+resizeGame();  // calc actual screen size
+loopGame();    // start game
