@@ -1,117 +1,45 @@
 /**/
 const { AbstractScreen } = await import('./rg-lib/js/abstractScreen.js?ver='+window.srcVersion);
+const { AbstractView } = await import('./rg-lib/js/abstractView.js?ver='+window.srcVersion);
+const { ZXTextView } = await import('./rg-lib/js/platforms/zxSpectrum/zxTextView.js?ver='+window.srcVersion);
 const { CavernView } = await import('./cavernView.js?ver='+window.srcVersion);
+const { AirView } = await import('./airView.js?ver='+window.srcVersion);
 /*/
 import AbstractScreen from './rg-lib/js/abstractScreen-if.js';
+import AbstractView from './rg-lib/js/abstractView-if.js';
+import ZXTextView from '././rg-lib/js/platforms/zxSpectrum/zxTextView-if.js';
 import CavernView from './cavernView-if.js';
+import AirView from './airView-if.js';
 /**/
 
 export class CavernScreen extends AbstractScreen {
   
-  constructor(canvas, ctx) {
+  constructor(canvas, ctx, cavernNumber) {
     super(canvas, ctx, 'CavernScreen');
 
-    this.cavernLayout = [
-      '1600000000000000000000050000000005000000000000000000000000000016',
-      '1600000000000000000000000000000000000000000000000000000000000016',
-      '1600000000000000000000000000000000000000000000000000000000000016',
-      '1600000000000000000000000000000000000000000000000000000000000016',
-      '1600000000000000000000000000000000000000000000440000004400000016',
-      '1642424242424242424242424242020202024202020202424242424242424216',
-      '1600000000000000000000000000000000000000000000000000000000000016',
-      '1642424200000000000000000000000000000000000000000000000000000016',
-      '1600000000000000000000000000000000161616004400000000000000000016',
-      '1642424242000000040404040404040404040404040404040404040400000016',
-      '1600000000000000000000000000000000000000000000000000000000424216',
-      '1600000000000000000000000000000000000000000000000000000000000016',
-      '1600000000000000000000004400000000000000161616020202020242424216',
-      '1600000000424242424242424242424242424242000000000000000000000016',
-      '1600000000000000000000000000000000000000000000000000000000000016',
-      '1642424242424242424242424242424242424242424242424242424242424216'
-    ]; // layout
-
-    this.cavernName = 'Central Cavern';
-
-    this.graphicData = {
-      '00': [ // background
-        '--------',
-        '--------',
-        '--------',
-        '--------',
-        '--------',
-        '--------',
-        '--------',
-        '--------'
-      ],
-      '42': [ // floor
-        '########',
-        '########',
-        '##-##-##',
-        '-##-###-',
-        '##---#-#',
-        '-#------',
-        '--------',
-        '--------'
-      ],
-      '02': [ // crumbling floor
-        '########',
-        '##-##-##',
-        '#-#--#-#',
-        '--#--#--',
-        '-#-#--#-',
-        '--#-----',
-        '----#---',
-        '--------'
-      ],
-      '16': [ // wall
-        '--#---#-',
-        '########',
-        '#---#---',
-        '########',
-        '--#---#-',
-        '########',
-        '#---#---',
-        '########'
-      ],
-      '04': [ // conveyor
-        '####----',
-        '-##--##-',
-        '####----',
-        '-##--##-',
-        '--------',
-        '#--##--#',
-        '########',
-        '--------'
-      ],
-      '44': [ // nasty 1
-        '-#---#--',
-        '--#-#---',
-        '#--#-#--',
-        '-#-#---#',
-        '--##-#-#',
-        '##-#-##-',
-        '-#-##---',
-        '---#----'
-      ],
-      '05': [ // nasty 2
-        '########',
-        '#######-',
-        '-######-',
-        '-#####--',
-        '-#--##--',
-        '-#--##--',
-        '----#---',
-        '----#---'
-      ]
-    } // graphicData
-
+    this.cavernNumber = cavernNumber;
+    this.cavernView = null;
+    this.airView = null;
+    this.cavernNameView = null;
+    this.scoreView = null;
   } // constructor
 
   init() {
     super.init();
 
     this.borderView.backgroundColor = this.zxColor('black');
-    this.desktopView.addView(new CavernView(this, 0, 0, 32*8, 16*8));
+    this.cavernView = new CavernView(this, 0, 0, 32*8, 16*8, this.cavernNumber.toString().padStart(2, '0'));
+    this.desktopView.addView(this.cavernView);
+    this.cavernNameView = new ZXTextView(this, 0, 16*8, 32*8, 8, '', this.zxColor('black'), this.zxColor('yellow'), 0, false);
+    this.cavernNameView.justify = 2;
+    this.desktopView.addView(this.cavernNameView);
+    this.desktopView.addView(new ZXTextView(this, 0, 17*8, 4*8, 8, 'AIR', this.zxColor('brightWhite'), this.zxColor('brightRed'), 0, false));
+    this.desktopView.addView(new AirView(this, 4*8, 17*8, 28*8, 8));
+    this.desktopView.addView(new AbstractView(this, 0, 18*8, 32*8, 8, false, this.zxColor('black')));
+    this.scoreView = new ZXTextView(this, 0, 19*8, 32*8, 8, 'High Score 000000   Score 000000', this.zxColor('brightYellow'), this.zxColor('brightBlack'), 0, false);
+    this.desktopView.addView(this.scoreView);
+    this.desktopView.addView(new AbstractView(this, 0, 20*8, 32*8, 8, false, this.zxColor('black')));
+    this.desktopView.addView(new AbstractView(this, 0, 21*8, 32*8, 3*8, false, this.zxColor('black')));
   } // init
 
   loopScreen() {

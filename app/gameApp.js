@@ -15,6 +15,7 @@ export class GameApp extends AbstractApp {
   constructor(wsURL) {
     super(wsURL);
 
+    this.cavernNumber = 0;
     this.screen = this.newScreen('IntroScreen');
     this.screen.init();
   } // constructor
@@ -22,8 +23,7 @@ export class GameApp extends AbstractApp {
   newScreen(screen) {
     switch (screen) {
       case 'IntroScreen': return new IntroScreen(this, this.ctx);
-      case 'CavernScreen': return new CavernScreen(this, this.ctx);
-      case 'GameScreen': return new GameScreen(this, this.ctx);
+      case 'CavernScreen': return new CavernScreen(this, this.ctx, this.cavernNumber);
       case 'GameOverScreen': return new GameOverScreen(this, this.ctx);
     } // switch
     return null;
@@ -36,13 +36,19 @@ export class GameApp extends AbstractApp {
     this.screen = null;
     switch (prevScreenID) {
       case 'IntroScreen': 
+        this.cavernNumber = 0;
         this.screen = this.newScreen('CavernScreen');
         break;
-      case 'GameScreen': 
-        this.screen = this.newScreen('GameOverScreen');
+      case 'CavernScreen': 
+        this.cavernNumber++;
+        if (this.cavernNumber < 20) {
+          this.screen = this.newScreen('CavernScreen');
+        } else {
+          this.screen = this.newScreen('GameOverScreen');
+        }
         break;
       case 'GameOverScreen': 
-        this.screen = this.newScreen('MenuScreen');
+        this.screen = this.newScreen('IntroScreen');
         break;
     }
     this.screen.init();
