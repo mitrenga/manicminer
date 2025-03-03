@@ -34,6 +34,8 @@ export class CavernView extends AbstractView {
     super.drawView();
 
     if (this.dataCavern != null) {
+
+      // layout
       this.dataCavern['cavernLayout'].forEach((row, y) => {
         for (var x = 0; x < row.length/2; x++) {
           var attr = row.substring(x*2, x*2+2);
@@ -71,6 +73,21 @@ export class CavernView extends AbstractView {
         }
       }
     }
+
+      // portal
+      var attr = this.dataCavern['portalAttribute'];
+      var portal = this.dataCavern['portalGraphicData'];
+      portal.forEach((row, r) => {
+        for (var col = 0; col < row.length; col++) {
+          var color = false; 
+          if (row[col] == '#') {
+            color = this.zxPenColorFromAttr(this.hexToInt(attr));
+          } else {
+            color = this.zxBackgroundColorFromAttr(this.hexToInt(attr));
+          }
+          this.paint(this.dataCavern['portalLocation']['x']*8+col, this.dataCavern['portalLocation']['y']*8+r, 1, 1, color);
+        }
+      });
   } // drawView
 
 } // class CavernView
