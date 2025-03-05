@@ -6,8 +6,8 @@ import AbstractScreen from './rg-lib/js/abstractScreen-if.js';
 
 class Fireworks {
 
-  constructor(canvas, ctx, xStart, yStart, xTarget, yTarget, color, main) {
-    this.canvas = canvas;
+  constructor(app, ctx, xStart, yStart, xTarget, yTarget, color, main) {
+    this.app = app;
     this.ctx = ctx;
 
     this.x = xStart;
@@ -56,8 +56,8 @@ class Fireworks {
 
 export class GameOverScreen extends AbstractScreen {
   
-  constructor(canvas, ctx) {
-    super(canvas, ctx, 'GameOverScreen');
+  constructor(app, ctx) {
+    super(app, ctx, 'GameOverScreen');
 
     this.fireworks = [];
   } // constructor

@@ -7,8 +7,8 @@ import TextView from './rg-lib/js/textView-if.js';
 
 export class LogoView extends TextView {
 
-  constructor(screen, x, y, width, height, logoType) {
-    super(screen, x, y, width, height);
+  constructor(parentView, x, y, width, height, logoType) {
+    super(parentView, x, y, width, height);
     this.id = 'LogoView';
     
     this.proportional = true;

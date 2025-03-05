@@ -1,10 +1,13 @@
 /**/
 const { GameApp } = await import('./gameApp.js?ver='+window.srcVersion);
+const { ZXSpectrum48KPlatform } = await import('./rg-lib/js/platforms/zxSpectrum/zxSpectrum48KPlatform.js?ver='+window.srcVersion);
 /*/
 import GameApp from './gameApp-if.js';
+import ZXSpectrum48KPlatform from './rg-lib/js/platforms/zxSpectrum/zxSpectrum48KPlatform-if.js';
 /**/
 
-var gameApp = new GameApp(window.wsURL);
+var platform = new ZXSpectrum48KPlatform();
+var gameApp = new GameApp(platform, window.wsURL);
 var startGameAnimationTimestamp = 0;
 var audio = null;
 

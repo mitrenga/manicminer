@@ -14,8 +14,8 @@ import AirView from './airView-if.js';
 
 export class CavernScreen extends AbstractScreen {
   
-  constructor(canvas, ctx, cavernNumber) {
-    super(canvas, ctx, 'CavernScreen');
+  constructor(app, ctx, cavernNumber) {
+    super(app, ctx, 'CavernScreen');
 
     this.cavernNumber = cavernNumber;
     this.cavernView = null;
@@ -27,19 +27,19 @@ export class CavernScreen extends AbstractScreen {
   init() {
     super.init();
 
-    this.borderView.backgroundColor = this.zxColor('black');
-    this.cavernView = new CavernView(this, 0, 0, 32*8, 16*8, this.cavernNumber.toString().padStart(2, '0'));
+    this.borderView.bkColor = this.color('black');
+    this.cavernView = new CavernView(this.desktopView, 0, 0, 32*8, 16*8, this.cavernNumber.toString().padStart(2, '0'));
     this.desktopView.addView(this.cavernView);
-    this.cavernNameView = new ZXTextView(this, 0, 16*8, 32*8, 8, '', this.zxColor('black'), this.zxColor('yellow'), 0, false);
+    this.cavernNameView = new ZXTextView(this.desktopView, 0, 16*8, 32*8, 8, '', this.color('black'), this.color('yellow'), 0, false);
     this.cavernNameView.justify = 2;
     this.desktopView.addView(this.cavernNameView);
-    this.desktopView.addView(new ZXTextView(this, 0, 17*8, 4*8, 8, 'AIR', this.zxColor('brightWhite'), this.zxColor('brightRed'), 0, false));
-    this.desktopView.addView(new AirView(this, 4*8, 17*8, 28*8, 8));
-    this.desktopView.addView(new AbstractView(this, 0, 18*8, 32*8, 8, false, this.zxColor('black')));
-    this.scoreView = new ZXTextView(this, 0, 19*8, 32*8, 8, 'High Score 000000   Score 000000', this.zxColor('brightYellow'), this.zxColor('brightBlack'), 0, false);
+    this.desktopView.addView(new ZXTextView(this.desktopView, 0, 17*8, 4*8, 8, 'AIR', this.color('brightWhite'), this.color('brightRed'), 0, false));
+    this.desktopView.addView(new AirView(this.desktopView, 4*8, 17*8, 28*8, 8));
+    this.desktopView.addView(new AbstractView(this.desktopView, 0, 18*8, 32*8, 8, false, this.color('black')));
+    this.scoreView = new ZXTextView(this.desktopView, 0, 19*8, 32*8, 8, 'High Score 000000   Score 000000', this.color('brightYellow'), this.color('brightBlack'), 0, false);
     this.desktopView.addView(this.scoreView);
-    this.desktopView.addView(new AbstractView(this, 0, 20*8, 32*8, 8, false, this.zxColor('black')));
-    this.desktopView.addView(new AbstractView(this, 0, 21*8, 32*8, 3*8, false, this.zxColor('black')));
+    this.desktopView.addView(new AbstractView(this.desktopView, 0, 20*8, 32*8, 8, false, this.color('black')));
+    this.desktopView.addView(new AbstractView(this.desktopView, 0, 21*8, 32*8, 3*8, false, this.color('black')));
   } // init
 
   loopScreen() {

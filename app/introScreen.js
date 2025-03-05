@@ -8,8 +8,8 @@ import ZXVideoBufferView from './rg-lib/js/platforms/zxSpectrum/zxVideoBufferVie
 
 export class IntroScreen extends AbstractScreen {
   
-  constructor(canvas, ctx) {
-    super(canvas, ctx, 'IntroScreen');   
+  constructor(app, ctx) {
+    super(app, ctx, 'IntroScreen');   
 
     this.introImageData = [
       '050000000000E000000000000000000000000000000001818180000000000000',
@@ -166,8 +166,8 @@ export class IntroScreen extends AbstractScreen {
   init() {
     super.init();
 
-    this.borderView.backgroundColor = this.zxColor('magenta');
-    this.desktopView.addView(new ZXVideoBufferView(this, 0, 0, 32*8, 16*8, this.introImageData, this.introImageAttributes));
+    this.borderView.bkColor = this.color('magenta');
+    this.desktopView.addView(new ZXVideoBufferView(this.desktopView, 0, 0, 32*8, 16*8, this.introImageData, this.introImageAttributes));
   } // init
 
   loopScreen() {
