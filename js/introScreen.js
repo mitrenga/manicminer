@@ -1,4 +1,4 @@
-/**/
+/*/
 const { AbstractScreen } = await import('./rg-lib/js/abstractScreen.js?ver='+window.srcVersion);
 const { ZXVideoBufferView } = await import('./rg-lib/js/platforms/zxSpectrum/zxVideoBufferView.js?ver='+window.srcVersion);
 /*/

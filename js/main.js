@@ -1,4 +1,4 @@
-/**/
+/*/
 const { GameApp } = await import('./gameApp.js?ver='+window.srcVersion);
 const { ZXSpectrum48KPlatform } = await import('./rg-lib/js/platforms/zxSpectrum/zxSpectrum48KPlatform.js?ver='+window.srcVersion);
 /*/

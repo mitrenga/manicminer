@@ -1,4 +1,4 @@
-/**/
+/*/
 const { AbstractView } = await import('./rg-lib/js/abstractView.js?ver='+window.srcVersion);
 const { SpriteView } = await import('./rg-lib/js/spriteView.js?ver='+window.srcVersion);
 /*/

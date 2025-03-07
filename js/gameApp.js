@@ -1,4 +1,4 @@
-/**/
+/*/
 const { AbstractApp } = await import('./rg-lib/js/abstractApp.js?ver='+window.srcVersion);
 const { IntroScreen } = await import('./introScreen.js?ver='+window.srcVersion);
 const { CavernScreen } = await import('./cavernScreen.js?ver='+window.srcVersion);

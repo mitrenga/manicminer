@@ -1,4 +1,4 @@
-/**/
+/*/
 const { AbstractScreen } = await import('./rg-lib/js/abstractScreen.js?ver='+window.srcVersion);
 /*/
 import AbstractScreen from './rg-lib/js/abstractScreen.js';

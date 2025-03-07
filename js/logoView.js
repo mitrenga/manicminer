@@ -1,4 +1,4 @@
-/**/
+/*/
 const { TextView } = await import('./rg-lib/js/textView.js?ver='+window.srcVersion);
 /*/
 import TextView from './rg-lib/js/textView.js';

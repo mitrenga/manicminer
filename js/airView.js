@@ -1,4 +1,4 @@
-/**/
+/*/
 const { AbstractView } = await import('./rg-lib/js/abstractView.js?ver='+window.srcVersion);
 /*/
 import AbstractView from './rg-lib/js/abstractView.js';
