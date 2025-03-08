@@ -22,13 +22,25 @@ export class CavernScreen extends AbstractScreen {
     this.airView = null;
     this.cavernNameView = null;
     this.scoreView = null;
+    
+    const http = new XMLHttpRequest();
+    http.responser = this;
+    http.open('GET', this.cavernNumber.toString().padStart(2, '0')+'.level');
+    http.send();
+
+    http.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        var dataCavern = JSON.parse(http.responseText);
+        this.responser.sendMessage(1, {'id': 'setDataCavern', 'dataCavern': dataCavern});
+      }
+    }
   } // constructor
 
   init() {
     super.init();
 
     this.borderView.bkColor = this.color('black');
-    this.cavernView = new CavernView(this.desktopView, 0, 0, 32*8, 16*8, this.cavernNumber.toString().padStart(2, '0'));
+    this.cavernView = new CavernView(this.desktopView, 0, 0, 32*8, 16*8);
     this.desktopView.addView(this.cavernView);
     this.cavernNameView = new ZXTextView(this.desktopView, 0, 16*8, 32*8, 8, '', this.color('black'), this.color('yellow'), 0, false);
     this.cavernNameView.justify = 2;
@@ -42,10 +54,22 @@ export class CavernScreen extends AbstractScreen {
     this.desktopView.addView(new AbstractView(this.desktopView, 0, 21*8, 32*8, 3*8, false, this.color('black')));
   } // init
 
-  loopScreen() {
-    super.loopScreen();
+  setData(data) {
+    var dataCavern = data['dataCavern'];
+    this.cavernNameView.text = dataCavern['cavernName'];
+    this.borderView.bkColor = this.app.platform.zxColorByAttribut(this.hexToInt(dataCavern['borderColor']), 7, 1);
+    
+    super.setData(data);
+  } // setData
 
-  } // loopScreen
+  handleMessage(message) {
+    if (message['id'] == 'setDataCavern') {
+      this.setData(message);
+      return true;
+    }
+
+    return super.handleMessage(message);
+  } // handleMessage
 
 } // class CavernScreen
 
