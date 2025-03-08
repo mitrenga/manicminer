@@ -34,6 +34,55 @@ export class AbstractView {
   addView(view) {
     this.views.push(view);
   } // addView
+  
+  sendMessage(direction, timing, message) {
+    if (timing == 0) {
+      switch (direction) {
+        case -1:
+          if (this.parentView != null) {
+            if (this.parentView.handleMessage(message) == false) {
+              for (var v = 0; v < this.parentView.views.length; v++) {
+                if (this.parentView.views[v].handleMessage(message) == true) {
+                  break;
+                }
+              }
+            }
+          }
+          break;
+        case 0:
+          this.screen.sendMessage(0, message);
+          break;
+        case 1:
+          for (var v = 0; v < this.views.length; v++) {
+            if (this.views[v].handleMessage(message) == true) {
+              break;
+            }
+          }
+          break;
+      }
+    } else {
+      this.screen.sendMessage(timing, message);
+    }
+  } // sendMessage
+
+  cancelMessage (id) {
+    this.screen.cancelMessage(id);
+  } // cancelMessage
+
+  handleMessage(message) {
+    for (var v = 0; v < this.views.length; v++) {
+      if (this.views[v].handleMessage(message) == true) {
+        return true;
+      }
+    }
+    return false;
+  } // handleMessage
+  
+  setData(data) {
+    for (var v = 0; v < this.views.length; v++) {
+      this.views[v].setData(data);
+    }
+  } // setData
 
   paint(x, y, width, height, color) {
     this.screen.ctx.fillStyle = color;

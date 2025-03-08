@@ -16,9 +16,7 @@ export class AbstractScreen {
     this.id = id;
 
     this.flashState = 0;
-    this.lastTime = null;
-    this.timeDiff = null;
-    this.now = null;
+    this.now = Date.now();
 
     this.desktopWidth = this.app.platform.desktop()['width'];
     this.desktopHeight = this.app.platform.desktop()['height'];
@@ -27,6 +25,8 @@ export class AbstractScreen {
     this.borderWidth = 0;
     this.borderHeight = 0;
     this.desktop = null;
+
+    this.messages = [];
   } // constructor
 
   init() {
@@ -40,13 +40,41 @@ export class AbstractScreen {
     this.desktopView.bkColor = this.app.platform.desktop()['defaultColor'];
   } // init
 
+  sendMessage(timing, message) {
+    if (timing == 0) {
+      this.handleMessage(message);
+    } else {
+      this.messages.push({'id': message['id'], 'timing': this.now+timing, 'message': message});
+    }
+  } // sendMessage
+
+  cancelMessage(id) {
+    for (var m = 0; m < this.messages.length; m++) {
+      if (id == this.messages[m]['id']) {
+        this.messages.splice(m, 1);
+      }
+    }
+  } // cancelMessage
+
+  handleMessage(message) {
+    if (this.borderView.handleMessage(message) == false) {
+      this.desktopView.handleMessage(message);
+    }
+  } // handleMessage
+
+  setData(data) {
+    this.borderView.setData(data);
+    this.desktopView.setData(data);
+    this.drawScreen();
+  } // setData
+
   loopScreen() {
     this.now = Date.now();
-    if (this.lastTime != null) {
-      this.timeDiff = this.now - this.lastTime;
-    } else {
-      this.lastTime = this.now;
-      this.timeDiff = 0;
+    for (var m = 0; m < this.messages.length; m++) {
+      if (this.messages[m]['timing'] <= this.now) {
+        this.sendMessage(0, this.messages[m]['message']);
+        this.messages.splice(m, 1);
+      }
     }
   } // loopScreen
 
