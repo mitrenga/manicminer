@@ -40,27 +40,27 @@ export class AbstractScreen {
     this.desktopView.bkColor = this.app.platform.desktop()['defaultColor'];
   } // init
 
-  sendMessage(timing, message) {
+  sendEvent(timing, message) {
     if (timing == 0) {
-      this.handleMessage(message);
+      this.handleEvent(message);
     } else {
       this.messages.push({'id': message['id'], 'timing': this.now+timing, 'message': message});
     }
-  } // sendMessage
+  } // sendEvent
 
-  cancelMessage(id) {
+  cancelEvent(id) {
     for (var m = 0; m < this.messages.length; m++) {
       if (id == this.messages[m]['id']) {
         this.messages.splice(m, 1);
       }
     }
-  } // cancelMessage
+  } // cancelEvent
 
-  handleMessage(message) {
-    if (this.borderView.handleMessage(message) == false) {
-      this.desktopView.handleMessage(message);
+  handleEvent(message) {
+    if (this.borderView.handleEvent(message) == false) {
+      this.desktopView.handleEvent(message);
     }
-  } // handleMessage
+  } // handleEvent
 
   setData(data) {
     this.borderView.setData(data);
@@ -72,7 +72,7 @@ export class AbstractScreen {
     this.now = Date.now();
     for (var m = 0; m < this.messages.length; m++) {
       if (this.messages[m]['timing'] <= this.now) {
-        this.sendMessage(0, this.messages[m]['message']);
+        this.sendEvent(0, this.messages[m]['message']);
         this.messages.splice(m, 1);
       }
     }

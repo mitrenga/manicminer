@@ -31,7 +31,7 @@ export class CavernScreen extends AbstractScreen {
     http.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         var dataCavern = JSON.parse(http.responseText);
-        this.responser.sendMessage(1, {'id': 'setDataCavern', 'dataCavern': dataCavern});
+        this.responser.sendEvent(1, {'id': 'setDataCavern', 'dataCavern': dataCavern});
       }
     }
   } // constructor
@@ -62,14 +62,14 @@ export class CavernScreen extends AbstractScreen {
     super.setData(data);
   } // setData
 
-  handleMessage(message) {
+  handleEvent(message) {
     if (message['id'] == 'setDataCavern') {
       this.setData(message);
       return true;
     }
 
-    return super.handleMessage(message);
-  } // handleMessage
+    return super.handlEvent(message);
+  } // handleEvent
 
 } // class CavernScreen
 

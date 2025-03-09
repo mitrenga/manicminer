@@ -35,14 +35,14 @@ export class AbstractView {
     this.views.push(view);
   } // addView
   
-  sendMessage(direction, timing, message) {
+  sendEvent(direction, timing, message) {
     if (timing == 0) {
       switch (direction) {
         case -1:
           if (this.parentView != null) {
-            if (this.parentView.handleMessage(message) == false) {
+            if (this.parentView.handleEvent(message) == false) {
               for (var v = 0; v < this.parentView.views.length; v++) {
-                if (this.parentView.views[v].handleMessage(message) == true) {
+                if (this.parentView.views[v].handleEvent(message) == true) {
                   break;
                 }
               }
@@ -50,33 +50,33 @@ export class AbstractView {
           }
           break;
         case 0:
-          this.screen.sendMessage(0, message);
+          this.screen.sendEvent(0, message);
           break;
         case 1:
           for (var v = 0; v < this.views.length; v++) {
-            if (this.views[v].handleMessage(message) == true) {
+            if (this.views[v].handleEvent(message) == true) {
               break;
             }
           }
           break;
       }
     } else {
-      this.screen.sendMessage(timing, message);
+      this.screen.sendEvent(timing, message);
     }
-  } // sendMessage
+  } // sendEvent
 
-  cancelMessage (id) {
-    this.screen.cancelMessage(id);
-  } // cancelMessage
+  cancelEvent(id) {
+    this.screen.cancelEvent(id);
+  } // cancelEvent
 
-  handleMessage(message) {
+  handleEvent(message) {
     for (var v = 0; v < this.views.length; v++) {
-      if (this.views[v].handleMessage(message) == true) {
+      if (this.views[v].handleEvent(message) == true) {
         return true;
       }
     }
     return false;
-  } // handleMessage
+  } // handleEvent
   
   setData(data) {
     for (var v = 0; v < this.views.length; v++) {
