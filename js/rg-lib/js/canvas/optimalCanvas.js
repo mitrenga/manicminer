@@ -3,6 +3,7 @@ const { NativeCanvas } = await import('./nativeCanvas.js?ver='+window.srcVersion
 /*/
 import NativeCanvas from './nativeCanvas.js';
 /**/
+// begin code
 
 export class OptimalCanvas extends NativeCanvas {
   

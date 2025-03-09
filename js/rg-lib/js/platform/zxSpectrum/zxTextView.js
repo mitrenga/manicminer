@@ -3,7 +3,7 @@ const { TextView } = await import('../../textView.js?ver='+window.srcVersion);
 /*/
 import TextView from '../../textView.js';
 /**/
-
+// begin code
 
 export class ZXTextView extends TextView {
 

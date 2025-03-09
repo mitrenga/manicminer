@@ -3,6 +3,7 @@ const { AbstractCanvas } = await import('./abstractCanvas.js?ver='+window.srcVer
 /*/
 import AbstractCanvas from './abstractCanvas.js';
 /**/
+// begin code
 
 export class BasicCanvas extends AbstractCanvas {
   

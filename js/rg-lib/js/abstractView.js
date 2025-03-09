@@ -3,6 +3,7 @@
 /*/
 
 /**/
+// begin code
 
 export class AbstractView {
 

@@ -3,6 +3,7 @@
 /*/
 
 /**/
+// begin code
 
 export class AbstractCanvas {
   
@@ -40,12 +41,14 @@ export class AbstractCanvas {
     this.app.element.width = this.app.canvas.element()['width'];
     this.app.element.height = this.app.canvas.element()['height'];
 
-    screen.borderView.x = 0;
-    screen.borderView.y = 0;
-    screen.borderView.width = screen.desktopWidth+2*screen.borderWidth;
-    screen.borderView.height = screen.desktopHeight+2*screen.borderHeight;
-    screen.borderView.parentWidth = screen.desktopWidth+2*screen.borderWidth;
-    screen.borderView.parentHeight = screen.desktopHeight+2*screen.borderHeight;
+    if (screen.borderView != null) {
+      screen.borderView.x = 0;
+      screen.borderView.y = 0;
+      screen.borderView.width = screen.desktopWidth+2*screen.borderWidth;
+      screen.borderView.height = screen.desktopHeight+2*screen.borderHeight;
+      screen.borderView.parentWidth = screen.desktopWidth+2*screen.borderWidth;
+      screen.borderView.parentHeight = screen.desktopHeight+2*screen.borderHeight;
+    }
 
     screen.desktopView.x = screen.borderWidth;
     screen.desktopView.y = screen.borderHeight;

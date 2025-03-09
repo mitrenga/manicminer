@@ -3,12 +3,13 @@ const { AbstractCanvas } = await import('./abstractCanvas.js?ver='+window.srcVer
 /*/
 import AbstractCanvas from './abstractCanvas.js';
 /**/
+// begin code
 
-export class NativeCanvas extends AbstractCanvas {
+export class FullScreenCanvas extends AbstractCanvas {
   
   constructor(app) {
     super(app);
-    this.id = 'NativeCanvas';
+    this.id = 'FullScreenCanvas';
 
     this.realX = [];
     this.realY = [];
@@ -19,7 +20,19 @@ export class NativeCanvas extends AbstractCanvas {
   } // element
 
   resizeScreen(screen) {
-    super.resizeScreen(screen);
+    var xRatio = this.app.element.clientWidth/(screen.desktopWidth+2*screen.minimalBorder);
+    var yRatio = this.app.element.clientHeight/(screen.desktopHeight+2*screen.minimalBorder);
+
+    this.app.element.width = this.app.canvas.element()['width'];
+    this.app.element.height = this.app.canvas.element()['height'];
+
+    screen.desktopView.x = screen.borderWidth;
+    screen.desktopView.y = screen.borderHeight;
+    screen.desktopView.width = screen.desktopWidth;
+    screen.desktopView.height = screen.desktopHeight;
+    screen.desktopView.parentWidth = screen.desktopWidth+2*screen.borderWidth;
+    screen.desktopView.parentHeight = screen.desktopHeight+2*screen.borderHeight;
+
     this.prepareCoordinates(screen);
   } // resizeScreen
 
@@ -69,6 +82,6 @@ export class NativeCanvas extends AbstractCanvas {
     screen.ctx.fillRect(this.nativeX(screen, x), this.nativeY(screen, y), this.nativeX(screen, x+width)-this.nativeX(screen, x), this.nativeY(screen, y+height)-this.nativeY(screen, y));
   } // paintRect
 
-} // class NativeCanvas
+} // class FullScreenCanvas
 
-export default NativeCanvas;
+export default FullScreenCanvas;

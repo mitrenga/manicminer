@@ -1,8 +1,11 @@
 /*/
-const { AbstractPlatform } = await import('../../abstractPlatform.js?ver='+window.srcVersion);
+const { AbstractPlatform } = await import('../abstractPlatform.js?ver='+window.srcVersion);
+const { AutoCanvas } = await import('../../canvas/autoCanvas.js?ver='+window.srcVersion);
 /*/
-import AbstractPlatform from '../../abstractPlatform.js';
+import AbstractPlatform from '../abstractPlatform.js';
+import AutoCanvas from '../../canvas/autoCanvas.js';
 /**/
+// begin code
 
 export class ZXSpectrum48KPlatform extends AbstractPlatform {
   
@@ -33,6 +36,10 @@ export class ZXSpectrum48KPlatform extends AbstractPlatform {
       'brightWhite': '#ffffff',
     }; // zxColorsRGB
   } // constructor
+
+  defaultCanvas(app) {
+    return new AutoCanvas(app);
+  } // defaultCanvas
 
   desktop() {
     return {width: 256, height: 192, defaultColor: this.colorByName('white')};

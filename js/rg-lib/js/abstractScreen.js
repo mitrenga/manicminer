@@ -7,6 +7,7 @@ import AbstractView from './abstractView.js';
 import DesktopView from './desktopView.js';
 import BorderView from './borderView.js';
 /**/
+// begin code
 
 export class AbstractScreen {
 
@@ -18,22 +19,30 @@ export class AbstractScreen {
     this.flashState = 0;
     this.now = Date.now();
 
-    this.desktopWidth = this.app.platform.desktop()['width'];
-    this.desktopHeight = this.app.platform.desktop()['height'];
-    this.minimalBorder = this.app.platform.border()['minimal'];
-    this.optimalBorder = this.app.platform.border()['optimal'];
+    this.borderView = null;
     this.borderWidth = 0;
     this.borderHeight = 0;
-    this.desktop = null;
+    this.minimalBorder = 0;
+    this.optimalBorder = 0;
+    if (this.app.platform.border() !== false) {
+      this.minimalBorder = this.app.platform.border()['minimal'];
+      this.optimalBorder = this.app.platform.border()['optimal'];
+    }
+
+    this.desktopView = null;
+    this.desktopWidth = this.app.platform.desktop()['width'];
+    this.desktopHeight = this.app.platform.desktop()['height'];
 
     this.messages = [];
   } // constructor
 
   init() {
-    this.borderView = new BorderView(null, 0, 0, 0, 0);
-    this.borderView.app = this.app;
-    this.borderView.screen = this;
-    this.borderView.bkColor = this.app.platform.border()['defaultColor'];
+    if (this.app.platform.border() !== false) {
+      this.borderView = new BorderView(null, 0, 0, 0, 0);
+      this.borderView.app = this.app;
+      this.borderView.screen = this;
+      this.borderView.bkColor = this.app.platform.border()['defaultColor'];
+    }
     this.desktopView = new DesktopView(null, 0, 0, 0, 0);
     this.desktopView.app = this.app;
     this.desktopView.screen = this;
@@ -57,13 +66,19 @@ export class AbstractScreen {
   } // cancelEvent
 
   handleEvent(message) {
-    if (this.borderView.handleEvent(message) == false) {
+    var result = false;
+    if (this.borderView != null) {
+      result = this.borderView.handleEvent(message);
+    }
+    if (result == false) {
       this.desktopView.handleEvent(message);
     }
   } // handleEvent
 
   setData(data) {
-    this.borderView.setData(data);
+    if (this.borderView != null) {
+      this.borderView.setData(data);
+    }
     this.desktopView.setData(data);
     this.drawScreen();
   } // setData
@@ -84,7 +99,9 @@ export class AbstractScreen {
   } // resizeScreen
 
   drawScreen() {
-    this.borderView.drawView();
+    if (this.borderView != null) {
+      this.borderView.drawView();
+    }
     this.desktopView.drawView();
   } // drawScreen
 

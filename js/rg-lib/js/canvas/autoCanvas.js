@@ -9,6 +9,7 @@ import BasicCanvas from './basicCanvas.js';
 import NativeCanvas from './nativeCanvas.js';
 import OptimalCanvas from './optimalCanvas.js';
 /**/
+// begin code
 
 export class AutoCanvas extends AbstractCanvas {
   

@@ -3,7 +3,7 @@ const { AbstractView } = await import('../../abstractView.js?ver='+window.srcVer
 /*/
 import AbstractView from '../../abstractView.js';
 /**/
-
+// begin code
 
 export class ZXVideoBufferView extends AbstractView {
 

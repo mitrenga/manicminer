@@ -1,13 +1,13 @@
 /**/
 const { AbstractScreen } = await import('./rg-lib/js/abstractScreen.js?ver='+window.srcVersion);
 const { AbstractView } = await import('./rg-lib/js/abstractView.js?ver='+window.srcVersion);
-const { ZXTextView } = await import('./rg-lib/js/platforms/zxSpectrum/zxTextView.js?ver='+window.srcVersion);
+const { ZXTextView } = await import('./rg-lib/js/platform/zxSpectrum/zxTextView.js?ver='+window.srcVersion);
 const { CavernView } = await import('./cavernView.js?ver='+window.srcVersion);
 const { AirView } = await import('./airView.js?ver='+window.srcVersion);
 /*/
 import AbstractScreen from './rg-lib/js/abstractScreen.js';
 import AbstractView from './rg-lib/js/abstractView.js';
-import ZXTextView from '././rg-lib/js/platforms/zxSpectrum/zxTextView.js';
+import ZXTextView from '././rg-lib/js/platform/zxSpectrum/zxTextView.js';
 import CavernView from './cavernView.js';
 import AirView from './airView.js';
 /**/
@@ -25,7 +25,7 @@ export class CavernScreen extends AbstractScreen {
     
     const http = new XMLHttpRequest();
     http.responser = this;
-    http.open('GET', this.cavernNumber.toString().padStart(2, '0')+'.level');
+    http.open('GET', this.cavernNumber.toString().padStart(2, '0')+'.data');
     http.send();
 
     http.onreadystatechange = function () {

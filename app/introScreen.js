@@ -1,9 +1,9 @@
 /**/
 const { AbstractScreen } = await import('./rg-lib/js/abstractScreen.js?ver='+window.srcVersion);
-const { ZXVideoBufferView } = await import('./rg-lib/js/platforms/zxSpectrum/zxVideoBufferView.js?ver='+window.srcVersion);
+const { ZXVideoBufferView } = await import('./rg-lib/js/platform/zxSpectrum/zxVideoBufferView.js?ver='+window.srcVersion);
 /*/
 import AbstractScreen from './rg-lib/js/abstractScreen.js';
-import ZXVideoBufferView from './rg-lib/js/platforms/zxSpectrum/zxVideoBufferView.js';
+import ZXVideoBufferView from './rg-lib/js/platform/zxSpectrum/zxVideoBufferView.js';
 /**/
 
 export class IntroScreen extends AbstractScreen {

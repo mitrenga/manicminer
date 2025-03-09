@@ -1,16 +1,17 @@
 /*/
-const { AbstractCanvas } = await import('./abstractCanvas.js?ver='+window.srcVersion);
-const { BasicCanvas } = await import('./basicCanvas.js?ver='+window.srcVersion);
-const { NativeCanvas } = await import('./nativeCanvas.js?ver='+window.srcVersion);
-const { OptimalCanvas } = await import('./optimalCanvas.js?ver='+window.srcVersion);
-const { AutoCanvas } = await import('./autoCanvas.js?ver='+window.srcVersion);
+const { AbstractCanvas } = await import('./canvas/abstractCanvas.js?ver='+window.srcVersion);
+const { BasicCanvas } = await import('./canvas/basicCanvas.js?ver='+window.srcVersion);
+const { NativeCanvas } = await import('./canvas/nativeCanvas.js?ver='+window.srcVersion);
+const { OptimalCanvas } = await import('./canvas/optimalCanvas.js?ver='+window.srcVersion);
+const { AutoCanvas } = await import('./canvas/autoCanvas.js?ver='+window.srcVersion);
 /*/
-import AbstractCanvas from './abstractCanvas.js';
-import BasicCanvas from './basicCanvas.js';
-import NativeCanvas from './nativeCanvas.js';
-import OptimalCanvas from './optimalCanvas.js';
-import AutoCanvas from './autoCanvas.js';
+import AbstractCanvas from './canvas/abstractCanvas.js';
+import BasicCanvas from './canvas/basicCanvas.js';
+import NativeCanvas from './canvas/nativeCanvas.js';
+import OptimalCanvas from './canvas/optimalCanvas.js';
+import AutoCanvas from './canvas/autoCanvas.js';
 /**/
+// begin code
 
 export class AbstractApp {
   
@@ -19,7 +20,7 @@ export class AbstractApp {
     this.ctx = this.element.getContext('2d');
     
     this.platform = platform;
-    this.canvas = new AutoCanvas(this);
+    this.canvas = platform.defaultCanvas(this);
     this.wsURL = wsURL;
     this.webSocket = null;
   } // constructor

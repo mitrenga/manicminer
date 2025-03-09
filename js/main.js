@@ -1,14 +1,13 @@
 /*/
 const { GameApp } = await import('./gameApp.js?ver='+window.srcVersion);
-const { ZXSpectrum48KPlatform } = await import('./rg-lib/js/platforms/zxSpectrum/zxSpectrum48KPlatform.js?ver='+window.srcVersion);
+const { ZXSpectrum48KPlatform } = await import('./rg-lib/js/platform/zxSpectrum/zxSpectrum48KPlatform.js?ver='+window.srcVersion);
 /*/
 import GameApp from './gameApp.js';
-import ZXSpectrum48KPlatform from './rg-lib/js/platforms/zxSpectrum/zxSpectrum48KPlatform.js';
+import ZXSpectrum48KPlatform from './rg-lib/js/platform/zxSpectrum/zxSpectrum48KPlatform.js';
 /**/
 
 var platform = new ZXSpectrum48KPlatform();
 var gameApp = new GameApp(platform, window.wsURL);
-var startGameAnimationTimestamp = 0;
 var audio = null;
 
 function resizeGame() {
