@@ -1,9 +1,9 @@
 /*/
 const { AbstractPlatform } = await import('../abstractPlatform.js?ver='+window.srcVersion);
-const { FullScreenCanvas } = await import('../../canvas/fullScreenCanvas.js?ver='+window.srcVersion);
+const { HTMLCanvas } = await import('../../canvas/htmlCanvas.js?ver='+window.srcVersion);
 /*/
 import AbstractPlatform from '../abstractPlatform.js';
-import FullScreenCanvas from '../../canvas/fullScreenCanvas.js';
+import HTMLCanvas from '../../canvas/htmlCanvas.js';
 /**/
 // begin code
 
@@ -13,17 +13,25 @@ export class HTMLPlatform extends AbstractPlatform {
     super();
   } // constructor
 
+  createCanvasElement(app, parentElement) {
+    app.parentElement = document.getElementById(parentElement);
+    app.element = document.createElement('div');
+    app.element.id = 'canvasApp';
+    app.element.classList.add('canvasApp');
+    app.parentElement.appendChild(app.element);
+  } // createCanvasElement
+
   defaultCanvas(app) {
-    return new FullScreenCanvas(app);
+    return new HTMLCanvas(app);
   } // defaultCanvas
 
   desktop() {
     return {width: 256, height: 192, defaultColor: this.colorByName('white')};
-  } // resolution
+  } // desktop
 
   border() {
     return false;
-  }
+  } // border
 
   colorByName(colorName) {
     return colorName;

@@ -64,11 +64,10 @@ export class AutoCanvas extends AbstractCanvas {
     } // switch
   } // setCanvas
 
-  paintRect(screen, x, y, width, height) {
+  paintRect(screen, x, y, width, height, color) {
     if (this.canvas !== false) {
-      this.canvas.paintRect(screen, x, y, width, height);
+      this.canvas.paintRect(screen, x, y, width, height, color);
     }
-    super.paintRect(screen, x, y, width, height);
   } // paintRect
 
 } // class AutoCanvas

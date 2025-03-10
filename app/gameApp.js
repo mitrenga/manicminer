@@ -13,7 +13,7 @@ import GameOverScreen from './gameOverScreen.js';
 export class GameApp extends AbstractApp {
   
   constructor(platform, wsURL) {
-    super(platform, wsURL);
+    super(platform, 'bodyApp',  wsURL);
 
     this.cavernNumber = 0;
     this.screen = this.newScreen('IntroScreen');

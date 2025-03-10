@@ -15,11 +15,12 @@ import AutoCanvas from './canvas/autoCanvas.js';
 
 export class AbstractApp {
   
-  constructor(platform, wsURL) {
-    this.element = document.getElementById('canvasGame');
-    this.ctx = this.element.getContext('2d');
-    
+  constructor(platform, parentElement, wsURL) {
+    this.parentElement = null;
+    this.element = null;
+    this.ctx = false;
     this.platform = platform;
+    this.platform.createCanvasElement(this, parentElement);
     this.canvas = platform.defaultCanvas(this);
     this.wsURL = wsURL;
     this.webSocket = null;

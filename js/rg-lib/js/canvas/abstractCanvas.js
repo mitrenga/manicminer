@@ -12,10 +12,34 @@ export class AbstractCanvas {
     this.id = 'AbstractCanvas';
   } // constructor
 
+  canvasType() {
+    return false;
+  } // canvasType
+
+  defaultCanvas(app) {
+    return false;
+  } // defaultCanvas
+
   element() {
-    return {width: 0, height: 0};
+    return false;
   } // element
   
+  desktop() {
+    return false;
+  } // desktop
+
+  border() {
+    return false;
+  } // border
+
+  colorByName(colorName) {
+    return false;
+  } // colorByName
+
+  color(color) {
+    return false;
+  } // color
+
   resizeScreen(screen) {
     var xRatio = this.app.element.clientWidth/(screen.desktopWidth+2*screen.minimalBorder);
     var yRatio = this.app.element.clientHeight/(screen.desktopHeight+2*screen.minimalBorder);
@@ -58,7 +82,7 @@ export class AbstractCanvas {
     screen.desktopView.parentHeight = screen.desktopHeight+2*screen.borderHeight;
   } // resizeScreen
 
-  paintRect(screen, x, y, width, height) {
+  paintRect(screen, x, y, width, height, color) {
   } // paintRect
 
 } // class AbstractCanvas

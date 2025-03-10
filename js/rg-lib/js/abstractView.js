@@ -86,7 +86,6 @@ export class AbstractView {
   } // setData
 
   paint(x, y, width, height, color) {
-    this.screen.ctx.fillStyle = color;
     var w = width;
     if (this.x+x < 0) {
       w = w+this.x;
@@ -142,7 +141,7 @@ export class AbstractView {
       }
     }
     if (w > 0 && h > 0) {
-      this.app.canvas.paintRect(this.screen, this.parentX+this.x+x, this.parentY+this.y+y, w, h);
+      this.app.canvas.paintRect(this.screen, this.parentX+this.x+x, this.parentY+this.y+y, w, h, color);
     }
   } // paint
 

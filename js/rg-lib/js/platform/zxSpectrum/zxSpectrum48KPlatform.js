@@ -37,17 +37,26 @@ export class ZXSpectrum48KPlatform extends AbstractPlatform {
     }; // zxColorsRGB
   } // constructor
 
+  createCanvasElement(app, parentElement) {
+    app.parentElement = document.getElementById(parentElement);
+    app.element = document.createElement('canvas');
+    app.element.id = 'canvasApp';
+    app.element.classList.add('canvasApp');
+    app.parentElement.appendChild(app.element);
+    app.ctx = app.element.getContext('2d');
+  } // createCanvasElement
+
   defaultCanvas(app) {
     return new AutoCanvas(app);
   } // defaultCanvas
 
   desktop() {
     return {width: 256, height: 192, defaultColor: this.colorByName('white')};
-  } // resolution
+  } // desktop
 
   border() {
     return {minimal: 4, optimal: 10, defaultColor: this.colorByName('white')};
-  }
+  } // border
 
   colorByName(colorName) {
     if (colorName in this.zxColorsRGB) {

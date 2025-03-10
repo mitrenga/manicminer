@@ -10,9 +10,8 @@ export class AbstractPlatform {
   constructor() {
   } // constructor
 
-  defaultCanvas(app) {
-    return null;
-  } // defaultCanvas
+  createCanvasElement(app, parentElement) {
+  } // createCanvasElement
 
   desktop() {
     return {width: 0, height: 0, defaultColor: false};

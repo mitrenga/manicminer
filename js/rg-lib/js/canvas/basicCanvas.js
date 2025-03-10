@@ -16,7 +16,8 @@ export class BasicCanvas extends AbstractCanvas {
     return {width: this.app.screen.desktopWidth+2*this.app.screen.borderWidth, height: this.app.screen.desktopHeight+2*this.app.screen.borderHeight};
   } // element
   
-  paintRect(screen, x, y, width, height) {
+  paintRect(screen, x, y, width, height, color) {
+    screen.ctx.fillStyle = color;
     screen.ctx.fillRect(x, y, width, height);
   } // paintRect
 
