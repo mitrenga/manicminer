@@ -1,11 +1,11 @@
 /**/
-const { AbstractView } = await import('./rg-lib/js/abstractView.js?ver='+window.srcVersion);
-const { SpriteView } = await import('./rg-lib/js/spriteView.js?ver='+window.srcVersion);
+const { AbstractView } = await import('./svision/js/abstractView.js?ver='+window.srcVersion);
+const { SpriteView } = await import('./svision/js/spriteView.js?ver='+window.srcVersion);
 /*/
-import AbstractView from './rg-lib/js/abstractView.js';
-import SpriteView from './rg-lib/js/spriteView.js';
+import AbstractView from './svision/js/abstractView.js';
+import SpriteView from './svision/js/spriteView.js';
 /**/
-
+// begin code
 
 export class CavernView extends AbstractView {
 

@@ -1,21 +1,23 @@
 /**/
-const { AbstractScreen } = await import('./rg-lib/js/abstractScreen.js?ver='+window.srcVersion);
-const { AbstractView } = await import('./rg-lib/js/abstractView.js?ver='+window.srcVersion);
-const { ZXTextView } = await import('./rg-lib/js/platform/zxSpectrum/zxTextView.js?ver='+window.srcVersion);
+const { AbstractScreen } = await import('./svision/js/abstractScreen.js?ver='+window.srcVersion);
+const { AbstractView } = await import('./svision/js/abstractView.js?ver='+window.srcVersion);
+const { ZXTextView } = await import('./svision/js/platform/zxSpectrum/zxTextView.js?ver='+window.srcVersion);
 const { CavernView } = await import('./cavernView.js?ver='+window.srcVersion);
 const { AirView } = await import('./airView.js?ver='+window.srcVersion);
 /*/
-import AbstractScreen from './rg-lib/js/abstractScreen.js';
-import AbstractView from './rg-lib/js/abstractView.js';
-import ZXTextView from '././rg-lib/js/platform/zxSpectrum/zxTextView.js';
+import AbstractScreen from './svision/js/abstractScreen.js';
+import AbstractView from './svision/js/abstractView.js';
+import ZXTextView from '././svision/js/platform/zxSpectrum/zxTextView.js';
 import CavernView from './cavernView.js';
 import AirView from './airView.js';
 /**/
+// begin code
 
 export class CavernScreen extends AbstractScreen {
   
-  constructor(app, ctx, cavernNumber) {
-    super(app, ctx, 'CavernScreen');
+  constructor(app, cavernNumber) {
+    super(app);
+    this.id = 'CavernScreen';
 
     this.cavernNumber = cavernNumber;
     this.cavernView = null;

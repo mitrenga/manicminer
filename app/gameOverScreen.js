@@ -1,14 +1,14 @@
 /**/
-const { AbstractScreen } = await import('./rg-lib/js/abstractScreen.js?ver='+window.srcVersion);
+const { AbstractScreen } = await import('./svision/js/abstractScreen.js?ver='+window.srcVersion);
 /*/
-import AbstractScreen from './rg-lib/js/abstractScreen.js';
+import AbstractScreen from './svision/js/abstractScreen.js';
 /**/
+// begin code
 
 class Fireworks {
 
-  constructor(app, ctx, xStart, yStart, xTarget, yTarget, color, main) {
+  constructor(app, xStart, yStart, xTarget, yTarget, color, main) {
     this.app = app;
-    this.ctx = ctx;
 
     this.x = xStart;
     this.y = yStart;
@@ -56,8 +56,9 @@ class Fireworks {
 
 export class GameOverScreen extends AbstractScreen {
   
-  constructor(app, ctx) {
-    super(app, ctx, 'GameOverScreen');
+  constructor(app) {
+    super(app);
+    this.id = 'GameOverScreen';
 
     this.fireworks = [];
   } // constructor

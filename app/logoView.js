@@ -1,8 +1,9 @@
 /**/
-const { TextView } = await import('./rg-lib/js/textView.js?ver='+window.srcVersion);
+const { TextView } = await import('./svision/js/textView.js?ver='+window.srcVersion);
 /*/
-import TextView from './rg-lib/js/textView.js';
+import TextView from './svision/js/textView.js';
 /**/
+// begin code
 
 
 export class LogoView extends TextView {

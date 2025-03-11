@@ -1,9 +1,9 @@
 /**/
-const { AbstractView } = await import('./rg-lib/js/abstractView.js?ver='+window.srcVersion);
+const { AbstractView } = await import('./svision/js/abstractView.js?ver='+window.srcVersion);
 /*/
-import AbstractView from './rg-lib/js/abstractView.js';
+import AbstractView from './svision/js/abstractView.js';
 /**/
-
+// begin code
 
 export class AirView extends AbstractView {
 

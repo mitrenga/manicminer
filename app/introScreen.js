@@ -1,15 +1,17 @@
 /**/
-const { AbstractScreen } = await import('./rg-lib/js/abstractScreen.js?ver='+window.srcVersion);
-const { ZXVideoBufferView } = await import('./rg-lib/js/platform/zxSpectrum/zxVideoBufferView.js?ver='+window.srcVersion);
+const { AbstractScreen } = await import('./svision/js/abstractScreen.js?ver='+window.srcVersion);
+const { ZXVideoBufferView } = await import('./svision/js/platform/zxSpectrum/zxVideoBufferView.js?ver='+window.srcVersion);
 /*/
-import AbstractScreen from './rg-lib/js/abstractScreen.js';
-import ZXVideoBufferView from './rg-lib/js/platform/zxSpectrum/zxVideoBufferView.js';
+import AbstractScreen from './svision/js/abstractScreen.js';
+import ZXVideoBufferView from './svision/js/platform/zxSpectrum/zxVideoBufferView.js';
 /**/
+// begin code
 
 export class IntroScreen extends AbstractScreen {
   
-  constructor(app, ctx) {
-    super(app, ctx, 'IntroScreen');   
+  constructor(app) {
+    super(app);
+    this.id = 'IntroScreen';
 
     this.introImageData = [
       '050000000000E000000000000000000000000000000001818180000000000000',

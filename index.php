@@ -1,3 +1,3 @@
 <?php
   $appName = 'MANIC MINER';
-  require_once 'app/rg-lib/php/main.php';
+  require_once 'app/svision/php/main.php';
