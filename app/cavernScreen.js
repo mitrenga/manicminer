@@ -1,13 +1,13 @@
 /**/
 const { AbstractScreen } = await import('./svision/js/abstractScreen.js?ver='+window.srcVersion);
 const { AbstractView } = await import('./svision/js/abstractView.js?ver='+window.srcVersion);
-const { ZXTextView } = await import('./svision/js/platform/zxSpectrum/zxTextView.js?ver='+window.srcVersion);
+const { ZXTextView } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxTextView.js?ver='+window.srcVersion);
 const { CavernView } = await import('./cavernView.js?ver='+window.srcVersion);
 const { AirView } = await import('./airView.js?ver='+window.srcVersion);
 /*/
 import AbstractScreen from './svision/js/abstractScreen.js';
 import AbstractView from './svision/js/abstractView.js';
-import ZXTextView from '././svision/js/platform/zxSpectrum/zxTextView.js';
+import ZXTextView from '././svision/js/platform/canvas2D/zxSpectrum/zxTextView.js';
 import CavernView from './cavernView.js';
 import AirView from './airView.js';
 /**/

@@ -1,9 +1,9 @@
 /**/
 const { AbstractScreen } = await import('./svision/js/abstractScreen.js?ver='+window.srcVersion);
-const { ZXVideoBufferView } = await import('./svision/js/platform/zxSpectrum/zxVideoBufferView.js?ver='+window.srcVersion);
+const { ZXVideoBufferView } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxVideoBufferView.js?ver='+window.srcVersion);
 /*/
 import AbstractScreen from './svision/js/abstractScreen.js';
-import ZXVideoBufferView from './svision/js/platform/zxSpectrum/zxVideoBufferView.js';
+import ZXVideoBufferView from './svision/js/platform/canvas2D/zxSpectrum/zxVideoBufferView.js';
 /**/
 // begin code
 
