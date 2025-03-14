@@ -1,2 +1,2 @@
 # manicminer
-Manic Miner retro-style online game
+the legendary Manic Miner game in retro style

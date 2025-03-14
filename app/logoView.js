@@ -1,7 +1,7 @@
 /**/
-const { TextView } = await import('./svision/js/textView.js?ver='+window.srcVersion);
+const { TextView } = await import('./svision/js/platform/canvas2D/textView.js?ver='+window.srcVersion);
 /*/
-import TextView from './svision/js/textView.js';
+import TextView from './svision/js/platform/canvas2DtextView.js';
 /**/
 // begin code
 

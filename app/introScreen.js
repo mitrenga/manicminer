@@ -168,7 +168,7 @@ export class IntroScreen extends AbstractScreen {
   init() {
     super.init();
 
-    this.borderView.bkColor = this.color('magenta');
+    this.borderView.bkColor = this.app.platform.colorByName('magenta');
     this.desktopView.addView(new ZXVideoBufferView(this.desktopView, 0, 0, 32*8, 16*8, this.introImageData, this.introImageAttributes));
   } // init
 
