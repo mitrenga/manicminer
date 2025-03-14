@@ -1,17 +1,17 @@
 /**/
-const { AbstractScreen } = await import('./svision/js/abstractScreen.js?ver='+window.srcVersion);
-const { ZXVideoBufferView } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxVideoBufferView.js?ver='+window.srcVersion);
+const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+window.srcVersion);
+const { ZXVideoBufferEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxVideoBufferEntity.js?ver='+window.srcVersion);
 /*/
-import AbstractScreen from './svision/js/abstractScreen.js';
-import ZXVideoBufferView from './svision/js/platform/canvas2D/zxSpectrum/zxVideoBufferView.js';
+import AbstractModel from './svision/js/abstractModel.js';
+import ZXVideoBufferEntity from './svision/js/platform/canvas2D/zxSpectrum/zxVideoBufferEntity.js';
 /**/
 // begin code
 
-export class IntroScreen extends AbstractScreen {
+export class IntroModel extends AbstractModel {
   
   constructor(app) {
     super(app);
-    this.id = 'IntroScreen';
+    this.id = 'IntroModel';
 
     this.introImageData = [
       '050000000000E000000000000000000000000000000001818180000000000000',
@@ -168,14 +168,14 @@ export class IntroScreen extends AbstractScreen {
   init() {
     super.init();
 
-    this.borderView.bkColor = this.app.platform.colorByName('magenta');
-    this.desktopView.addView(new ZXVideoBufferView(this.desktopView, 0, 0, 32*8, 16*8, this.introImageData, this.introImageAttributes));
+    this.borderEntity.bkColor = this.app.platform.colorByName('magenta');
+    this.desktopEntity.addEntity(new ZXVideoBufferEntity(this.desktopEntity, 0, 0, 32*8, 16*8, this.introImageData, this.introImageAttributes));
   } // init
 
-  loopScreen() {
-    super.loopScreen();
-  } // loopScreen
+  loopModel() {
+    super.loopModel();
+  } // loopModel
 
-} // class IntroScreen
+} // class IntroModel
 
-export default IntroScreen;
+export default IntroModel;

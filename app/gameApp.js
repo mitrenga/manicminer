@@ -1,13 +1,13 @@
 /**/
 const { AbstractApp } = await import('./svision/js/abstractApp.js?ver='+window.srcVersion);
-const { IntroScreen } = await import('./introScreen.js?ver='+window.srcVersion);
-const { CavernScreen } = await import('./cavernScreen.js?ver='+window.srcVersion);
-const { GameOverScreen } = await import('./gameOverScreen.js?ver='+window.srcVersion);
+const { IntroModel } = await import('./introModel.js?ver='+window.srcVersion);
+const { CavernModel } = await import('./cavernModel.js?ver='+window.srcVersion);
+const { GameOverModel } = await import('./gameOverModel.js?ver='+window.srcVersion);
 /*/
 import AbstractApp from './svision/js/abstractApp.js';
-import IntroScreen from './introScreen.js';
-import CavernScreen from './cavernScreen.js';
-import GameOverScreen from './gameOverScreen.js';
+import IntroModel from './introModel.js';
+import CavernModel from './cavernModel.js';
+import GameOverModel from './gameOverModel.js';
 /**/
 // begin code
 
@@ -17,42 +17,42 @@ export class GameApp extends AbstractApp {
     super(platform, 'bodyApp',  wsURL);
 
     this.cavernNumber = 0;
-    this.screen = this.newScreen('IntroScreen');
-    this.screen.init();
+    this.model = this.newModel('IntroModel');
+    this.model.init();
   } // constructor
 
-  newScreen(screen) {
-    switch (screen) {
-      case 'IntroScreen': return new IntroScreen(this);
-      case 'CavernScreen': return new CavernScreen(this, this.cavernNumber);
-      case 'GameOverScreen': return new GameOverScreen(this);
+  newModel(model) {
+    switch (model) {
+      case 'IntroModel': return new IntroModel(this);
+      case 'CavernModel': return new CavernModel(this, this.cavernNumber);
+      case 'GameOverModel': return new GameOverModel(this);
     } // switch
     return null;
-  } // newScreen
+  } // newModel
   
   onClick(e) {
     super.onClick(e);
   
-    var prevScreenID = this.screen.id; 
-    this.screen = null;
-    switch (prevScreenID) {
-      case 'IntroScreen': 
+    var prevModelID = this.model.id; 
+    this.model = null;
+    switch (prevModelID) {
+      case 'IntroModel': 
         this.cavernNumber = 0;
-        this.screen = this.newScreen('CavernScreen');
+        this.model = this.newModel('CavernModel');
         break;
-      case 'CavernScreen': 
+      case 'CavernModel': 
         this.cavernNumber++;
         if (this.cavernNumber < 20) {
-          this.screen = this.newScreen('CavernScreen');
+          this.model = this.newModel('CavernModel');
         } else {
-          this.screen = this.newScreen('GameOverScreen');
+          this.model = this.newModel('GameOverModel');
         }
         break;
-      case 'GameOverScreen': 
-        this.screen = this.newScreen('IntroScreen');
+      case 'GameOverModel': 
+        this.model = this.newModel('IntroModel');
         break;
     }
-    this.screen.init();
+    this.model.init();
     this.resizeApp();
   } // onClick
 

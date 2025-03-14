@@ -1,7 +1,7 @@
 /**/
-const { AbstractScreen } = await import('./svision/js/abstractScreen.js?ver='+window.srcVersion);
+const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+window.srcVersion);
 /*/
-import AbstractScreen from './svision/js/abstractScreen.js';
+import AbstractModel from './svision/js/abstractModel.js';
 /**/
 // begin code
 
@@ -54,11 +54,11 @@ class Fireworks {
 } // class Fireworks
 
 
-export class GameOverScreen extends AbstractScreen {
+export class GameOverModel extends AbstractModel {
   
   constructor(app) {
     super(app);
-    this.id = 'GameOverScreen';
+    this.id = 'GameOverModel';
 
     this.fireworks = [];
   } // constructor
@@ -68,8 +68,8 @@ export class GameOverScreen extends AbstractScreen {
 
   } // init
 
-  loopScreen() {
-    super.loopScreen();
+  loopModel() {
+    super.loopModel();
 
     if (this.timeDiff > 1000) {
       var quantityMain = 0;
@@ -120,10 +120,10 @@ export class GameOverScreen extends AbstractScreen {
         item.loopFireworks();
       });
     }
-  } // loopScreen
+  } // loopModel
 
-  drawScreen2() {
-    super.drawScreen2();
+  /*drawEntity2() {
+    super.drawEntity2();
 
     this.ratio = Math.round(this.canvas.element.width/40);
     var yRatio = Math.round(this.canvas.element.height/33);
@@ -146,8 +146,8 @@ export class GameOverScreen extends AbstractScreen {
         item.drawFireworks(this.ratio);
       });
     }
-  } // drawScreen2
+  } // drawEntity2*/
 
-} // class GameOverScreen
+} // class GameOverModel
 
-export default GameOverScreen;
+export default GameOverModel;

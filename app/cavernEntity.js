@@ -1,42 +1,42 @@
 /**/
-const { AbstractView } = await import('./svision/js/abstractView.js?ver='+window.srcVersion);
-const { SpriteView } = await import('./svision/js/platform/canvas2D/spriteView.js?ver='+window.srcVersion);
+const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
+const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 /*/
-import AbstractView from './svision/js/abstractView.js';
-import SpriteView from './svision/js/platform/canvas2D/spriteView.js';
+import AbstractEntity from './svision/js/abstractEntity.js';
+import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
 /**/
 // begin code
 
-export class CavernView extends AbstractView {
+export class CavernEntity extends AbstractEntity {
 
-  constructor(parentView, x, y, width, height) {
-    super(parentView, x, y, width, height);
-    this.id = 'CavernView';
+  constructor(parentEntity, x, y, width, height) {
+    super(parentEntity, x, y, width, height);
+    this.id = 'CavernEntity';
 
     this.bkColor = this.app.platform.colorByName('black');
     this.cavernImageData = null;
   } // constructor
 
-  drawView() {
-    super.drawView();
+  drawEntity() {
+    super.drawEntity();
 
     if (this.cavernImageData != null) {
       for (var y = 0; y < this.cavernImageData['data'].length; y++) {
         for (var x = 0; x < this.cavernImageData['data'][y].length/2; x++) {
           var hexByte = this.cavernImageData['data'][y].substring(x*2, x*2+2);
-          var binByte = this.hexToBin(hexByte);
-          var attr = this.hexToInt(this.cavernImageData['attributes'][(y%8)].substring(x*2, x*2+2));
+          var binByte = this.app.hexToBin(hexByte);
+          var attr = this.app.hexToInt(this.cavernImageData['attributes'][(y%8)].substring(x*2, x*2+2));
           for (var b = 0; b < binByte.length; b++) {
             if (binByte[b] == '1') {
-              this.app.layout.paint(this, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.penColorByAttribut(attr));
+              this.app.layout.paint(this, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.penColorByAttribut(attr));
             } else {
-              this.app.layout.paint(this, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.bkColorByAttribut(attr));
+              this.app.layout.paint(this, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.bkColorByAttribut(attr));
             }
           }
         }
       }
     }
-  } // drawView
+  } // drawEntity
 
   setData(data) {
     var dataCavern = data['dataCavern'];
@@ -61,7 +61,7 @@ export class CavernView extends AbstractView {
           if (bkColor == this.app.platform.bkColorByAttribut(this.app.hexToInt(dataCavern['blankTile']))) {
             bkColor = false;
           }
-          this.addView(new SpriteView(this, x*8, y*8, 8, 8, spriteData, penColor, bkColor));
+          this.addEntity(new SpriteEntity(this, x*8, y*8, 8, 8, spriteData, penColor, bkColor));
         }
       }
     });
@@ -81,7 +81,7 @@ export class CavernView extends AbstractView {
         }
       }
     });
-    this.addView(new SpriteView(this, dataCavern['portalLocation']['x']*8, dataCavern['portalLocation']['y']*8, 16, 16, spriteData, penColor, bkColor));
+    this.addEntity(new SpriteEntity(this, dataCavern['portalLocation']['x']*8, dataCavern['portalLocation']['y']*8, 16, 16, spriteData, penColor, bkColor));
 
     if ('cavernImageData' in dataCavern) {
       this.cavernImageData = dataCavern['cavernImageData'];
@@ -90,6 +90,6 @@ export class CavernView extends AbstractView {
   } // setData
     
 
-} // class CavernView
+} // class CavernEntity
 
-export default CavernView;
+export default CavernEntity;

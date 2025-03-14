@@ -1,16 +1,16 @@
 /**/
-const { TextView } = await import('./svision/js/platform/canvas2D/textView.js?ver='+window.srcVersion);
+const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
 /*/
-import TextView from './svision/js/platform/canvas2DtextView.js';
+import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
 /**/
 // begin code
 
 
-export class LogoView extends TextView {
+export class LogoEntity extends TextEntity {
 
-  constructor(parentView, x, y, width, height, logoType) {
-    super(parentView, x, y, width, height);
-    this.id = 'LogoView';
+  constructor(parentEntity, x, y, width, height, logoType) {
+    super(parentEntity, x, y, width, height);
+    this.id = 'LogoEntity';
     
     this.proportional = true;
     this.justify = 0;
@@ -68,6 +68,6 @@ export class LogoView extends TextView {
     return charObject;
   } // getCharData
 
-} // class LogoView
+} // class LogoEntity
 
-export default LogoView;
+export default LogoEntity;
