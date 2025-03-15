@@ -19,9 +19,9 @@ function resizeGame() {
 } // resizeGame
 
 // main loop
-function loopGame() {
+function loopGame(timestamp) {
+  gameApp.loopApp(timestamp);
   requestAnimationFrame(loopGame);
-  gameApp.loopApp();
 } // loopGame
 
 // disable right click popup me
