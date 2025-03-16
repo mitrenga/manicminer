@@ -169,12 +169,21 @@ export class IntroModel extends AbstractModel {
     super.init();
 
     this.borderEntity.bkColor = this.app.platform.colorByName('magenta');
-    this.desktopEntity.addEntity(new ZXVideoBufferEntity(this.desktopEntity, 0, 0, 32*8, 16*8, this.introImageData, this.introImageAttributes));
+    this.desktopEntity.addEntity(new ZXVideoBufferEntity(this.desktopEntity, 0, 0, 32*8, 24*8, this, this.getVideoRAM));
   } // init
 
-  loopModel() {
-    super.loopModel();
-  } // loopModel
+  getVideoRAM(sourceEntity, addr) {
+    if (addr >= sourceEntity.introImageData.length*32 && addr < 6144) {
+      return false;
+    }
+    if (addr >= 6144+sourceEntity.introImageAttributes.length*32) {
+      return false;
+    }
+    if (addr < 6144) {
+      return sourceEntity.introImageData[Math.floor(addr/32)].substring((addr%32)*2, (addr%32)*2+2);
+    }
+    return sourceEntity.introImageAttributes[Math.floor((addr-6144)/32)].substring(((addr-6144)%32)*2, ((addr-6144)%32)*2+2);
+  } // getVideoRAM
 
 } // class IntroModel
 
