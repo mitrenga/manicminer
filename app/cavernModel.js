@@ -32,8 +32,8 @@ export class CavernModel extends AbstractModel {
 
     http.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
-        var dataCavern = JSON.parse(http.responseText);
-        this.responser.sendEvent(1, {'id': 'setDataCavern', 'dataCavern': dataCavern});
+        var cavernData = JSON.parse(http.responseText);
+        this.responser.sendEvent(1, {'id': 'setCavernData', 'cavernData': cavernData});
       }
     }
   } // constructor
@@ -57,15 +57,15 @@ export class CavernModel extends AbstractModel {
   } // init
 
   setData(data) {
-    var dataCavern = data['dataCavern'];
-    this.cavernNameEntity.text = dataCavern['name'];
-    this.borderEntity.bkColor = this.app.platform.zxColorByAttribut(this.app.hexToInt(dataCavern['borderColor']), 7, 1);
+    var cavernData = data['cavernData'];
+    this.cavernNameEntity.text = cavernData['name'];
+    this.borderEntity.bkColor = this.app.platform.zxColorByAttribut(this.app.hexToInt(cavernData['borderColor']), 7, 1);
     
     super.setData(data);
   } // setData
 
   handleEvent(event) {
-    if (event['id'] == 'setDataCavern') {
+    if (event['id'] == 'setCavernData') {
       this.setData(event);
       return true;
     }

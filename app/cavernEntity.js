@@ -39,16 +39,16 @@ export class CavernEntity extends AbstractEntity {
   } // drawEntity
 
   setData(data) {
-    var dataCavern = data['dataCavern'];
-    this.bkColor = this.app.platform.zxColorByAttribut(this.app.hexToInt(dataCavern['bkColor']), 56, 8);
+    var cavernData = data['cavernData'];
+    this.bkColor = this.app.platform.zxColorByAttribut(this.app.hexToInt(cavernData['bkColor']), 56, 8);
 
     // layout
-    dataCavern['layout'].forEach((row, y) => {
+    cavernData['layout'].forEach((row, y) => {
       for (var x = 0; x < row.length/2; x++) {
         var attr = row.substring(x*2, x*2+2);
-        if (attr != dataCavern['bkColor']) {
+        if (attr != cavernData['bkColor']) {
           var spriteData = [];
-          var graphicData = dataCavern['graphicData'][attr]
+          var graphicData = cavernData['graphicData'][attr]
           //if (['floor', 'wall'].includes(graphicData['attribute'])) {
           {
             var tile = graphicData['data'];
@@ -61,7 +61,7 @@ export class CavernEntity extends AbstractEntity {
             });
             var penColor = this.app.platform.penColorByAttribut(this.app.hexToInt(attr)&63);
             var bkColor = this.app.platform.bkColorByAttribut(this.app.hexToInt(attr)&63);
-            if (bkColor == this.app.platform.bkColorByAttribut(this.app.hexToInt(dataCavern['bkColor']))) {
+            if (bkColor == this.app.platform.bkColorByAttribut(this.app.hexToInt(cavernData['bkColor']))) {
               bkColor = false;
             }
             this.addEntity(new SpriteEntity(this, x*8, y*8, 8, 8, spriteData, penColor, bkColor));
@@ -71,7 +71,7 @@ export class CavernEntity extends AbstractEntity {
     });
 
     // portal
-    var portal =  dataCavern['portal'];
+    var portal =  cavernData['portal'];
     var attr = portal['attribute'];
     var data = portal['data'];
     var penColor = this.app.platform.penColorByAttribut(this.app.hexToInt(attr));
@@ -88,8 +88,8 @@ export class CavernEntity extends AbstractEntity {
     });
     this.addEntity(new SpriteEntity(this, portal['location']['x']*8, portal['location']['y']*8, 16, 16, spriteData, penColor, bkColor));
 
-    if ('image' in dataCavern) {
-      this.imageData = dataCavern['image'];
+    if ('image' in cavernData) {
+      this.imageData = cavernData['image'];
     }
     
     super.setData(data);
