@@ -58,7 +58,7 @@ export class CavernModel extends AbstractModel {
 
   setData(data) {
     var dataCavern = data['dataCavern'];
-    this.cavernNameEntity.text = dataCavern['cavernName'];
+    this.cavernNameEntity.text = dataCavern['name'];
     this.borderEntity.bkColor = this.app.platform.zxColorByAttribut(this.app.hexToInt(dataCavern['borderColor']), 7, 1);
     
     super.setData(data);
