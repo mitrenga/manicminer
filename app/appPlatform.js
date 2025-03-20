@@ -1,10 +1,10 @@
 /**/
-const { ZXSpectrum48KPlatform } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxSpectrum48KPlatform.js?ver='+window.srcVersion);
+const { ZXSpectrumPlatform } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxSpectrumPlatform.js?ver='+window.srcVersion);
 /*/
-import ZXSpectrum48KPlatform from './svision/js/platform/canvas2D/zxSpectrum/zxSpectrum48KPlatform.js';
+import ZXSpectrumPlatform from './svision/js/platform/canvas2D/zxSpectrum/zxSpectrumPlatform.js';
 /**/
 // begin code
 
-export var appPlatform = new ZXSpectrum48KPlatform();
+export var appPlatform = new ZXSpectrumPlatform();
 
 export default appPlatform;
