@@ -49,13 +49,13 @@ export class CavernEntity extends AbstractEntity {
         if (attr != cavernData['bkColor']) {
           var spriteData = [];
           var graphicData = cavernData['graphicData'][attr]
-          //if (['floor', 'wall'].includes(graphicData['attribute'])) {
+          //if (['floor', 'wall'].includes(graphicData['kind'])) {
           {
             var tile = graphicData['data'];
-            tile.forEach((row, r) => {
-              for (var col = 0; col < row.length; col++) {
-                if (row[col] == '#') {
-                  spriteData.push({'x': col, 'y': r});
+            tile.forEach((line, l) => {
+              for (var col = 0; col < line.length; col++) {
+                if (line[col] == '#') {
+                  spriteData.push({'x': col, 'y': l});
                 }
               }
             });
