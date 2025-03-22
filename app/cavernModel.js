@@ -27,7 +27,7 @@ export class CavernModel extends AbstractModel {
     
     const http = new XMLHttpRequest();
     http.responser = this;
-    http.open('GET', this.cavernNumber.toString().padStart(2, '0')+'.data');
+    http.open('GET', 'cavern'+this.cavernNumber.toString().padStart(2, '0')+'.data');
     http.send();
 
     http.onreadystatechange = function () {

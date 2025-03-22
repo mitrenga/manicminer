@@ -47,10 +47,10 @@ export class CavernEntity extends AbstractEntity {
       for (var x = 0; x < row.length/2; x++) {
         var attr = row.substring(x*2, x*2+2);
         if (attr != cavernData['bkColor']) {
-          var spriteData = [];
           var graphicData = cavernData['graphicData'][attr]
           //if (['floor', 'wall'].includes(graphicData['kind'])) {
           {
+            var spriteData = [];
             var tile = graphicData['data'];
             tile.forEach((line, l) => {
               for (var col = 0; col < line.length; col++) {
@@ -59,7 +59,7 @@ export class CavernEntity extends AbstractEntity {
                 }
               }
             });
-            var penColor = this.app.platform.penColorByAttribut(this.app.hexToInt(attr)&63);
+            var penColor = this.app.platform.penColorByAttribut(this.app.hexToInt(attr));
             var bkColor = this.app.platform.bkColorByAttribut(this.app.hexToInt(attr)&63);
             if (bkColor == this.app.platform.bkColorByAttribut(this.app.hexToInt(cavernData['bkColor']))) {
               bkColor = false;
