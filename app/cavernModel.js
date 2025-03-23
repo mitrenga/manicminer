@@ -23,6 +23,7 @@ export class CavernModel extends AbstractModel {
     this.cavernEntity = null;
     this.airEntity = null;
     this.cavernNameEntity = null;
+    this.hiScoreEntity = null;
     this.scoreEntity = null;
     
     const http = new XMLHttpRequest();
@@ -32,8 +33,8 @@ export class CavernModel extends AbstractModel {
 
     http.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
-        var cavernData = JSON.parse(http.responseText);
-        this.responser.sendEvent(1, {'id': 'setCavernData', 'cavernData': cavernData});
+        var data = JSON.parse(http.responseText);
+        this.responser.sendEvent(1, {'id': 'setCavernData', 'data': data});
       }
     }
   } // constructor
@@ -44,29 +45,32 @@ export class CavernModel extends AbstractModel {
     this.borderEntity.bkColor = this.app.platform.colorByName('black');
     this.cavernEntity = new CavernEntity(this.desktopEntity, 0, 0, 32*8, 16*8);
     this.desktopEntity.addEntity(this.cavernEntity);
-    this.cavernNameEntity = new ZXTextEntity(this.desktopEntity, 0, 16*8, 32*8, 8, '', this.app.platform.colorByName('black'), this.app.platform.colorByName('yellow'), 0, false);
+    this.cavernNameEntity = new ZXTextEntity(this.desktopEntity, 0, 16*8, 32*8, 8, '', this.app.platform.colorByName('black'), this.app.platform.colorByName('yellow'), 0, true);
     this.cavernNameEntity.justify = 2;
     this.desktopEntity.addEntity(this.cavernNameEntity);
-    this.desktopEntity.addEntity(new ZXTextEntity(this.desktopEntity, 0, 17*8, 4*8, 8, 'AIR', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightRed'), 0, false));
+    this.desktopEntity.addEntity(new ZXTextEntity(this.desktopEntity, 0, 17*8, 4*8, 8, 'AIR', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightRed'), 0, true));
     this.desktopEntity.addEntity(new AirEntity(this.desktopEntity, 4*8, 17*8, 28*8, 8));
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 18*8, 32*8, 8, false, this.app.platform.colorByName('black')));
-    this.scoreEntity = new ZXTextEntity(this.desktopEntity, 0, 19*8, 32*8, 8, 'High Score 000000   Score 000000', this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, false);
+    this.desktopEntity.addEntity(new ZXTextEntity(this.desktopEntity, 0, 19*8, 10*8, 8, 'High score', this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, true));
+    this.hiScoreEntity = new ZXTextEntity(this.desktopEntity, 10*8, 19*8, 10*8, 8, '000000', this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, false);
+    this.desktopEntity.addEntity(this.hiScoreEntity);
+    this.desktopEntity.addEntity(new ZXTextEntity(this.desktopEntity, 20*8, 19*8, 6*8, 8, 'Score', this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, true));
+    this.scoreEntity = new ZXTextEntity(this.desktopEntity, 26*8, 19*8, 6*8, 8, '000000', this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, false);
     this.desktopEntity.addEntity(this.scoreEntity);
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 20*8, 32*8, 8, false, this.app.platform.colorByName('black')));
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 21*8, 32*8, 3*8, false, this.app.platform.colorByName('black')));
   } // init
 
   setData(data) {
-    var cavernData = data['cavernData'];
-    this.cavernNameEntity.text = cavernData['name'];
-    this.borderEntity.bkColor = this.app.platform.zxColorByAttribut(this.app.hexToInt(cavernData['borderColor']), 7, 1);
+    this.cavernNameEntity.text = data['name'];
+    this.borderEntity.bkColor = this.app.platform.zxColorByAttribut(this.app.hexToInt(data['borderColor']), 7, 1);
     
     super.setData(data);
   } // setData
 
   handleEvent(event) {
     if (event['id'] == 'setCavernData') {
-      this.setData(event);
+      this.setData(event['data']);
       return true;
     }
 

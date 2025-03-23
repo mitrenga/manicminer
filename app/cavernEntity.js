@@ -39,15 +39,14 @@ export class CavernEntity extends AbstractEntity {
   } // drawEntity
 
   setData(data) {
-    var cavernData = data['cavernData'];
-    this.bkColor = this.app.platform.zxColorByAttribut(this.app.hexToInt(cavernData['bkColor']), 56, 8);
+    this.bkColor = this.app.platform.zxColorByAttribut(this.app.hexToInt(data['bkColor']), 56, 8);
 
     // layout
-    cavernData['layout'].forEach((row, y) => {
+    data['layout'].forEach((row, y) => {
       for (var x = 0; x < row.length/2; x++) {
         var attr = row.substring(x*2, x*2+2);
-        if (attr != cavernData['bkColor']) {
-          var graphicData = cavernData['graphicData'][attr]
+        if (attr != data['bkColor']) {
+          var graphicData = data['graphicData'][attr]
           //if (['floor', 'wall'].includes(graphicData['kind'])) {
           {
             var spriteData = [];
@@ -60,8 +59,8 @@ export class CavernEntity extends AbstractEntity {
               }
             });
             var penColor = this.app.platform.penColorByAttribut(this.app.hexToInt(attr));
-            var bkColor = this.app.platform.bkColorByAttribut(this.app.hexToInt(attr)&63);
-            if (bkColor == this.app.platform.bkColorByAttribut(this.app.hexToInt(cavernData['bkColor']))) {
+            var bkColor = this.app.platform.bkColorByAttribut(this.app.hexToInt(attr));
+            if (bkColor == this.app.platform.bkColorByAttribut(this.app.hexToInt(data['bkColor']))) {
               bkColor = false;
             }
             this.addEntity(new SpriteEntity(this, x*8, y*8, 8, 8, spriteData, penColor, bkColor));
@@ -70,8 +69,24 @@ export class CavernEntity extends AbstractEntity {
       }
     });
 
+    //items
+    var spriteData = [];
+    data['items']['data'].forEach((line, l) => {
+      for (var col = 0; col < line.length; col++) {
+        if (line[col] == '#') {
+          spriteData.push({'x': col, 'y': l});
+        }
+      }
+    });
+
+    data['items']['locations'].forEach((item) => {
+      var penColor = this.app.platform.penColorByAttribut(this.app.hexToInt(item['initColor']));
+      var bkColor = this.app.platform.bkColorByAttribut(this.app.hexToInt(item['initColor']));
+      this.addEntity(new SpriteEntity(this, item['x']*8, item['y']*8, 8, 8, spriteData, penColor, bkColor));
+    });
+
     // portal
-    var portal =  cavernData['portal'];
+    var portal =  data['portal'];
     var attr = portal['attribute'];
     var data = portal['data'];
     var penColor = this.app.platform.penColorByAttribut(this.app.hexToInt(attr));
@@ -88,8 +103,8 @@ export class CavernEntity extends AbstractEntity {
     });
     this.addEntity(new SpriteEntity(this, portal['location']['x']*8, portal['location']['y']*8, 16, 16, spriteData, penColor, bkColor));
 
-    if ('image' in cavernData) {
-      this.imageData = cavernData['image'];
+    if ('image' in data) {
+      this.imageData = data['image'];
     }
     
     super.setData(data);
