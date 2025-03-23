@@ -88,11 +88,11 @@ export class CavernEntity extends AbstractEntity {
     // portal
     var portal =  data['portal'];
     var attr = portal['attribute'];
-    var data = portal['data'];
+    var dataPortal = portal['data'];
     var penColor = this.app.platform.penColorByAttribut(this.app.hexToInt(attr));
     var bkColor = this.app.platform.bkColorByAttribut(this.app.hexToInt(attr));
     var spriteData = [];
-    data.forEach((row, r) => {
+    dataPortal.forEach((row, r) => {
       for (var col = 0; col < row.length; col++) {
         var penColor = false; 
         var bkColor = false; 
