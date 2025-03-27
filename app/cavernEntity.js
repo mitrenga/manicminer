@@ -28,9 +28,9 @@ export class CavernEntity extends AbstractEntity {
           var attr = this.app.hexToInt(this.imageData['attributes'][(y%8)].substring(x*2, x*2+2));
           for (var b = 0; b < binByte.length; b++) {
             if (binByte[b] == '1') {
-              this.app.layout.paint(this, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.penColorByAttribut(attr));
+              this.app.layout.paint(this, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.penColorByAttribute(attr));
             } else {
-              this.app.layout.paint(this, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.bkColorByAttribut(attr));
+              this.app.layout.paint(this, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.bkColorByAttribute(attr));
             }
           }
         }
@@ -39,7 +39,7 @@ export class CavernEntity extends AbstractEntity {
   } // drawEntity
 
   setData(data) {
-    this.bkColor = this.app.platform.zxColorByAttribut(this.app.hexToInt(data['bkColor']), 56, 8);
+    this.bkColor = this.app.platform.zxColorByAttribute(this.app.hexToInt(data['bkColor']), 56, 8);
 
     // layout
     data['layout'].forEach((row, y) => {
@@ -58,9 +58,9 @@ export class CavernEntity extends AbstractEntity {
                 }
               }
             });
-            var penColor = this.app.platform.penColorByAttribut(this.app.hexToInt(attr));
-            var bkColor = this.app.platform.bkColorByAttribut(this.app.hexToInt(attr));
-            if (bkColor == this.app.platform.bkColorByAttribut(this.app.hexToInt(data['bkColor']))) {
+            var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(attr));
+            var bkColor = this.app.platform.bkColorByAttribute(this.app.hexToInt(attr));
+            if (bkColor == this.app.platform.bkColorByAttribute(this.app.hexToInt(data['bkColor']))) {
               bkColor = false;
             }
             this.addEntity(new SpriteEntity(this, x*8, y*8, 8, 8, spriteData, penColor, bkColor));
@@ -80,22 +80,20 @@ export class CavernEntity extends AbstractEntity {
     });
 
     data['items']['locations'].forEach((item) => {
-      var penColor = this.app.platform.penColorByAttribut(this.app.hexToInt(item['initColor']));
-      var bkColor = this.app.platform.bkColorByAttribut(this.app.hexToInt(item['initColor']));
+      var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(item['initColor']));
+      var bkColor = this.app.platform.bkColorByAttribute(this.app.hexToInt(item['initColor']));
       this.addEntity(new SpriteEntity(this, item['x']*8, item['y']*8, 8, 8, spriteData, penColor, bkColor));
     });
 
     // portal
     var portal =  data['portal'];
     var attr = portal['attribute'];
-    var dataPortal = portal['data'];
-    var penColor = this.app.platform.penColorByAttribut(this.app.hexToInt(attr));
-    var bkColor = this.app.platform.bkColorByAttribut(this.app.hexToInt(attr));
+    var portalData = portal['data'];
+    var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(attr));
+    var bkColor = this.app.platform.bkColorByAttribute(this.app.hexToInt(attr));
     var spriteData = [];
-    dataPortal.forEach((row, r) => {
+    portalData.forEach((row, r) => {
       for (var col = 0; col < row.length; col++) {
-        var penColor = false; 
-        var bkColor = false; 
         if (row[col] == '#') {
           spriteData.push({'x': col, 'y': r});
         }
@@ -103,6 +101,35 @@ export class CavernEntity extends AbstractEntity {
     });
     this.addEntity(new SpriteEntity(this, portal['location']['x']*8, portal['location']['y']*8, 16, 16, spriteData, penColor, bkColor));
 
+    // Willy
+    var willy =  data['willy'];
+    var willyData = willy['data'][0];
+    var penColor = this.app.platform.colorByName('white');
+    var spriteData = [];
+    willyData.forEach((row, r) => {
+      for (var col = 0; col < row.length; col++) {
+        if (row[col] == '#') {
+          spriteData.push({'x': col, 'y': r});
+        }
+      }
+    });
+    this.addEntity(new SpriteEntity(this, willy['location']['x'], willy['location']['y'], 10, 16, spriteData, penColor, false));
+
+    // guardians
+    data['guardians']['figures'].forEach((guardian) => {
+      var guardianData = data['guardians']['data'][guardian['animationFrame']];
+      var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(guardian['attribute']));
+      var spriteData = [];
+      guardianData.forEach((row, r) => {
+        for (var col = 0; col < row.length; col++) {
+          if (row[col] == '#') {
+            spriteData.push({'x': col, 'y': r});
+          }
+        }
+      });
+      this.addEntity(new SpriteEntity(this, guardian['location']['x'], guardian['location']['y'], 12, 16, spriteData, penColor, false));
+    });
+    
     if ('image' in data) {
       this.imageData = data['image'];
     }

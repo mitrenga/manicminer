@@ -63,14 +63,15 @@ export class CavernModel extends AbstractModel {
 
   setData(data) {
     this.cavernNameEntity.text = data['name'];
-    this.borderEntity.bkColor = this.app.platform.zxColorByAttribut(this.app.hexToInt(data['borderColor']), 7, 1);
+    this.borderEntity.bkColor = this.app.platform.zxColorByAttribute(this.app.hexToInt(data['borderColor']), 7, 1);
     
     super.setData(data);
   } // setData
 
   handleEvent(event) {
     if (event['id'] == 'setCavernData') {
-      this.setData(event['data']);
+      var willy = Object.assign(event['data']['willy'], {'data': this.app.willyData});
+      this.setData(Object.assign(event['data'], {'willy': willy}));
       return true;
     }
 
