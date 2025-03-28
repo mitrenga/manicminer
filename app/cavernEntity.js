@@ -50,7 +50,7 @@ export class CavernEntity extends AbstractEntity {
           //if (['floor', 'wall'].includes(graphicData['kind'])) {
           {
             var spriteData = [];
-            var tile = graphicData['data'];
+            var tile = graphicData['sprite'];
             tile.forEach((line, l) => {
               for (var col = 0; col < line.length; col++) {
                 if (line[col] == '#') {
@@ -71,7 +71,7 @@ export class CavernEntity extends AbstractEntity {
 
     //items
     var spriteData = [];
-    data['items']['data'].forEach((line, l) => {
+    data['items']['sprite'].forEach((line, l) => {
       for (var col = 0; col < line.length; col++) {
         if (line[col] == '#') {
           spriteData.push({'x': col, 'y': l});
@@ -79,7 +79,7 @@ export class CavernEntity extends AbstractEntity {
       }
     });
 
-    data['items']['locations'].forEach((item) => {
+    data['items']['data'].forEach((item) => {
       var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(item['initColor']));
       var bkColor = this.app.platform.bkColorByAttribute(this.app.hexToInt(item['initColor']));
       this.addEntity(new SpriteEntity(this, item['x']*8, item['y']*8, 8, 8, spriteData, penColor, bkColor));
@@ -88,11 +88,11 @@ export class CavernEntity extends AbstractEntity {
     // portal
     var portal =  data['portal'];
     var attr = portal['attribute'];
-    var portalData = portal['data'];
+    var portalSprite = portal['sprite'];
     var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(attr));
     var bkColor = this.app.platform.bkColorByAttribute(this.app.hexToInt(attr));
     var spriteData = [];
-    portalData.forEach((row, r) => {
+    portalSprite.forEach((row, r) => {
       for (var col = 0; col < row.length; col++) {
         if (row[col] == '#') {
           spriteData.push({'x': col, 'y': r});
@@ -103,31 +103,70 @@ export class CavernEntity extends AbstractEntity {
 
     // Willy
     var willy =  data['willy'];
-    var willyData = willy['data'][0];
+    var willySprite = willy['sprite'][willy['init']['animationFrame']];
     var penColor = this.app.platform.colorByName('white');
     var spriteData = [];
-    willyData.forEach((row, r) => {
+    var spriteWidth = 0;
+    var spriteHeight = 0;
+    willySprite.forEach((row, r) => {
       for (var col = 0; col < row.length; col++) {
         if (row[col] == '#') {
           spriteData.push({'x': col, 'y': r});
-        }
-      }
-    });
-    this.addEntity(new SpriteEntity(this, willy['location']['x'], willy['location']['y'], 10, 16, spriteData, penColor, false));
-
-    // guardians
-    data['guardians']['figures'].forEach((guardian) => {
-      var guardianData = data['guardians']['data'][guardian['animationFrame']];
-      var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(guardian['attribute']));
-      var spriteData = [];
-      guardianData.forEach((row, r) => {
-        for (var col = 0; col < row.length; col++) {
-          if (row[col] == '#') {
-            spriteData.push({'x': col, 'y': r});
+          if (col+1 > spriteWidth) {
+            spriteWidth = col+1;
           }
         }
-      });
-      this.addEntity(new SpriteEntity(this, guardian['location']['x'], guardian['location']['y'], 12, 16, spriteData, penColor, false));
+      }
+      spriteHeight++;
+    });
+    this.addEntity(
+      new SpriteEntity(
+        this,
+        willy['init']['x']+willy['paintCorrections']['x'],
+        willy['init']['y']+willy['paintCorrections']['y'],
+        spriteWidth,
+        spriteHeight,
+        spriteData,
+        penColor,
+        false
+      )
+    );
+
+    // guardians
+    ['horizontal', 'vertical'].forEach((guardianType) => {
+      if (guardianType in data['guardians']) {
+        var guardianTypeData = data['guardians'][guardianType];
+        data['guardians'][guardianType]['figures'].forEach((guardian) => {
+          var guardianSprite = data['guardians'][guardianType]['sprite'][guardian['init']['animationFrame']];
+          var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(guardian['attribute']));
+          var spriteData = [];
+          var spriteWidth = 0;
+          var spriteHeight = 0;
+          guardianSprite.forEach((row, r) => {
+            for (var col = 0; col < row.length; col++) {
+              if (row[col] == '#') {
+                spriteData.push({'x': col, 'y': r});
+                if (col+1 > spriteWidth) {
+                  spriteWidth = col+1;
+                }
+              }
+            }
+            spriteHeight++;
+          });
+          this.addEntity(
+            new SpriteEntity(
+              this,
+              guardian['init']['x']+guardianTypeData['paintCorrections']['x'],
+              guardian['init']['y']+guardianTypeData['paintCorrections']['y'],
+              spriteWidth,
+              spriteHeight,
+              spriteData,
+              penColor,
+              false
+            )
+          );
+        });
+      }
     });
     
     if ('image' in data) {

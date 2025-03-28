@@ -2,7 +2,10 @@
   "cavernsCount": 20,
   "initCavern": 0,
   "willy": {
-    "data": [
+    "width": 10,
+    "height": 16,
+    "paintCorrections": {"x": -1, "y": 0},
+    "sprite": [
       [
         "------##--",
         "---#####--",

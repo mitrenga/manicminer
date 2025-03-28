@@ -70,7 +70,15 @@ export class CavernModel extends AbstractModel {
 
   handleEvent(event) {
     if (event['id'] == 'setCavernData') {
-      var willy = Object.assign(event['data']['willy'], {'data': this.app.willyData});
+      var willy = Object.assign(
+        event['data']['willy'],
+        {
+          'sprite': this.app.globalData['willy']['sprite'],
+          'paintCorrections': this.app.globalData['willy']['paintCorrections'],
+          'width': this.app.globalData['willy']['width'],
+          'height': this.app.globalData['willy']['height']
+        }
+      );
       this.setData(Object.assign(event['data'], {'willy': willy}));
       return true;
     }
