@@ -385,10 +385,6 @@
          "figures":[
             {
                "attribute":"44",
-               "limits":{
-                  "up":0,
-                  "down":88
-               },
                "animationSpeed":0,
                "init":{
                   "x":120,
