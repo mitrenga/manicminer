@@ -347,7 +347,6 @@
                  "up":5,
                  "down":100
               },
-              "animationSpeed":0,
               "init":{
                  "x":40,
                  "y":8,
@@ -362,7 +361,6 @@
                  "up":5,
                  "down":100
               },
-              "animationSpeed":0,
               "init":{
                  "x":80,
                  "y":8,
@@ -377,7 +375,6 @@
                "up":5,
                "down":100
             },
-            "animationSpeed":0,
             "init":{
                "x":160,
                "y":8,
@@ -392,7 +389,6 @@
                "up":5,
                "down":100
             },
-            "animationSpeed":0,
             "init":{
                "x":200,
                "y":8,
