@@ -30,7 +30,9 @@ export class CavernEntity extends AbstractEntity {
             if (binByte[b] == '1') {
               this.app.layout.paint(this, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.penColorByAttribute(attr));
             } else {
-              this.app.layout.paint(this, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.bkColorByAttribute(attr));
+              if (this.app.platform.bkColorByAttribute(attr) != this.bkColor) {
+                this.app.layout.paint(this, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.bkColorByAttribute(attr));
+              }
             }
           }
         }
