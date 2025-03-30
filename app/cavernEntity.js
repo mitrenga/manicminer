@@ -133,7 +133,7 @@ export class CavernEntity extends AbstractEntity {
     );
 
     // guardians
-    ['horizontal', 'vertical', 'standing'].forEach((guardianType) => {
+    ['horizontal', 'vertical', 'forDropping', 'falling'].forEach((guardianType) => {
       if (guardianType in data['guardians']) {
         var guardianTypeData = data['guardians'][guardianType];
         data['guardians'][guardianType]['figures'].forEach((guardian) => {

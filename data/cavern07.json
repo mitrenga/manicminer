@@ -381,7 +381,7 @@
             ]
          ]
       },
-      "standing":{
+      "forDropping":{
          "figures":[
             {
                "attribute":"44",

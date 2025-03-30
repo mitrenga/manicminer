@@ -185,7 +185,7 @@
               },
               "animationSpeed":0,
               "init":{
-                 "x":64,
+                 "x":126,
                  "y":56,
                  "direction":0,
                  "animationFrame":0
