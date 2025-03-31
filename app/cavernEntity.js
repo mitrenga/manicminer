@@ -14,13 +14,25 @@ export class CavernEntity extends AbstractEntity {
     this.id = 'CavernEntity';
 
     this.bkColor = this.app.platform.colorByName('black');
-    this.imageData = null;
+    this.lightBeam = false
+    this.imageData = false;
   } // constructor
 
   drawEntity() {
     super.drawEntity();
 
-    if (this.imageData != null) {
+    if (this.lightBeam !== false) {
+      this.app.layout.paint(
+        this,
+        this.lightBeam['init']['x'],
+        this.lightBeam['init']['y'],
+        this.lightBeam['width'],
+        this.lightBeam['height']*15,
+        this.app.platform.bkColorByAttribute(this.app.hexToInt(this.lightBeam['attribute']))
+      );
+    }
+
+    if (this.imageData !== false) {
       for (var y = 0; y < this.imageData['data'].length; y++) {
         for (var x = 0; x < this.imageData['data'][y].length/2; x++) {
           var hexByte = this.imageData['data'][y].substring(x*2, x*2+2);
@@ -82,8 +94,8 @@ export class CavernEntity extends AbstractEntity {
     });
 
     data['items']['data'].forEach((item) => {
-      var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(item['initColor']));
-      var bkColor = this.app.platform.bkColorByAttribute(this.app.hexToInt(item['initColor']));
+      var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(item['initAttribute']));
+      var bkColor = this.app.platform.bkColorByAttribute(this.app.hexToInt(item['initAttribute']));
       this.addEntity(new SpriteEntity(this, item['x']*8, item['y']*8, 8, 8, spriteData, penColor, bkColor));
     });
 
@@ -170,7 +182,11 @@ export class CavernEntity extends AbstractEntity {
         });
       }
     });
-    
+
+    if ('lightBeam' in data) {
+      this.lightBeam = data['lightBeam'];
+    }
+
     if ('image' in data) {
       this.imageData = data['image'];
     }

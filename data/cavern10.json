@@ -145,27 +145,27 @@
         {
            "x":24,
            "y":0,
-           "initColor":"03"
+           "initAttribute":"03"
         },
         {
            "x":30,
            "y":1,
-           "initColor":"04"
+           "initAttribute":"04"
         },
         {
            "x":1,
            "y":4,
-           "initColor":"05"
+           "initAttribute":"05"
         },
         {
            "x":19,
            "y":6,
-           "initColor":"06"
+           "initAttribute":"06"
         },
         {
            "x":30,
            "y":13,
-           "initColor":"03"
+           "initAttribute":"03"
         }
      ],
      "sprite":[

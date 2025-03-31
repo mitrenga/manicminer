@@ -132,7 +132,7 @@
         {
            "x":16,
            "y":1,
-           "initColor":"03"
+           "initAttribute":"03"
         }
      ],
      "sprite":[

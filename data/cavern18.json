@@ -132,17 +132,17 @@
         {
            "x":30,
            "y":1,
-           "initColor":"23"
+           "initAttribute":"23"
         },
         {
            "x":1,
            "y":5,
-           "initColor":"24"
+           "initAttribute":"24"
         },
         {
            "x":30,
            "y":12,
-           "initColor":"25"
+           "initAttribute":"25"
         }
      ],
      "sprite":[
@@ -163,6 +163,16 @@
         "direction":1,
         "animationFrame":7
      }
+  },
+  "lightBeam":{
+   "attribute":"77",
+   "width":8,
+   "height":8,
+   "init":{
+      "x":184,
+      "y":0,
+      "direction":0
+   }
   },
   "guardians":{
      "horizontal":{
