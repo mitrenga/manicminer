@@ -5,11 +5,11 @@ import ZXVideoRAMEntity from './svision/js/platform/canvas2D/zxSpectrum/zxVideoR
 /**/
 // begin code
 
-export class IntroImageEntity extends ZXVideoRAMEntity {
+export class MainImageEntity extends ZXVideoRAMEntity {
 
   constructor(parentEntity, x, y, width, height) {
     super(parentEntity, x, y, width, height);
-    this.id = 'IntroImageEntity';
+    this.id = 'MainImageEntity';
 
     this.introImageData = [
       '050000000000E000000000000000000000000000000001818180000000000000',
@@ -172,6 +172,6 @@ export class IntroImageEntity extends ZXVideoRAMEntity {
     return false;
   } // getVideoRAMValue
 
-} // class IntroImageEntity
+} // class MainImageEntity
 
-export default IntroImageEntity;
+export default MainImageEntity;

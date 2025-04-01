@@ -1,11 +1,13 @@
 /**/
 const { AbstractApp } = await import('./svision/js/abstractApp.js?ver='+window.srcVersion);
 const { IntroModel } = await import('./introModel.js?ver='+window.srcVersion);
+const { MainModel } = await import('./mainModel.js?ver='+window.srcVersion);
 const { CavernModel } = await import('./cavernModel.js?ver='+window.srcVersion);
 const { GameOverModel } = await import('./gameOverModel.js?ver='+window.srcVersion);
 /*/
 import AbstractApp from './svision/js/abstractApp.js';
 import IntroModel from './introModel.js';
+import MainModel from './mainModel.js';
 import CavernModel from './cavernModel.js';
 import GameOverModel from './gameOverModel.js';
 /**/
@@ -25,6 +27,7 @@ export class GameApp extends AbstractApp {
   newModel(model) {
     switch (model) {
       case 'IntroModel': return new IntroModel(this);
+      case 'MainModel': return new MainModel(this);
       case 'CavernModel': return new CavernModel(this, this.cavernNumber);
       case 'GameOverModel': return new GameOverModel(this);
     } // switch
@@ -38,6 +41,9 @@ export class GameApp extends AbstractApp {
     this.model = null;
     switch (prevModelID) {
       case 'IntroModel': 
+        this.model = this.newModel('MainModel');
+        break;
+      case 'MainModel': 
         this.cavernNumber = this.globalData['initCavern'];
         this.model = this.newModel('CavernModel');
         break;
@@ -50,7 +56,7 @@ export class GameApp extends AbstractApp {
         }
         break;
       case 'GameOverModel': 
-        this.model = this.newModel('IntroModel');
+        this.model = this.newModel('MainModel');
         break;
     }
     this.model.init();
