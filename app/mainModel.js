@@ -3,7 +3,7 @@ const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+wind
 const { MainImageEntity } = await import('./mainImageEntity.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
-import MainImageEntity from './main ImageEntity.js';
+import MainImageEntity from './mainImageEntity.js';
 /**/
 // begin code
 
