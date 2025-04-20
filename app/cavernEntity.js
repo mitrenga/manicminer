@@ -9,10 +9,11 @@ import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
 
 export class CavernEntity extends AbstractEntity {
 
-  constructor(parentEntity, x, y, width, height) {
+  constructor(parentEntity, x, y, width, height, cavernNumber) {
     super(parentEntity, x, y, width, height);
     this.id = 'CavernEntity';
 
+    this.cavernNumber = cavernNumber;
     this.bkColor = this.app.platform.colorByName('black');
     this.lightBeam = false
     this.imageData = false;

@@ -43,7 +43,7 @@ export class CavernModel extends AbstractModel {
     super.init();
 
     this.borderEntity.bkColor = this.app.platform.colorByName('black');
-    this.cavernEntity = new CavernEntity(this.desktopEntity, 0, 0, 32*8, 16*8);
+    this.cavernEntity = new CavernEntity(this.desktopEntity, 0, 0, 32*8, 16*8, this.cavernNumber);
     this.desktopEntity.addEntity(this.cavernEntity);
     this.cavernNameEntity = new ZXTextEntity(this.desktopEntity, 0, 16*8, 32*8, 8, '', this.app.platform.colorByName('black'), this.app.platform.colorByName('yellow'), 0, true);
     this.cavernNameEntity.justify = 2;
