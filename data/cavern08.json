@@ -148,7 +148,7 @@
   },
   "willy":{
      "init":{
-        "x":16,
+        "x":8,
         "y":104,
         "direction":0,
         "animationFrame":0

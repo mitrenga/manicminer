@@ -148,8 +148,8 @@
            "initAttribute":"03"
         },
         {
-           "x":25,
-           "y":5,
+           "x":16,
+           "y":7,
            "initAttribute":"04"
         },
         {
@@ -158,13 +158,13 @@
            "initAttribute":"05"
         },
         {
-           "x":16,
-           "y":7,
+           "x":29,
+           "y":13,
            "initAttribute":"06"
         },
         {
-           "x":29,
-           "y":13,
+           "x":26,
+           "y":5,
            "initAttribute":"03"
         }
      ],

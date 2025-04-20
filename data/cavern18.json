@@ -158,10 +158,10 @@
   },
   "willy":{
      "init":{
-        "x":240,
-        "y":104,
-        "direction":1,
-        "animationFrame":7
+        "x":112,
+        "y":80,
+        "direction":0,
+        "animationFrame":0
      }
   },
   "lightBeam":{

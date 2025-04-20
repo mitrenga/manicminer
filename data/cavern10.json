@@ -226,10 +226,10 @@
             },
             "animationSpeed":1,
             "init":{
-               "x":120,
+               "x":126,
                "y":104,
                "direction":1,
-               "animationFrame":7
+               "animationFrame":4
             }
          }
       ],
