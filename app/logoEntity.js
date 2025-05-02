@@ -5,11 +5,10 @@ import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
 /**/
 // begin code
 
-
 export class LogoEntity extends TextEntity {
 
-  constructor(parentEntity, x, y, width, height, logoType) {
-    super(parentEntity, x, y, width, height);
+  constructor(model, x, y, width, height, logoType) {
+    super(model, x, y, width, height);
     this.id = 'LogoEntity';
     
     this.proportional = true;
@@ -29,17 +28,17 @@ export class LogoEntity extends TextEntity {
     }
 
     this.logoLabel = [
-      {char: 'M', zxColor: 'brightRed', flashState: 0, bounce: 0},
-      {char: 'A', zxColor: 'brightYellow', flashState: 0, bounce: 1},
-      {char: 'G', zxColor: 'brightGreen', flashState: 0, bounce: 0},
-      {char: 'I', zxColor: 'brightCyan', flashState: 0, bounce: 2},
-      {char: 'C', zxColor: 'brightMagenta', flashState: 0, bounce: 1},
-      {char: ' ', zxColor: false, flashState: false, bounce: 1},
-      {char: 'M', zxColor: 'brightCyan', flashState: 1, bounce: 2},
-      {char: 'I', zxColor: 'brightMagenta', flashState: 1, bounce: 0},
-      {char: 'N', zxColor: 'brightRed', flashState: 1, bounce: 1},
-      {char: 'E', zxColor: 'brightYellow', flashState: 1, bounce: 0},
-      {char: 'R', zxColor: 'brightGreen', flashState: 1, bounce: 2}
+      {char: 'M', color: 'brightRed', flashState: 0, bounce: 0},
+      {char: 'A', color: 'brightYellow', flashState: 0, bounce: 1},
+      {char: 'N', color: 'brightGreen', flashState: 0, bounce: 0},
+      {char: 'I', color: 'brightCyan', flashState: 0, bounce: 2},
+      {char: 'C', color: 'brightMagenta', flashState: 0, bounce: 1},
+      {char: ' ', color: false, flashState: false, bounce: 1},
+      {char: 'M', color: 'brightCyan', flashState: 1, bounce: 2},
+      {char: 'I', color: 'brightMagenta', flashState: 1, bounce: 0},
+      {char: 'N', color: 'brightRed', flashState: 1, bounce: 1},
+      {char: 'E', color: 'brightYellow', flashState: 1, bounce: 0},
+      {char: 'R', color: 'brightGreen', flashState: 1, bounce: 2}
     ]
   } // constructor
 
@@ -52,10 +51,10 @@ export class LogoEntity extends TextEntity {
   } // getTextLength
 
   getPenColorChar(position) {
-    return this.zxColor(this.logoLabel[position]['zxColor']);
+    return this.app.platform.colorByName(this.logoLabel[position]['color']);
   } // getPenColorChar
 
-  getCharData(char) {
+  getCharData(char, bitMask) {
     var charObject = {};
     charObject['width'] = this.logoFonts[char['char']]['width'];
 

@@ -69,20 +69,20 @@ export class CavernModel extends AbstractModel {
   } // setData
 
   handleEvent(event) {
-    if (event['id'] == 'setCavernData') {
-      var willy = Object.assign(
-        event['data']['willy'],
-        {
-          'sprite': this.app.globalData['willy']['sprite'],
-          'paintCorrections': this.app.globalData['willy']['paintCorrections'],
-          'width': this.app.globalData['willy']['width'],
-          'height': this.app.globalData['willy']['height']
-        }
-      );
-      this.setData(Object.assign(event['data'], {'willy': willy}));
-      return true;
+    switch (event['id']) {
+      case 'setCavernData':
+        var willy = Object.assign(
+          event['data']['willy'],
+          {
+            'sprite': this.app.globalData['willy']['sprite'],
+            'paintCorrections': this.app.globalData['willy']['paintCorrections'],
+            'width': this.app.globalData['willy']['width'],
+            'height': this.app.globalData['willy']['height']
+          }
+        );
+        this.setData(Object.assign(event['data'], {'willy': willy}));
+        return true;
     }
-
     return super.handlEvent(event);
   } // handleEvent
 
