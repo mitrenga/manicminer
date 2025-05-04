@@ -24,12 +24,20 @@ function loopGame(timestamp) {
   requestAnimationFrame(loopGame);
 } // loopGame
 
+// master game timer
+function updateScene() {
+  gameApp.model.sendEvent(0, {'id': 'updateScene'});
+}
+
+// master game timer
+setInterval(updateScene, 67);
+
 // keyboard press key
-window.onkeydown = function(e) { console.log('press '+e.key); }
+window.onkeydown = function(e) { gameApp.model.sendEvent(0, {'id': 'keyPress', 'key': e.key}); }
 // keyboard release key
-window.onkeyup = function(e) { console.log('release '+e.key); }
+window.onkeyup = function(e) { gameApp.model.sendEvent(0, {'id': 'keyRelease', 'key': e.key}); }
 // mouse left key
-gameApp.element.onclick = function(e) { gameApp.onClick(e); e.preventDefault(); }
+gameApp.element.onclick = function(e) { gameApp.model.sendEvent(0, {'id': 'mouseClick', 'key': 'left', 'x': e.clientX, 'y': e.clientY}); }
 // mouse right key
 window.oncontextmenu = function(e) { gameApp.onClick(e); e.preventDefault(); }
 // touch screen
@@ -40,9 +48,9 @@ gameApp.element.ontouchcancel = function(e) { e.preventDefault(); }
 // resize event
 window.onresize = function(e) { resizeGame(); }
 // blur window
-window.onblur = function(e) { console.log('blur window'); }
+window.onblur = function(e) { }
 //focus window
-window.onfocus = function(e) { console.log('focus window'); }
+window.onfocus = function(e) { }
 
 resizeGame();  // calc actual model size
 loopGame(0);    // start game

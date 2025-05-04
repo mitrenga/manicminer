@@ -39,6 +39,7 @@ export class ResetModel extends AbstractModel {
     this.resetEntity.hide = true;
     this.desktopEntity.addEntity(this.resetEntity);
     this.inputLineEntity = new ZXTextEntity(this.desktopEntity, 0, 23*8, 32*8, 8, '© 2025 GNU General Public Licence', this.app.platform.colorByName('black'), false, 0, true);
+    this.inputLineEntity.justify = 2;
     this.inputLineEntity.hide = true;
     this.desktopEntity.addEntity(this.inputLineEntity);
     this.sendEvent(500, {'id': 'showReset'});
@@ -62,7 +63,7 @@ export class ResetModel extends AbstractModel {
         this.resetEntity.hide = true;
         this.inputLineEntity.hide = false;
         this.drawModel();
-        this.sendEvent(1000, {'id': 'setMenuModel'});
+        this.sendEvent(1200, {'id': 'setMenuModel'});
         return true;
       case 'setMenuModel':
         this.app.model = this.app.newModel('MenuModel');

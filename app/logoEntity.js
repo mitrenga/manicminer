@@ -13,6 +13,7 @@ export class LogoEntity extends TextEntity {
     
     this.proportional = true;
     this.justify = 0;
+    this.animateState = 0;
     this.logoType = logoType;
 
     this.logoFonts = {
@@ -42,6 +43,13 @@ export class LogoEntity extends TextEntity {
     ]
   } // constructor
 
+  animateUpdate() {
+    this.animateState++;
+    if (this.animateState > 3) {
+      this.animateState = 0;
+    }
+  } // animateUpdate
+
   getTextChar(position) {
     return this.logoLabel[position];
   } // getTextChar
@@ -61,7 +69,7 @@ export class LogoEntity extends TextEntity {
     charObject['data'] = [];
     for (var x = 0; x < this.logoFonts[char['char']]['data'].length; x++) {
       var piece = this.logoFonts[char['char']]['data'][x];
-      charObject['data'].push([piece[0], piece[1]+char['bounce'], piece[2], piece[3]]);
+      charObject['data'].push([piece[0], piece[1]+[0,1,2,1,0,1][char['bounce']+this.animateState], piece[2], piece[3]]);
     }
 
     return charObject;
