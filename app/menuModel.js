@@ -19,6 +19,7 @@ export class MenuModel extends AbstractModel {
     super(app);
     this.id = 'MenuModel';
 
+    this.gameFrame = 0;
     this.bwColor = '#7c7c7c';
     this.redraw = false;
     this.selectedItem = 0;
@@ -38,12 +39,11 @@ export class MenuModel extends AbstractModel {
     ];
     this.logoEntity = null;
     this.objects = [
-      {'id': 'willy', 'x': 48, 'y': 160},
-      {'id': 'guardian', 'x': 8, 'y': 160}
+      {'id': 'willy', 'x': 61, 'y': 160},
+      {'id': 'guardian', 'x': 21, 'y': 160},
+      {'id': 'floor', 'x': 13, 'y': 176}
     ];
     this.objectsEntities = [];
-    this.floorEntity = null;
-    this.floorPiecesEntities = [];
     this.copyrightEntity = null;
 
     const http = new XMLHttpRequest();
@@ -94,58 +94,22 @@ export class MenuModel extends AbstractModel {
     this.copyrightEntity.justify = 2;
     this.desktopEntity.addEntity(this.copyrightEntity);
 
-    this.floorEntity = new AbstractEntity(this.desktopEntity, 12, 176, 230, 2, false, false);
-    this.desktopEntity.addEntity(this.floorEntity);
-
-    this.floorEntity.addEntity(new AbstractEntity(this.floorEntity, 0, 0, 230, 1, false, this.bwColor));
-
-    var p = 0;
-    var pos = 0;
-    do {
-      this.floorPiecesEntities[p] = new AbstractEntity(this.floorEntity, pos, 1, 4, 1, false, this.bwColor);
-      this.floorEntity.addEntity(this.floorPiecesEntities[p]);
-      p++;
-      pos += 6;
-    } while (pos < 230);
+    this.objects.forEach((object, o) => {
+      this.objectsEntities[o] = new SpriteEntity(this.desktopEntity, 0, 0, this.bwColor, false, 0, 0);
+      this.desktopEntity.addEntity(this.objectsEntities[o]);
+    });
 
     this.sendEvent(250, {'id': 'updateLogo'});
   } // init
 
   setData(data) {
     this.objects.forEach((object, o) => {
-      var figure = data[object['id']];
-      var spriteData = [];
-      var spriteWidth = 0;
-      var spriteHeight = 0;
-      for (var s = 0; s < figure['sprite'].length; s++) {
-        var willySprite = figure['sprite'][s];
-        var spriteFrame = [];
-        var spriteFrameWidth = 0;
-        var spriteFrameHeight = 0;
-        willySprite.forEach((row, r) => {
-          for (var col = 0; col < row.length; col++) {
-            if (row[col] == '#') {
-              spriteFrame.push({'x': col, 'y': r});
-              if (col+1 > spriteFrameWidth) {
-                spriteFrameWidth = col+1;
-              }
-            }
-          }
-          spriteFrameHeight++;
-        });
-        spriteData[s] = spriteFrame;
-        if (spriteFrameWidth > spriteWidth) {
-          spriteWidth = spriteFrameWidth;
-        }
-        if (spriteFrameHeight > spriteHeight) {
-          spriteHeight = spriteFrameHeight;
-        }
-      }
-      this.objectsEntities[o] = new SpriteEntity(this.desktopEntity, 13+object['x']+figure['paintCorrections']['x'], object['y']+figure['paintCorrections']['y'], spriteWidth, spriteHeight, spriteData, this.bwColor, false, 0);
-      this.desktopEntity.addEntity(this.objectsEntities[o]);
+      this.objectsEntities[o].setGraphicsData(data[object['id']]);
+      this.objectsEntities[o].x = object['x'];
+      this.objectsEntities[o].y = object['y'];
     });
     
-    this.drawModel();
+    this.redraw = true;
     super.setData(data);
   } // setData
 
@@ -195,17 +159,12 @@ export class MenuModel extends AbstractModel {
         }        
         break;
       case 'updateScene':
+        this.gameFrame++;
+        if (this.gameFrame > 15) {
+          this.gameFrame = 0;
+        }
         this.objectsEntities.forEach((entity) => {
-          entity.snap++;
-          if (entity.snap > 3) {
-            entity.snap = 0;
-          }
-        });
-        this.floorPiecesEntities.forEach((piece) => {
-          piece.x -= 2;
-          if (piece.x <= -4) {
-            piece.x = this.floorEntity.width;
-          }
+          entity.incFrame();
         });
         this.redraw = true;
         return true;
@@ -221,7 +180,10 @@ export class MenuModel extends AbstractModel {
             'sprite': this.app.globalData['willy']['sprite'],
             'paintCorrections': this.app.globalData['willy']['paintCorrections'],
             'width': this.app.globalData['willy']['width'],
-            'height': this.app.globalData['willy']['height']
+            'height': this.app.globalData['willy']['height'],
+            'frames': this.app.globalData['willy']['frames'],
+            'directions': this.app.globalData['willy']['directions'],
+            'pen': this.app.globalData['willy']['pen']
           }
         );
         this.setData(Object.assign(event['data'], {'willy': willy}));
