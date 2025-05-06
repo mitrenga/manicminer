@@ -166,7 +166,7 @@
         "x":16,
         "y":104,
         "direction":0,
-        "animationFrame":0
+        "frame":0
      }
   },
   "guardians":{
@@ -178,12 +178,12 @@
                  "left":8,
                  "right":150
               },
-              "animationSpeed":0,
+              "speed":0,
               "init":{
                  "x":72,
                  "y":104,
                  "direction":0,
-                 "animationFrame":0
+                 "frame":0
               }
            },
            {
@@ -192,12 +192,12 @@
                  "left":8,
                  "right":60
               },
-              "animationSpeed":0,
+              "speed":0,
               "init":{
                  "x":8,
                  "y":80,
                  "direction":0,
-                 "animationFrame":0
+                 "frame":0
               }
            },
            {
@@ -206,12 +206,12 @@
                  "left":144,
                  "right":190
               },
-              "animationSpeed":0,
+              "speed":0,
               "init":{
                  "x":144,
                  "y":56,
                  "direction":0,
-                 "animationFrame":0
+                 "frame":0
               }
            },
            {
@@ -220,12 +220,12 @@
                  "left":200,
                  "right":238
               },
-              "animationSpeed":1,
+              "speed":1,
               "init":{
                  "x":208,
                  "y":40,
                  "direction":0,
-                 "animationFrame":0
+                 "frame":0
               }
            }
         ],
@@ -235,6 +235,8 @@
            "x":-4,
            "y":0
         },
+        "frames": 4,
+        "directions": 2,
         "sprite":[
            [
               "--------------",

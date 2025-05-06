@@ -179,7 +179,7 @@
          "x":16,
          "y":104,
          "direction":0,
-         "animationFrame":0
+         "frame":0
       }
    },
    "guardians":{
@@ -191,12 +191,12 @@
                   "left":8,
                   "right":78
                },
-               "animationSpeed":0,
+               "speed":0,
                "init":{
                   "x":78,
                   "y":104,
                   "direction":1,
-                  "animationFrame":7
+                  "frame":3
                }
             },
             {
@@ -205,12 +205,12 @@
                   "left":88,
                   "right":126
                },
-               "animationSpeed":1,
+               "speed":1,
                "init":{
                   "x":88,
                   "y":88,
                   "direction":0,
-                  "animationFrame":0
+                  "frame":0
                }
             },
             {
@@ -219,12 +219,12 @@
                   "left":144,
                   "right":174
                },
-               "animationSpeed":0,
+               "speed":0,
                "init":{
                   "x":144,
                   "y":56,
                   "direction":0,
-                  "animationFrame":0
+                  "frame":0
                }
             }
          ],
@@ -234,7 +234,9 @@
             "x":0,
             "y":0
          },
-         "sprite":[
+          "frames": 4,
+          "directions": 2,
+          "sprite":[
             [
                "----#-----",
                "-----#-#--",
@@ -385,12 +387,12 @@
          "figures":[
             {
                "attribute":"44",
-               "animationSpeed":0,
+               "speed":0,
                "init":{
                   "x":120,
                   "y":0,
                   "direction":0,
-                  "animationFrame":0
+                  "frame":0
                }
             }
          ],
@@ -400,7 +402,9 @@
             "x":0,
             "y":0
          },
-         "sprite":[
+         "frames": 2,
+         "directions": 2,
+          "sprite":[
             [
                "---#--####--#---",
                "---###-##-###---",

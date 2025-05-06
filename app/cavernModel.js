@@ -77,13 +77,15 @@ export class CavernModel extends AbstractModel {
             'sprite': this.app.globalData['willy']['sprite'],
             'paintCorrections': this.app.globalData['willy']['paintCorrections'],
             'width': this.app.globalData['willy']['width'],
-            'height': this.app.globalData['willy']['height']
+            'height': this.app.globalData['willy']['height'],
+            'frames': this.app.globalData['willy']['frames'],
+            'directions': this.app.globalData['willy']['directions']
           }
         );
         this.setData(Object.assign(event['data'], {'willy': willy}));
         return true;
     }
-    return super.handlEvent(event);
+    return super.handleEvent(event);
   } // handleEvent
 
 } // class CavernModel

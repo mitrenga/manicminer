@@ -153,7 +153,7 @@
         "x":232,
         "y":104,
         "direction":0,
-        "animationFrame":0
+        "frame":0
      }
   },
   "guardians":{
@@ -168,7 +168,7 @@
                  "x":8,
                  "y":0,
                  "direction":0,
-                 "animationFrame":0,
+                 "frame":0,
                  "pixelsIncrement":4
               },
               "next":{
@@ -188,7 +188,7 @@
                  "x":88,
                  "y":0,
                  "direction":0,
-                 "animationFrame":0,
+                 "frame":0,
                  "pixelsIncrement":1
               },
               "next":{
@@ -208,7 +208,7 @@
                  "x":168,
                  "y":2,
                  "direction":0,
-                 "animationFrame":0,
+                 "frame":0,
                  "pixelsIncrement":3
               },
               "next":{
@@ -225,6 +225,8 @@
            "x":0,
            "y":0
         },
+        "frames": 8,
+        "directions": 1,
         "sprite":[
            [
               "------####------",

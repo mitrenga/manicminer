@@ -61,129 +61,59 @@ export class CavernEntity extends AbstractEntity {
       for (var x = 0; x < row.length/2; x++) {
         var attr = row.substring(x*2, x*2+2);
         if (attr != data['bkColor']) {
-          var graphicData = data['graphicData'][attr]
           //if (['floor', 'wall'].includes(graphicData['kind'])) {
           {
-            var spriteData = [];
-            var tile = graphicData['sprite'];
-            tile.forEach((line, l) => {
-              for (var col = 0; col < line.length; col++) {
-                if (line[col] == '#') {
-                  spriteData.push({'x': col, 'y': l});
-                }
-              }
-            });
             var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(attr));
             var bkColor = this.app.platform.bkColorByAttribute(this.app.hexToInt(attr));
             if (bkColor == this.app.platform.bkColorByAttribute(this.app.hexToInt(data['bkColor']))) {
               bkColor = false;
             }
-            this.addEntity(new SpriteEntity(this, x*8, y*8, 8, 8, spriteData, penColor, bkColor));
+            var layoutEntity = new SpriteEntity(this, x*8, y*8, penColor, bkColor, 0, 0);
+            this.addEntity(layoutEntity);
+            layoutEntity.setGraphicsData(data['graphicData'][attr]);
           }
         }
       }
     });
 
     //items
-    var spriteData = [];
-    data['items']['sprite'].forEach((line, l) => {
-      for (var col = 0; col < line.length; col++) {
-        if (line[col] == '#') {
-          spriteData.push({'x': col, 'y': l});
-        }
-      }
-    });
-
     data['items']['data'].forEach((item) => {
       var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(item['initAttribute']));
       var bkColor = this.app.platform.bkColorByAttribute(this.app.hexToInt(item['initAttribute']));
-      this.addEntity(new SpriteEntity(this, item['x']*8, item['y']*8, 8, 8, spriteData, penColor, bkColor));
+      var itemEntity = new SpriteEntity(this, item['x']*8, item['y']*8, penColor, bkColor, 0, 0);
+      this.addEntity(itemEntity);
+      itemEntity.setGraphicsData(data['items']);
     });
-
-    // portal
-    var portal =  data['portal'];
-    var attr = portal['attribute'];
-    var portalSprite = portal['sprite'];
-    var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(attr));
-    var bkColor = this.app.platform.bkColorByAttribute(this.app.hexToInt(attr));
-    var spriteData = [];
-    portalSprite.forEach((row, r) => {
-      for (var col = 0; col < row.length; col++) {
-        if (row[col] == '#') {
-          spriteData.push({'x': col, 'y': r});
-        }
-      }
-    });
-    this.addEntity(new SpriteEntity(this, portal['location']['x']*8, portal['location']['y']*8, 16, 16, spriteData, penColor, bkColor));
 
     // Willy
-    var willy =  data['willy'];
-    var willySprite = willy['sprite'][willy['init']['animationFrame']];
+    var willy = data['willy'];
     var penColor = this.app.platform.colorByName('white');
-    var spriteData = [];
-    var spriteWidth = 0;
-    var spriteHeight = 0;
-    willySprite.forEach((row, r) => {
-      for (var col = 0; col < row.length; col++) {
-        if (row[col] == '#') {
-          spriteData.push({'x': col, 'y': r});
-          if (col+1 > spriteWidth) {
-            spriteWidth = col+1;
-          }
-        }
-      }
-      spriteHeight++;
-    });
-    this.addEntity(
-      new SpriteEntity(
-        this,
-        willy['init']['x']+willy['paintCorrections']['x'],
-        willy['init']['y']+willy['paintCorrections']['y'],
-        spriteWidth,
-        spriteHeight,
-        spriteData,
-        penColor,
-        false
-      )
-    );
+    var willyEntity = new SpriteEntity(this, willy['init']['x']+willy['paintCorrections']['x'], willy['init']['y']+willy['paintCorrections']['y'], penColor, false, willy['init']['frame'], willy['init']['direction']);
+    this.addEntity(willyEntity);
+    willyEntity.setGraphicsData(willy);
 
     // guardians
     ['horizontal', 'vertical', 'forDropping', 'falling'].forEach((guardianType) => {
       if (guardianType in data['guardians']) {
         var guardianTypeData = data['guardians'][guardianType];
-        data['guardians'][guardianType]['figures'].forEach((guardian) => {
-          var guardianSprite = data['guardians'][guardianType]['sprite'][guardian['init']['animationFrame']];
+        guardianTypeData['figures'].forEach((guardian) => {
           var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(guardian['attribute']));
-          var spriteData = [];
-          var spriteWidth = 0;
-          var spriteHeight = 0;
-          guardianSprite.forEach((row, r) => {
-            for (var col = 0; col < row.length; col++) {
-              if (row[col] == '#') {
-                spriteData.push({'x': col, 'y': r});
-                if (col+1 > spriteWidth) {
-                  spriteWidth = col+1;
-                }
-              }
-            }
-            spriteHeight++;
-          });
-          this.addEntity(
-            new SpriteEntity(
-              this,
-              guardian['init']['x']+guardianTypeData['paintCorrections']['x'],
-              guardian['init']['y']+guardianTypeData['paintCorrections']['y'],
-              spriteWidth,
-              spriteHeight,
-              spriteData,
-              penColor,
-              false
-            )
-          );
+          var guardianEntity = new SpriteEntity(this, guardian['init']['x']+guardianTypeData['paintCorrections']['x'], guardian['init']['y']+guardianTypeData['paintCorrections']['y'], penColor, false, guardian['init']['frame'], guardian['init']['direction']);
+          this.addEntity(guardianEntity);
+          guardianEntity.setGraphicsData(guardianTypeData);
         });
       }
     });
 
+    // portal
+    var portal =  data['portal'];
+    var attr = portal['attribute'];
+    var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(attr));
+    var bkColor = this.app.platform.bkColorByAttribute(this.app.hexToInt(attr));
+    var portalEntity = new SpriteEntity(this, portal['location']['x']*8, portal['location']['y']*8, penColor, bkColor, 0, 0);
+    this.addEntity(portalEntity);
+    portalEntity.setGraphicsData(data['portal']);
+    
     if ('lightBeam' in data) {
       this.lightBeam = data['lightBeam'];
     }

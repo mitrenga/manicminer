@@ -182,8 +182,7 @@ export class MenuModel extends AbstractModel {
             'width': this.app.globalData['willy']['width'],
             'height': this.app.globalData['willy']['height'],
             'frames': this.app.globalData['willy']['frames'],
-            'directions': this.app.globalData['willy']['directions'],
-            'pen': this.app.globalData['willy']['pen']
+            'directions': this.app.globalData['willy']['directions']
           }
         );
         this.setData(Object.assign(event['data'], {'willy': willy}));

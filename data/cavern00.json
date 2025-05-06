@@ -171,7 +171,7 @@
         "x":16,
         "y":104,
         "direction":0,
-        "animationFrame":0
+        "frame":0
      }
   },
   "guardians":{
@@ -183,12 +183,12 @@
                  "left":64,
                  "right":126
               },
-              "animationSpeed":0,
+              "speed":0,
               "init":{
                  "x":64,
                  "y":56,
                  "direction":0,
-                 "animationFrame":0
+                 "frame":0
               }
            }
         ],
@@ -198,7 +198,9 @@
            "x":-2,
            "y":0
         },
-        "sprite":[
+           "frames": 4,
+           "directions": 2,
+           "sprite":[
            [
               "-----#####--#-",
               "----###--####-",
