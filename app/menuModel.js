@@ -159,11 +159,10 @@ export class MenuModel extends AbstractModel {
         }        
         break;
       case 'updateScene':
-        this.gameFrame++;
-        if (this.gameFrame > 15) {
-          this.gameFrame = 0;
-        }
-        this.objectsEntities.forEach((entity) => {
+
+      this.gameFrame = this.app.rotateInc(this.gameFrame, 0, 14);
+
+      this.objectsEntities.forEach((entity) => {
           entity.incFrame();
         });
         this.redraw = true;
