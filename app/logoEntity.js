@@ -7,8 +7,8 @@ import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
 
 export class LogoEntity extends TextEntity {
 
-  constructor(model, x, y, width, height, logoType) {
-    super(model, x, y, width, height);
+  constructor(parentEntity, x, y, width, height, logoType) {
+    super(parentEntity, x, y, width, height);
     this.id = 'LogoEntity';
     
     this.proportional = true;
@@ -18,14 +18,14 @@ export class LogoEntity extends TextEntity {
 
     this.logoFonts = {
       ' ': {width: 5, data: []},
-      M: {width: 6, data: [[0,0,1,5], [1,1,1,1], [2,2,1,1], [3,1,1,1], [4,0,1,5]]},
-      A: {width: 6, data: [[0,1,1,4], [1,0,3,1], [1,3,3,1], [4,1,1,4]]},
-      G: {width: 6, data: [[0,1,1,3], [1,0,3,1], [1,4,3,1], [4,2,1,2], [3,2,1,1]]},
-      I: {width: 4, data: [[0,0,3,1], [1,1,1,3], [0,4,3,1]]},
-      C: {width: 6, data: [[0,1,1,3], [1,0,3,1], [4,1,1,1], [1,4,3,1], [4,3,1,1]]},
-      N: {width: 6, data: [[0,0,1,5], [1,1,1,1], [2,2,1,1], [3,3,1,1], [4,0,1,5]]},
-      E: {width: 6, data: [[0,0,1,5], [1,0,4,1], [1,2,3,1], [1,4,4,1]]},
-      R: {width: 6, data: [[0,0,1,5], [1,0,3,1], [1,2,3,1], [4,1,1,1], [2,3,1,1], [3,4,2,1]]}
+      'M': {width: 6, data: [[0,0,1,5], [1,1,1,1], [2,2,1,1], [3,1,1,1], [4,0,1,5]]},
+      'A': {width: 6, data: [[0,1,1,4], [1,0,3,1], [1,3,3,1], [4,1,1,4]]},
+      'G': {width: 6, data: [[0,1,1,3], [1,0,3,1], [1,4,3,1], [4,2,1,2], [3,2,1,1]]},
+      'I': {width: 4, data: [[0,0,3,1], [1,1,1,3], [0,4,3,1]]},
+      'C': {width: 6, data: [[0,1,1,3], [1,0,3,1], [4,1,1,1], [1,4,3,1], [4,3,1,1]]},
+      'N': {width: 6, data: [[0,0,1,5], [1,1,1,1], [2,2,1,1], [3,3,1,1], [4,0,1,5]]},
+      'E': {width: 6, data: [[0,0,1,5], [1,0,4,1], [1,2,3,1], [1,4,4,1]]},
+      'R': {width: 6, data: [[0,0,1,5], [1,0,3,1], [1,2,3,1], [4,1,1,1], [2,3,1,1], [3,4,2,1]]}
     }
 
     this.logoLabel = [

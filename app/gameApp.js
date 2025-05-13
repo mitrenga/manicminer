@@ -20,6 +20,9 @@ export class GameApp extends AbstractApp {
   constructor(platform, wsURL) {
     super(platform, 'bodyApp',  wsURL);
 
+    this.sound = 0.3;
+    this.music = 0.3;
+
     this.cavernNumber = false;
     this.globalData = false;
     this.model = this.newModel('ResetModel');
@@ -37,38 +40,6 @@ export class GameApp extends AbstractApp {
     return null;
   } // newModel
   
-  onClick(e) {
-    super.onClick(e);
-  
-    var prevModelID = this.model.id; 
-    this.model = null;
-    switch (prevModelID) {
-      case 'ResetModel': 
-        this.model = this.newModel('MenuModel');
-        break;
-      case 'MenuModel': 
-        this.model = this.newModel('MainModel');
-        break;
-      case 'MainModel': 
-        this.cavernNumber = this.globalData['initCavern'];
-        this.model = this.newModel('CavernModel');
-        break;
-      case 'CavernModel': 
-        this.cavernNumber++;
-        if (this.cavernNumber < this.globalData['cavernsCount']) {
-          this.model = this.newModel('CavernModel');
-        } else {
-          this.model = this.newModel('GameOverModel');
-        }
-        break;
-      case 'GameOverModel': 
-        this.model = this.newModel('MainModel');
-        break;
-    }
-    this.model.init();
-    this.resizeApp();
-  } // onClick
-
   setGlobalData(data) {
     this.globalData = data;
   } // setGlobalData
