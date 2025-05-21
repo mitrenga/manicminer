@@ -26,22 +26,19 @@ export class AboutEntity extends AbstractEntity {
     var titleEntity = new MiniTextEntity(this, 0, 0, this.width, 9, 'ABOUT GAME', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlack'), 1, 2);
     titleEntity.justify = 2;
     this.addEntity(titleEntity);
-    this.addEntity(new MiniTextEntity(this, 1, 10, this.width-2, 7, 'JET SET WILLY` IS A REMAKE` OF THE ORIGINAL', this.app.platform.colorByName('black'), false, 1, 1));
-    this.addEntity(new MiniTextEntity(this, 1, 17, this.width-2, 7, '1984`` GAME` BY`` MATTHEW` SMITH.`` THE` FUNNY', this.app.platform.colorByName('black'), false, 1, 1));
-    this.addEntity(new MiniTextEntity(this, 1, 24, this.width-2, 7, 'THING`` IS` THAT` WHILE` CREATING`` THIS` GAME,', this.app.platform.colorByName('black'), false, 1, 1));
-    this.addEntity(new MiniTextEntity(this, 1, 31, this.width-2, 7, 'WHILE```` STUDYING```` THE``` ORIGINAL```` CODE``` FOR', this.app.platform.colorByName('black'), false, 1, 1));
-    this.addEntity(new MiniTextEntity(this, 1, 38, this.width-2, 7, 'THE SINCLAIR` ZX` SPECTRUM,` I CAME` ACROSS', this.app.platform.colorByName('black'), false, 1, 1));
-    this.addEntity(new MiniTextEntity(this, 1, 45, this.width-2, 7, 'ERRORS`````` THAT`````` DID`````` NOT`````` ALLOW`````` ME`````` TO', this.app.platform.colorByName('black'), false, 1, 1));
-    this.addEntity(new MiniTextEntity(this, 1, 52, this.width-2, 7, 'SUCCESSFULLY COMPLETE THE GAME.', this.app.platform.colorByName('black'), false, 1, 1));
-    this.addEntity(new MiniTextEntity(this, 1, 59, this.width-2, 7, 'WHILE SEARCHING` FOR INFORMATION,` I FOUND', this.app.platform.colorByName('black'), false, 1, 1));
-    this.addEntity(new MiniTextEntity(this, 1, 66, this.width-2, 7, 'OUT` THAT`` THESE` ERRORS` WERE` PUBLISHED', this.app.platform.colorByName('black'), false, 1, 1));
-    this.addEntity(new MiniTextEntity(this, 1, 73, this.width-2, 7, 'IN`` THE`` 80\'S,``` INCLUDING``` INSTRUCTIONS`` FOR', this.app.platform.colorByName('black'), false, 1, 1));
-    this.addEntity(new MiniTextEntity(this, 1, 80, this.width-2, 7, 'FIXING THEM.', this.app.platform.colorByName('black'), false, 1, 1));
-    this.addEntity(new MiniTextEntity(this, 1, 87, this.width-2, 7, 'AND I ONLY` FOUND` OUT` 40 YEARS` LATER`` :-)', this.app.platform.colorByName('black'), false, 1, 1));
-    this.addEntity(new MiniTextEntity(this, 1, 94, this.width-2, 7, 'HOW MANY` MONTHS` AND` SLEEPLESS` NIGHTS', this.app.platform.colorByName('black'), false, 1, 1));
-    this.addEntity(new MiniTextEntity(this, 1, 101, this.width-2, 7, 'DID MY FRIENDS AND I SPEND EXPERIMENTING', this.app.platform.colorByName('black'), false, 1, 1));
-    this.addEntity(new MiniTextEntity(this, 1, 108, this.width-2, 7, 'IN`` THE`` ROOMS`` OF`` "THE`` BANYAN`` TREE"`` OR', this.app.platform.colorByName('black'), false, 1, 1));
-    this.addEntity(new MiniTextEntity(this, 1, 115, this.width-2, 7, '"THE CONSERVATORY ROOF"...', this.app.platform.colorByName('black'), false, 1, 1));
+    this.addEntity(new MiniTextEntity(this, 1, 10, this.width-2, 7, 'MANIC`` MINER`` IS`` A` REMAKE`` OF`` THE` ORIGINAL', this.app.platform.colorByName('black'), false, 1, 1));
+    this.addEntity(new MiniTextEntity(this, 1, 18, this.width-2, 7, '1983` GAME` FOR` THE` SINCLAIR`` ZX` SPECTRUM', this.app.platform.colorByName('black'), false, 1, 1));
+    this.addEntity(new MiniTextEntity(this, 1, 26, this.width-2, 7, 'BY MATTHEW SMITH.', this.app.platform.colorByName('black'), false, 1, 1));
+    this.addEntity(new MiniTextEntity(this, 1, 38, this.width-2, 7, 'THIS` GAME`` HAS` FASCINATED`` ME` EVER` SINCE', this.app.platform.colorByName('black'), false, 1, 1));
+    this.addEntity(new MiniTextEntity(this, 1, 46, this.width-2, 7, 'I SAW IT FOR THE FIRST` TIME.` I BELIEVE THAT', this.app.platform.colorByName('black'), false, 1, 1));
+    this.addEntity(new MiniTextEntity(this, 1, 54, this.width-2, 7, 'MANY``````` PLAYERS`````` WILL`````` ENJOY````` REMINISCING', this.app.platform.colorByName('black'), false, 1, 1));
+    this.addEntity(new MiniTextEntity(this, 1, 62, this.width-2, 7, 'ABOUT```` THIS```` LEGENDARY```` GAME,```` AND```` NOT', this.app.platform.colorByName('black'), false, 1, 1));
+    this.addEntity(new MiniTextEntity(this, 1, 70, this.width-2, 7, 'JUST OUT OF NOSTALGIA.', this.app.platform.colorByName('black'), false, 1, 1));
+    this.addEntity(new MiniTextEntity(this, 1, 82, this.width-2, 7, 'IN THIS REMAKE, YOU ALSO HAVE THE OPTION', this.app.platform.colorByName('black'), false, 1, 1));
+    this.addEntity(new MiniTextEntity(this, 1, 90, this.width-2, 7, 'TO` CONTINUE` IN THE` CAVE` FROM` WHERE` YOU', this.app.platform.colorByName('black'), false, 1, 1));
+    this.addEntity(new MiniTextEntity(this, 1, 98, this.width-2, 7, 'LEFT```` OFF```` IN``` YOUR```` PREVIOUS```` GAME.``` THIS', this.app.platform.colorByName('black'), false, 1, 1));
+    this.addEntity(new MiniTextEntity(this, 1, 106, this.width-2, 7, 'GIVES` YOU` THE CHANCE` TO TRY COMPLETING', this.app.platform.colorByName('black'), false, 1, 1));
+    this.addEntity(new MiniTextEntity(this, 1, 114, this.width-2, 7, 'ALL THE CAVES.', this.app.platform.colorByName('black'), false, 1, 1));
     this.addEntity(new MiniButtonEntity(this, this.width-38, this.height-15, 36, 13, 'CLOSE', 'closeAbout', ['Enter', 'Escape', ' '], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), 1, 4));
     // MANIC MINER je remake původní hry z roku 1983 pro Sinclair ZX Spectrum od Matthew Smith. Tato hra mě fascinuje od prvního okamžiku, kdy jsem ji spatřil. Věřím, že si na tuto legendární hru rádo zavzpomíná mnoho hráčů, a to nejen z nostalgie. V tomto remaku máte nyní navíc možnost pokračovat v jeskyni, tam kde jste skončili předchozí hru, takže máte možnost si vyzkoušet úspěšně projít všemi jestkyněmi...
   } // init

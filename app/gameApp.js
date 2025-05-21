@@ -5,6 +5,7 @@ const { MenuModel } = await import('./menuModel.js?ver='+window.srcVersion);
 const { MainModel } = await import('./mainModel.js?ver='+window.srcVersion);
 const { CavernModel } = await import('./cavernModel.js?ver='+window.srcVersion);
 const { GameOverModel } = await import('./gameOverModel.js?ver='+window.srcVersion);
+const { TapeLoadingModel } = await import('./tapeLoadingModel.js?ver='+window.srcVersion);
 /*/
 import AbstractApp from './svision/js/abstractApp.js';
 import ResetModel from './resetModel.js';
@@ -12,6 +13,7 @@ import MenuModel from './menuModel.js';
 import MainModel from './mainModel.js';
 import CavernModel from './cavernModel.js';
 import GameOverModel from './gameOverModel.js';
+import TapeLoadingModel from './tapeLoadingModel.js';
 /**/
 // begin code
 
@@ -36,6 +38,7 @@ export class GameApp extends AbstractApp {
       case 'MainModel': return new MainModel(this);
       case 'CavernModel': return new CavernModel(this, this.cavernNumber);
       case 'GameOverModel': return new GameOverModel(this);
+      case 'TapeLoadingModel': return new TapeLoadingModel(this);
     } // switch
     return null;
   } // newModel
