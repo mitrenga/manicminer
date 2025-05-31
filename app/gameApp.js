@@ -33,17 +33,6 @@ export class GameApp extends AbstractApp {
     this.model.init();
   } // constructor
 
-  initAfterUserGesture() {
-    super.initAfterUserGesture();
-
-    if (this.sounds > 0) {
-      this.openAudioChannel('sounds');
-    }
-    if (this.music > 0) {
-      this.openAudioChannel('music');
-    }
-  } // initAfterUserGesture
-
   openAudioChannel(channel) {
     this.audioManager.openChannel(channel, new AudioWorkletHandler(this));
   } // openAudioChannel
