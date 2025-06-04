@@ -114,12 +114,12 @@ export class MenuModel extends AbstractModel {
       case 'setPlayerName':
         return 'libmit';
       case 'setSounds':
-        if (this.app.sounds == 0) {
+        if (this.app.audioManager.sounds == 0) {
           return 'OFF';
         }
         return 'ON';
       case 'setMusic':
-        if (this.app.music == 0) {
+        if (this.app.audioManager.music == 0) {
           return 'OFF';
         }
         return 'ON';
@@ -181,19 +181,19 @@ export class MenuModel extends AbstractModel {
         return true;
 
       case 'setSounds':
-        if (this.app.sounds == 0) {
-          this.app.sounds = 0.3;
+        if (this.app.audioManager.sounds == 0) {
+          this.app.audioManager.sounds = 0.3;
         } else {
-          this.app.sounds = 0;
+          this.app.audioManager.sounds = 0;
         }
         this.refreshMenu();
         return true;
 
       case 'setMusic':
-        if (this.app.music == 0) {
-          this.app.music = 0.3;
+        if (this.app.audioManager.music == 0) {
+          this.app.audioManager.music = 0.3;
         } else {
-          this.app.music = 0;
+          this.app.audioManager.music = 0;
         }
         this.refreshMenu();
         return true;
