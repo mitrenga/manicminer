@@ -186,6 +186,7 @@ export class MenuModel extends AbstractModel {
         } else {
           this.app.audioManager.sounds = 0;
         }
+        this.app.setCookie('audioChannelSounds', this.app.audioManager.sounds);
         this.refreshMenu();
         return true;
 
@@ -195,6 +196,7 @@ export class MenuModel extends AbstractModel {
         } else {
           this.app.audioManager.music = 0;
         }
+        this.app.setCookie('audioChannelMusic', this.app.audioManager.music);
         this.refreshMenu();
         return true;
 
