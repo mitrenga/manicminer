@@ -119,7 +119,7 @@ export class TapeLoadingModel extends AbstractModel {
             if ('event' in this.tape[this.phase] && this.tape[this.phase]['event'] == 'showLogo') {
               this.sendEvent(0, {'id': 'playSound', 'channel': 'sounds', 'sound': 'tapeScreenAttrToneData', 'options': false});
             } else {
-              this.sendEvent(0, {'id': 'playSound', 'channel': 'sounds', 'sound': 'tapeRandomToneData', 'options': false});
+              this.sendEvent(0, {'id': 'playSound', 'channel': 'sounds', 'sound': 'tapeRndToneData', 'options': false});
             }
             this.sendEvent(0, {'id': 'setBorderAnimation', 'value': 'dataTone'});
             break;
