@@ -44,7 +44,7 @@ export class AboutEntity extends AbstractEntity {
   } // init
 
   handleEvent(event) {
-    switch (event['id']) {
+    switch (event.id) {
       case 'closeAbout':
         this.destroy();
         return true;

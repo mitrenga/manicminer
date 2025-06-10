@@ -45,7 +45,7 @@ export class ResetModel extends AbstractModel {
   } // init
 
   handleEvent(event) {
-    switch (event['id']) {
+    switch (event.id) {
       case 'showReset':
         this.resetTimer = this.app.now;
         this.resetEntity.hide = false;
@@ -65,7 +65,7 @@ export class ResetModel extends AbstractModel {
         this.app.resizeApp();
         return true;
       case 'setGlobalData':
-        this.app.setGlobalData(event['data']);
+        this.app.setGlobalData(event.data);
         return true;
     }
     return super.handleEvent(event);

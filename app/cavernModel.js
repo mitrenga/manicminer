@@ -62,27 +62,27 @@ export class CavernModel extends AbstractModel {
   } // init
 
   setData(data) {
-    this.cavernNameEntity.text = data['name'];
-    this.borderEntity.bkColor = this.app.platform.zxColorByAttribute(this.app.hexToInt(data['borderColor']), 7, 1);
+    this.cavernNameEntity.text = data.name;
+    this.borderEntity.bkColor = this.app.platform.zxColorByAttribute(this.app.hexToInt(data.borderColor), 7, 1);
     
     super.setData(data);
   } // setData
 
   handleEvent(event) {
-    switch (event['id']) {
+    switch (event.id) {
       case 'setCavernData':
         var willy = Object.assign(
-          event['data']['willy'],
+          event.data.willy,
           {
-            'sprite': this.app.globalData['willy']['sprite'],
-            'paintCorrections': this.app.globalData['willy']['paintCorrections'],
-            'width': this.app.globalData['willy']['width'],
-            'height': this.app.globalData['willy']['height'],
-            'frames': this.app.globalData['willy']['frames'],
-            'directions': this.app.globalData['willy']['directions']
+            'sprite': this.app.globalData.willy.sprite,
+            'paintCorrections': this.app.globalData.willy.paintCorrections,
+            'width': this.app.globalData.willy.width,
+            'height': this.app.globalData.willy.height,
+            'frames': this.app.globalData.willy.frames,
+            'directions': this.app.globalData.willy.directions
           }
         );
-        this.setData(Object.assign(event['data'], {'willy': willy}));
+        this.setData(Object.assign(event.data, {'willy': willy}));
         return true;
     }
     return super.handleEvent(event);

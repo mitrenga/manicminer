@@ -19,6 +19,11 @@ export class MainModel extends AbstractModel {
 
     this.borderEntity.bkColor = this.app.platform.colorByName('magenta');
     this.desktopEntity.addEntity(new MainImageEntity(this.desktopEntity, 0, 0, 32*8, 16*8));
+
+    if (this.app.audioManager.music > 0) {
+      this.sendEvent(500, {'id': 'openAudioChannel', 'channel': 'music'});
+      this.sendEvent(750, {'id': 'playSound', 'channel': 'music', 'sound': 'titleScreenMelody', 'options': false});
+    }
   } // init
 
 } // class MainModel

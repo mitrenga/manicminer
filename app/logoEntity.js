@@ -45,7 +45,7 @@ export class LogoEntity extends TextEntity {
     ]
 
     if (logoType == 1) {
-      this.logoLabel[6]['resetCursor'] = true;
+      this.logoLabel[6].resetCursor = true;
     }
   } // constructor
 
@@ -71,22 +71,22 @@ export class LogoEntity extends TextEntity {
   } // getTextLength
 
   getPenColorChar(position) {
-    return this.app.platform.colorByName(this.logoLabel[position]['color']);
+    return this.app.platform.colorByName(this.logoLabel[position].color);
   } // getPenColorChar
 
   getCharData(char, bitMask) {
     var charObject = {};
-    charObject['width'] = this.logoFonts[char['char']]['width']*this.scale[this.logoType];
+    charObject.width = this.logoFonts[char.char].width*this.scale[this.logoType];
 
-    charObject['data'] = [];
-    for (var x = 0; x < this.logoFonts[char['char']]['data'].length; x++) {
-      var piece = this.logoFonts[char['char']]['data'][x];
+    charObject.data = [];
+    for (var x = 0; x < this.logoFonts[char.char].data.length; x++) {
+      var piece = this.logoFonts[char.char].data[x];
       switch (this.logoType) {
         case 0:
-          charObject['data'].push([piece[0], piece[1]+[0,1,2,1,0,1][char['bounce']+this.animateState], piece[2], piece[3]]);
+          charObject.data.push([piece[0], piece[1]+[0,1,2,1,0,1][char.bounce+this.animateState], piece[2], piece[3]]);
           break;
         case 1:
-          if (char['flashState'] == this.app.stack['flashState']) {
+          if (char.flashState == this.app.stack.flashState) {
             if (this.loadTimer !== false) {
               var loaded = (this.app.now-this.loadTimer)/1380;
               if (loaded >= 1) {
@@ -95,7 +95,7 @@ export class LogoEntity extends TextEntity {
                 var loadedY = Math.floor(8*loaded);
                 var loadedX = Math.floor(2048*loaded-loadedY*256);
                 var posX = 16+this.cursorX+piece[0]*8;
-                var posY = piece[1]+char['bounce']+1;
+                var posY = piece[1]+char.bounce+1;
                 var width = piece[2]*8;
                 var height = piece[3];
                 if ((posY < loadedY) || ((posX < loadedX) && (posY == loadedY))) {
@@ -108,12 +108,12 @@ export class LogoEntity extends TextEntity {
                   if ((posX > loadedX) && (posY+height > loadedY-1)) {
                     height = loadedY-posY-1;
                   }
-                  charObject['data'].push([piece[0]*8, (piece[1]+char['bounce'])*8, width, height*8]);
+                  charObject.data.push([piece[0]*8, (piece[1]+char.bounce)*8, width, height*8]);
                 }
               }
             }
             if (this.loadTimer === false) {
-              charObject['data'].push([piece[0]*8, (piece[1]+char['bounce'])*8, piece[2]*8, piece[3]*8]);
+              charObject.data.push([piece[0]*8, (piece[1]+char.bounce)*8, piece[2]*8, piece[3]*8]);
             }
           }
           break;

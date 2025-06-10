@@ -85,11 +85,11 @@ export class MenuModel extends AbstractModel {
         penColor = this.penSelectedMenuItemColor;
       }
       this.menuEntities[y] = [];
-      this.menuEntities[y][1] = new ZXTextEntity(this.desktopEntity, 133, 22+y*16, 100, 12, this.menuParamValue(this.menuItems[y]['event']), penColor, false, 0, true);
+      this.menuEntities[y][1] = new ZXTextEntity(this.desktopEntity, 133, 22+y*16, 100, 12, this.menuParamValue(this.menuItems[y].event), penColor, false, 0, true);
       this.menuEntities[y][1].margin = 2;
       this.menuEntities[y][1].justify = 1;
       this.desktopEntity.addEntity(this.menuEntities[y][1]);
-      this.menuEntities[y][0] = new ZXTextEntity(this.desktopEntity, 23, 22+y*16, 140, 12, this.menuItems[y]['label'], penColor, false, 0, true);
+      this.menuEntities[y][0] = new ZXTextEntity(this.desktopEntity, 23, 22+y*16, 140, 12, this.menuItems[y].label, penColor, false, 0, true);
       this.menuEntities[y][0].margin = 2;
       this.desktopEntity.addEntity(this.menuEntities[y][0]);
     }
@@ -129,16 +129,16 @@ export class MenuModel extends AbstractModel {
 
   refreshMenu() {
     for (var y = 0; y < this.menuItems.length; y++) {
-      this.menuEntities[y][0].text = this.menuItems[y]['label'];
-      this.menuEntities[y][1].text = this.menuParamValue(this.menuItems[y]['event']);
+      this.menuEntities[y][0].text = this.menuItems[y].label;
+      this.menuEntities[y][1].text = this.menuParamValue(this.menuItems[y].event);
     }
   } // refreshMenu
 
   setData(data) {
     this.objects.forEach((object, o) => {
-      this.objectsEntities[o].setGraphicsData(data[object['id']]);
-      this.objectsEntities[o].x = object['x'];
-      this.objectsEntities[o].y = object['y'];
+      this.objectsEntities[o].setGraphicsData(data[object.id]);
+      this.objectsEntities[o].x = object.x;
+      this.objectsEntities[o].y = object.y;
     });
     
     this.redraw = true;
@@ -164,7 +164,7 @@ export class MenuModel extends AbstractModel {
       return true;
     }
 
-    switch (event['id']) {
+    switch (event.id) {
 
       case 'startGame': 
         this.app.model.shutdown();
@@ -213,9 +213,9 @@ export class MenuModel extends AbstractModel {
       return true;
   
       case 'keyPress':
-        switch (event['key']) {
+        switch (event.key) {
           case 'Enter':
-            this.sendEvent(0, {'id': this.menuItems[this.selectedItem]['event']});
+            this.sendEvent(0, {'id': this.menuItems[this.selectedItem].event});
             return true;
           case 'ArrowDown':
             this.changeMenuItem(this.selectedItem+1);
@@ -227,11 +227,11 @@ export class MenuModel extends AbstractModel {
         break;
         
       case 'mouseClick':
-        if (event['key'] == 'left') {
+        if (event.key == 'left') {
           for (var i = 0; i < this.menuItems.length; i++) {
             if ((this.menuEntities[i][0].pointOnEntity(event)) || (this.menuEntities[i][1].pointOnEntity(event))) {
               this.changeMenuItem(i);
-              this.sendEvent(0, {'id': this.menuItems[this.selectedItem]['event']});
+              this.sendEvent(0, {'id': this.menuItems[this.selectedItem].event});
               return true;
             }
           }
@@ -255,17 +255,17 @@ export class MenuModel extends AbstractModel {
 
       case 'setMenuData':
         var willy = Object.assign(
-          event['data']['willy'],
+          event.data.willy,
           {
-            'sprite': this.app.globalData['willy']['sprite'],
-            'paintCorrections': this.app.globalData['willy']['paintCorrections'],
-            'width': this.app.globalData['willy']['width'],
-            'height': this.app.globalData['willy']['height'],
-            'frames': this.app.globalData['willy']['frames'],
-            'directions': this.app.globalData['willy']['directions']
+            'sprite': this.app.globalData.willy.sprite,
+            'paintCorrections': this.app.globalData.willy.paintCorrections,
+            'width': this.app.globalData.willy.width,
+            'height': this.app.globalData.willy.height,
+            'frames': this.app.globalData.willy.frames,
+            'directions': this.app.globalData.willy.directions
           }
         );
-        this.setData(Object.assign(event['data'], {'willy': willy}));
+        this.setData(Object.assign(event.data, {'willy': willy}));
         return true;
     }
   } // handleEvent
