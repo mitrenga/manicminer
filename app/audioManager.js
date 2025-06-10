@@ -44,24 +44,175 @@ export class AudioManager extends AbstractAudioManager {
   audioData(channel, sound, options) {
     var sampleRate = this.channels[channel].ctx.sampleRate;
     switch (sound) {
-      case 'tapePilotTone': return this.tapePilotToneData(sampleRate);
-      case 'tapeRndToneData': return this.tapeRndToneData(sampleRate);
-      case 'tapeScreenAttrToneData': return this.tapeScreenAttrToneData(sampleRate);
-      case 'pressKeyboardData': return this.pressKeyboardData(sampleRate);
+      case 'titleScreenMelody': return this.titleScreenMelody(sampleRate);
+      case 'inGameMelody': return this.inGameMelody(sampleRate);
+      case 'tapePilotToneSound': return this.tapePilotToneSound(sampleRate);
+      case 'tapeRndDataSound': return this.tapeRndDataSound(sampleRate);
+      case 'tapeScreenAttrSound': return this.tapeScreenAttrSound(sampleRate);
+      case 'keyboardSound': return this.keyboardSound(sampleRate);
     }
     return false;
   } // audioData
 
-  tapePilotToneData(sampleRate) {
+  extendArray(array, addition) {
+    var newArray = new Uint8Array(array.length+addition);
+    newArray.set(array, 0);
+    return newArray;
+  } // extendArray
+
+  resizeArray(array, length) {
+    var newArray = new Uint8Array(length);
+    newArray.set(array.slice(0, length), 0);
+    return newArray;
+  } // resizeArray
+
+  addPulse(frame, k, lastPos, fKeys, fragments, pulses, pulsesCounter) {
+    var newPos = Math.round(frame*k);
+    var pulse = newPos-lastPos;
+    if (!(pulse in (fKeys))) {
+      fKeys[pulse] = fragments.length;
+      fragments.push(pulse);
+    }
+    pulses[pulsesCounter] = fKeys[pulse];
+    return newPos;
+  } // addPulse
+
+  titleScreenMelody(sampleRate) {
+    var titleScreenTuneData = [
+      [0x50,0x80,0x81],[0x50,0x66,0x67],[0x50,0x56,0x57],[0x32,0x56,0x57],[0x32,0xAB,0xCB],[0x32,0x2B,0x33],[0x32,0x2B,0x33],[0x32,0xAB,0xCB],[0x32,0x33,0x40],[0x32,0x33,0x40],
+      [0x32,0xAB,0xCB],[0x32,0x80,0x81],[0x32,0x80,0x81],[0x32,0x66,0x67],[0x32,0x56,0x57],[0x32,0x60,0x56],[0x32,0xAB,0xC0],[0x32,0x2B,0x30],[0x32,0x2B,0x30],[0x32,0xAB,0xC0],
+      [0x32,0x30,0x44],[0x32,0x30,0x44],[0x32,0xAB,0xC0],[0x32,0x88,0x89],[0x32,0x88,0x89],[0x32,0x72,0x73],[0x32,0x4C,0x4D],[0x32,0x4C,0x4D],[0x32,0xAB,0xC0],[0x32,0x26,0x30],
+      [0x32,0x26,0x30],[0x32,0xAB,0xC0],[0x32,0x30,0x44],[0x32,0x30,0x44],[0x32,0xAB,0xC0],[0x32,0x88,0x89],[0x32,0x88,0x89],[0x32,0x72,0x73],[0x32,0x4C,0x4D],[0x32,0x4C,0x4D],
+      [0x32,0xAB,0xCB],[0x32,0x26,0x33],[0x32,0x26,0x33],[0x32,0xAB,0xCB],[0x32,0x33,0x40],[0x32,0x33,0x40],[0x32,0xAB,0xCB],[0x32,0x80,0x81],[0x32,0x80,0x81],[0x32,0x66,0x67],
+      [0x32,0x56,0x57],[0x32,0x40,0x41],[0x32,0x80,0xAB],[0x32,0x20,0x2B],[0x32,0x20,0x2B],[0x32,0x80,0xAB],[0x32,0x2B,0x33],[0x32,0x2B,0x33],[0x32,0x80,0xAB],[0x32,0x80,0x81],
+      [0x32,0x80,0x81],[0x32,0x66,0x67],[0x32,0x56,0x57],[0x32,0x40,0x41],[0x32,0x80,0x98],[0x32,0x20,0x26],[0x32,0x20,0x26],[0x32,0x80,0x98],[0x32,0x26,0x30],[0x32,0x26,0x30],
+      [0x32,0x00,0x00],[0x32,0x72,0x73],[0x32,0x72,0x73],[0x32,0x60,0x61],[0x32,0x4C,0x4D],[0x32,0x4C,0x99],[0x32,0x4C,0x4D],[0x32,0x4C,0x4D],[0x32,0x4C,0x99],[0x32,0x5B,0x5C],
+      [0x32,0x56,0x57],[0x32,0x33,0xCD],[0x32,0x33,0x34],[0x32,0x33,0x34],[0x32,0x33,0xCD],[0x32,0x40,0x41],[0x32,0x66,0x67],[0x64,0x66,0x67],[0x32,0x72,0x73],[0x64,0x4C,0x4D],
+      [0x32,0x56,0x57],[0x32,0x80,0xCB],[0x19,0x80,0x00],[0x19,0x80,0x81],[0x32,0x80,0xCB]
+    ];
+
+    var fragments = [];
+    var fKeys = {};
+    var pulses = new Uint8Array(32000);
+    var pulsesCounter = 0;
+
+    var k = Math.round(sampleRate/630)/100;
+    var frame = 0;
+    var lastPos = -1;
+    var a = 0;
+
+    for (var t = 0; t < titleScreenTuneData.length; t++) {
+      var tone = titleScreenTuneData[t];
+      var c = tone[0]*260;
+      var d = tone[1];
+      //this.setPianoKeyAttribute(tone[1], 80);
+      var e = tone[2];
+      var aa = (e&16)/16;
+      if (aa != a) {
+        a = aa;
+        if (pulsesCounter == pulses.length) {
+          pulses = this.extendArray(pulses, 5000);
+        }
+        lastPos = this.addPulse(frame, k, lastPos, fKeys, fragments, pulses, pulsesCounter);
+        pulsesCounter++;
+      }
+      //this.setPianoKeyAttribute(tone[2], 40);
+
+      do {
+        d--;
+        if (d == 0) {
+          d = tone[1];
+          if (pulsesCounter == pulses.length) {
+            pulses = this.extendArray(pulses, 5000);
+          }
+          lastPos = this.addPulse(frame, k, lastPos, fKeys, fragments, pulses, pulsesCounter);
+          pulsesCounter++;
+          a = 1-a;
+        }
+        e--;
+        if (e == 0) {
+          e = tone[2];
+          if (pulsesCounter == pulses.length) {
+            pulses = this.extendArray(pulses, 5000);
+          }
+          lastPos = this.addPulse(frame, k, lastPos, fKeys, fragments, pulses, pulsesCounter);
+          pulsesCounter++
+          a = 1-a;
+        }
+        c--;
+        frame++;
+      } while (c > 0)
+      a = tone[1];
+      //this.setPianoKeyAttribute(tone[1], 56);
+      a = tone[2];
+      //this.setPianoKeyAttribute(tone[2], 56);
+    }
+    pulses = this.resizeArray(pulses, pulsesCounter);
+    return {'fragments': fragments, 'pulses': pulses, 'volume': this.music};
+  } // titleScreenMelody
+
+  inGameMelody(sampleRate) {
+    var inGameTuneData = [
+      0x80,0x72,0x66,0x60,0x56,0x66,0x56,0x56,0x51,0x60,0x51,0x51,0x56,0x66,0x56,0x56,0x80,0x72,0x66,0x60,0x56,0x66,0x56,0x56,0x51,0x60,0x51,0x51,0x56,0x56,0x56,0x56,
+      0x80,0x72,0x66,0x60,0x56,0x66,0x56,0x56,0x51,0x60,0x51,0x51,0x56,0x66,0x56,0x56,0x80,0x72,0x66,0x60,0x56,0x66,0x56,0x40,0x56,0x66,0x80,0x66,0x56,0x56,0x56,0x56
+    ];
+
+    var fragments = [];
+    var fKeys = {};
+    var pulses = new Uint8Array(1500);
+    var pulsesCounter = 0;
+
+    var k = Math.round(sampleRate/787)/100;
+    var frame = 0;
+    var lastPos = -1;
+
+    var m = 0;
+    for (var r = 0; r < 2; r++) {
+      for (var t = 0; t < inGameTuneData.length; t++) {
+        m++;
+        var n = (m&126)>>1;
+        var e = inGameTuneData[n];
+        var b = 256;
+        var c = 3;
+        do {
+          do {
+            e--;
+            if (e == 0) {
+              e = inGameTuneData[n];
+              if (pulsesCounter == pulses.length) {
+                pulses = this.extendArray(pulses, 500);
+              }
+              lastPos = this.addPulse(frame, k, lastPos, fKeys, fragments, pulses, pulsesCounter);
+              pulsesCounter++;
+            }
+            b--;
+            frame++;
+          } while (b > 0)
+          b = 256;
+          c--;
+        } while (c > 0)
+        frame = frame+6700;
+        if (pulsesCounter == pulses.length) {
+          pulses = this.extendArray(pulses, 500);
+        }
+        lastPos = this.addPulse(frame, k, lastPos, fKeys, fragments, pulses, pulsesCounter);
+        pulsesCounter++;
+      }
+    }
+    pulses = this.resizeArray(pulses, pulsesCounter);
+    return {'fragments': fragments, 'pulses': pulses, 'volume': this.music};
+  } // inGameMelody
+
+  tapePilotToneSound(sampleRate) {
     // T-state is 1/3500000 = 0.0000002867 sec. 
     // leader pulse is 2168 T-states long and is repeated 8063 times for header blocks and 3223 times for data blocks
     var pulse = Math.ceil(sampleRate*2168/3500000);
     var fragments = [pulse];
     var pulses = [0];
     return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
-  } // tapePilotToneData
+  } // tapePilotToneSound
 
-  tapeRndToneData(sampleRate) {
+  tapeRndDataSound(sampleRate) {
     // two sync pulses of 667 and 735 T-states
     var f667 = Math.ceil(sampleRate*667/3500000);
     var f735 = Math.ceil(sampleRate*735/3500000);
@@ -72,9 +223,9 @@ export class AudioManager extends AbstractAudioManager {
     var fragments = [f667, f735, f885, f1710];
     var pulses = [0, 0, 1, 1];
     return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds, 'infinityRndPulses': {'fragments': [2, 3], 'quantity': 2}};
-  } // tapeRndToneData
+  } // tapeRndDataSound
 
-  tapeScreenAttrToneData(sampleRate) {
+  tapeScreenAttrSound(sampleRate) {
     var screenAttr =
       '00C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0'+ 
       'C0C0D0C0C0C0D0C0C3C3C3C0C0C0E0C0C0C0E6C6C6C6C6C0C0C0C0C0C0C0C0C0'+ 
@@ -115,14 +266,14 @@ export class AudioManager extends AbstractAudioManager {
     }
 
     return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
-  } // tapeScreenAttrToneData
+  } // tapeScreenAttrSound
 
-  pressKeyboardData(sampleRate) {
+  keyboardSound(sampleRate) {
     var pulse = Math.ceil(15*sampleRate/44100);
     var fragments = [pulse];
     var pulses = [0];
     return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
-  } // pressKeyboardData
+  } // keyboardSound
 
 } // class AudioManager
 
