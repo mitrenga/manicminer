@@ -29,7 +29,7 @@ export class CavernEntity extends AbstractEntity {
         this.lightBeam.init.y,
         this.lightBeam.width,
         this.lightBeam.height*15,
-        this.app.platform.bkColorByAttribute(this.app.hexToInt(this.lightBeam.attribute))
+        this.app.platform.bkColorByAttr(this.app.hexToInt(this.lightBeam.attribute))
       );
     }
 
@@ -41,10 +41,10 @@ export class CavernEntity extends AbstractEntity {
           var attr = this.app.hexToInt(this.imageData.attributes[(y%8)].substring(x*2, x*2+2));
           for (var b = 0; b < binByte.length; b++) {
             if (binByte[b] == '1') {
-              this.app.layout.paint(this, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.penColorByAttribute(attr));
+              this.app.layout.paint(this, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.penColorByAttr(attr));
             } else {
-              if (this.app.platform.bkColorByAttribute(attr) != this.bkColor) {
-                this.app.layout.paint(this, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.bkColorByAttribute(attr));
+              if (this.app.platform.bkColorByAttr(attr) != this.bkColor) {
+                this.app.layout.paint(this, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.bkColorByAttr(attr));
               }
             }
           }
@@ -54,7 +54,7 @@ export class CavernEntity extends AbstractEntity {
   } // drawEntity
 
   setData(data) {
-    this.bkColor = this.app.platform.zxColorByAttribute(this.app.hexToInt(data.bkColor), 56, 8);
+    this.bkColor = this.app.platform.zxColorByAttr(this.app.hexToInt(data.bkColor), 56, 8);
 
     // layout
     data.layout.forEach((row, y) => {
@@ -63,9 +63,9 @@ export class CavernEntity extends AbstractEntity {
         if (attr != data.bkColor) {
           //if (['floor', 'wall'].includes(graphicData.kind)) {
           {
-            var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(attr));
-            var bkColor = this.app.platform.bkColorByAttribute(this.app.hexToInt(attr));
-            if (bkColor == this.app.platform.bkColorByAttribute(this.app.hexToInt(data.bkColor))) {
+            var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
+            var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(attr));
+            if (bkColor == this.app.platform.bkColorByAttr(this.app.hexToInt(data.bkColor))) {
               bkColor = false;
             }
             var layoutEntity = new SpriteEntity(this, x*8, y*8, penColor, bkColor, 0, 0);
@@ -78,8 +78,8 @@ export class CavernEntity extends AbstractEntity {
 
     //items
     data.items.data.forEach((item) => {
-      var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(item.initAttribute));
-      var bkColor = this.app.platform.bkColorByAttribute(this.app.hexToInt(item.initAttribute));
+      var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(item.initAttribute));
+      var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(item.initAttribute));
       var itemEntity = new SpriteEntity(this, item.x*8, item.y*8, penColor, bkColor, 0, 0);
       this.addEntity(itemEntity);
       itemEntity.setGraphicsData(data.items);
@@ -97,7 +97,7 @@ export class CavernEntity extends AbstractEntity {
       if (guardianType in data.guardians) {
         var guardianTypeData = data.guardians[guardianType];
         guardianTypeData.figures.forEach((guardian) => {
-          var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(guardian.attribute));
+          var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(guardian.attribute));
           var guardianEntity = new SpriteEntity(this, guardian.init.x+guardianTypeData.paintCorrections.x, guardian.init.y+guardianTypeData.paintCorrections.y, penColor, false, guardian.init.frame, guardian.init.direction);
           this.addEntity(guardianEntity);
           guardianEntity.setGraphicsData(guardianTypeData);
@@ -108,8 +108,8 @@ export class CavernEntity extends AbstractEntity {
     // portal
     var portal =  data.portal;
     var attr = portal.attribute;
-    var penColor = this.app.platform.penColorByAttribute(this.app.hexToInt(attr));
-    var bkColor = this.app.platform.bkColorByAttribute(this.app.hexToInt(attr));
+    var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
+    var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(attr));
     var portalEntity = new SpriteEntity(this, portal.location.x*8, portal.location.y*8, penColor, bkColor, 0, 0);
     this.addEntity(portalEntity);
     portalEntity.setGraphicsData(data.portal);
