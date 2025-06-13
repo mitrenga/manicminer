@@ -95,6 +95,7 @@ export class AudioManager extends AbstractAudioManager {
     var fKeys = {};
     var pulses = new Uint8Array(32000);
     var pulsesCounter = 0;
+    var events = {};
 
     var k = Math.round(sampleRate/630)/100;
     var frame = 0;
@@ -105,18 +106,14 @@ export class AudioManager extends AbstractAudioManager {
       var tone = titleScreenTuneData[t];
       var c = tone[0]*260;
       var d = tone[1];
-      //this.setPianoKeyAttribute(tone[1], 80);
       var e = tone[2];
-      var aa = (e&16)/16;
-      if (aa != a) {
-        a = aa;
-        if (pulsesCounter == pulses.length) {
-          pulses = this.extendArray(pulses, 5000);
-        }
-        lastPos = this.addPulse(frame, k, lastPos, fKeys, fragments, pulses, pulsesCounter);
-        pulsesCounter++;
+      events[pulsesCounter] = {'id': 'pianoKey', 'k1': d, 'k2': e};      
+      a = 1-a;
+      if (pulsesCounter == pulses.length) {
+        pulses = this.extendArray(pulses, 5000);
       }
-      //this.setPianoKeyAttribute(tone[2], 40);
+      lastPos = this.addPulse(frame, k, lastPos, fKeys, fragments, pulses, pulsesCounter);
+      pulsesCounter++;
 
       do {
         d--;
@@ -142,13 +139,10 @@ export class AudioManager extends AbstractAudioManager {
         c--;
         frame++;
       } while (c > 0)
-      a = tone[1];
-      //this.setPianoKeyAttribute(tone[1], 56);
-      a = tone[2];
-      //this.setPianoKeyAttribute(tone[2], 56);
     }
     pulses = this.resizeArray(pulses, pulsesCounter);
-    return {'fragments': fragments, 'pulses': pulses, 'volume': this.music};
+    events[pulsesCounter] = {'id': 'melodyCompleted'};
+    return {'fragments': fragments, 'pulses': pulses, 'volume': this.music, 'events': events};
   } // titleScreenMelody
 
   inGameMelody(sampleRate) {
