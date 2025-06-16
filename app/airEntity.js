@@ -10,17 +10,15 @@ export class AirEntity extends AbstractEntity {
   constructor(parentEntity, x, y, width, height) {
     super(parentEntity, x, y, width, height, false, false);
     this.id = 'AirEntity';
-    
-    this.bkColor = this.app.platform.colorByName('brightWhite');
+    this.value = 1.0;
   } // constructor
 
   drawEntity() {
     super.drawEntity();
 
-    this.app.layout.paint(this, 0, 0, 6*8, 2, this.app.platform.colorByName('brightRed'));
-    this.app.layout.paint(this, 0, 6, 6*8, 2, this.app.platform.colorByName('brightRed'));
-    this.app.layout.paint(this, 6*8, 0, this.width-6*8, 2, this.app.platform.colorByName('brightGreen'));
-    this.app.layout.paint(this, 6*8, 6, this.width-6*8, 2, this.app.platform.colorByName('brightGreen'));
+    this.app.layout.paint(this, 0, 0, 10*8, 8, this.app.platform.colorByName('brightRed'));
+    this.app.layout.paint(this, 10*8, 0, 22*8, 8, this.app.platform.colorByName('brightGreen'));
+    this.app.layout.paint(this, 0, 2, Math.round(this.width*this.value), 4, this.app.platform.colorByName('brightWhite'));
   } // drawEntity
 
 } // class AirEntity

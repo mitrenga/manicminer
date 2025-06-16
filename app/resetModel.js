@@ -75,7 +75,7 @@ export class ResetModel extends AbstractModel {
     super.loopModel(timestamp);
 
     if (this.resetTimer !== false) {
-      this.resetEntity.timeTrace = Math.round(this.app.now-this.resetTimer);
+      this.resetEntity.timeTrace = Math.round(timestamp-this.resetTimer);
       this.drawModel();
     }
   } // loopModel
