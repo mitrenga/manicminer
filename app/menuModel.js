@@ -256,12 +256,12 @@ export class MenuModel extends AbstractModel {
     if (this.timer === false) {
       this.timer = timestamp;
     } else {
-      var steps = Math.round((timestamp-this.timer)/250);
-      this.logoEntity.animateState = steps%4;
+      var counter = Math.round((timestamp-this.timer)/250);
+      this.logoEntity.animateState = counter%4;
 
-      steps = Math.round((timestamp-this.timer)/(1000/15));
+      counter = Math.round((timestamp-this.timer)/(1000/15));
       this.objectsEntities.forEach((entity) => {
-        entity.frame = steps%entity.framesCount;
+        entity.frame = counter%entity.framesCount;
       });
     }
 
