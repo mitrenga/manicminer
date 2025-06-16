@@ -49,7 +49,7 @@ export class MainModel extends AbstractModel {
     this.willyEntity.setGraphicsData(this.app.globalData.willy);
     this.mainImageEntity.addEntity(this.willyEntity);
 
-    this.airEntity = new AirEntity(this.desktopEntity, 0, 16*8, 32*8, 8);
+    this.airEntity = new AirEntity(this.desktopEntity, 0, 16*8, 32*8, 8, 0.0);
     this.desktopEntity.addEntity(this.airEntity);
     
     this.blackBox = new AbstractEntity(this.desktopEntity, 0, 17*8, 32*8, 7*8, false, this.app.platform.colorByName('black'));
