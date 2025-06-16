@@ -49,13 +49,6 @@ export class LogoEntity extends TextEntity {
     }
   } // constructor
 
-  animateUpdate() {
-    this.animateState++;
-    if (this.animateState > 3) {
-      this.animateState = 0;
-    }
-  } // animateUpdate
-
   getTextChar(position) {
     if ((this.logoType == 1) && (position == 6)) {
       this.cursorX = 0;

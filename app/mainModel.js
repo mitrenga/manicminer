@@ -29,7 +29,6 @@ export class MainModel extends AbstractModel {
     this.bannerTxt = '                                     MANIC MINER      writen by Matthew Smith      © 1983 SOFTWARE PROJECTS Ltd.      Guide Miner Willy through 20 lethal caverns.      Bonus Life for each 10.000 points.      M = Music (On/Off)      S = Sounds (On/Off)      ESC = Pause menu                                     ';
     this.bannerEntity = null;
     this.willyEntity = null;
-    this.timer = false;
   } // constructor
 
   init() {

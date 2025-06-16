@@ -16,7 +16,6 @@ export class ResetModel extends AbstractModel {
     this.id = 'ResetModel';
     this.resetEntity = null;
     this.inputLineEntity = null;
-    this.resetTimer = false;
 
     const http = new XMLHttpRequest();
     http.responser = this;
@@ -47,12 +46,12 @@ export class ResetModel extends AbstractModel {
   handleEvent(event) {
     switch (event.id) {
       case 'showReset':
-        this.resetTimer = this.app.now;
+        this.timer = this.app.now;
         this.resetEntity.hide = false;
         this.sendEvent(this.resetEntity.resetTime+1000, {'id': 'showCopyright'});
         return true;
       case 'showCopyright':
-        this.resetTimer = false;
+        this.timer = false;
         this.resetEntity.hide = true;
         this.inputLineEntity.hide = false;
         this.drawModel();
@@ -74,10 +73,11 @@ export class ResetModel extends AbstractModel {
   loopModel(timestamp) {
     super.loopModel(timestamp);
 
-    if (this.resetTimer !== false) {
-      this.resetEntity.timeTrace = Math.round(timestamp-this.resetTimer);
-      this.drawModel();
+    if (this.timer != false) {
+      this.resetEntity.timeTrace = Math.round(timestamp-this.timer);
     }
+
+    this.drawModel();
   } // loopModel
 
 } // class ResetModel

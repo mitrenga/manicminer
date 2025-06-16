@@ -27,7 +27,6 @@ export class MenuModel extends AbstractModel {
 
     this.gameFrame = 0;
     this.bwColor = '#7c7c7c';
-    this.redraw = false;
     this.selectedItem = 0;
     this.menuSelectedRow = null;
     this.penMenuItemColor = this.app.platform.colorByName('blue');
@@ -105,8 +104,6 @@ export class MenuModel extends AbstractModel {
       this.objectsEntities[o] = new SpriteEntity(this.desktopEntity, 0, 0, this.bwColor, false, 0, 0);
       this.desktopEntity.addEntity(this.objectsEntities[o]);
     });
-
-    this.sendEvent(250, {'id': 'updateLogo'});
   } // init
 
   menuParamValue(event) {
@@ -141,7 +138,6 @@ export class MenuModel extends AbstractModel {
       this.objectsEntities[o].y = object.y;
     });
     
-    this.redraw = true;
     super.setData(data);
   } // setData
 
@@ -155,7 +151,6 @@ export class MenuModel extends AbstractModel {
     this.menuEntities[this.selectedItem][0].penColor = this.penSelectedMenuItemColor;
     this.menuEntities[this.selectedItem][1].penColor = this.penSelectedMenuItemColor;
     this.menuSelectedRow.y = 22+this.selectedItem*16;
-    this.redraw = true;
 } // changeMenuItem
 
   handleEvent(event) {
@@ -238,21 +233,6 @@ export class MenuModel extends AbstractModel {
         }
         break;
 
-       case 'updateScene':
-
-        this.gameFrame = this.app.rotateInc(this.gameFrame, 0, 14);
-        this.objectsEntities.forEach((entity) => {
-          entity.incFrame();
-        });
-        this.redraw = true;
-        return true;
-
-      case 'updateLogo':
-        this.logoEntity.animateUpdate();
-        this.redraw = true;
-        this.sendEvent(250, {'id': 'updateLogo'});
-        return true;
-
       case 'setMenuData':
         var willy = Object.assign(
           event.data.willy,
@@ -273,11 +253,20 @@ export class MenuModel extends AbstractModel {
   loopModel(timestamp) {
     super.loopModel(timestamp);
 
-    if (this.redraw == true) {
-      this.redraw = false;
-      this.drawModel();
+    if (this.timer === false) {
+      this.timer = timestamp;
+    } else {
+      var steps = Math.round((timestamp-this.timer)/250);
+      this.logoEntity.animateState = steps%4;
+
+      steps = Math.round((timestamp-this.timer)/(1000/15));
+      this.objectsEntities.forEach((entity) => {
+        entity.frame = steps%entity.framesCount;
+      });
     }
-  }
+
+    this.drawModel();
+  } // loopModel
 
 } // class MenuModel
 
