@@ -93,7 +93,7 @@ export class MainModel extends AbstractModel {
   loopModel(timestamp) {
     super.loopModel(timestamp);
 
-    if (this.timer === false) {
+    if (this.timer == false) {
       this.timer = timestamp;
     } else {
       if (timestamp-this.timer > 30000) {
