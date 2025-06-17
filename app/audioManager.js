@@ -141,7 +141,7 @@ export class AudioManager extends AbstractAudioManager {
       } while (c > 0)
     }
     pulses = this.resizeArray(pulses, pulsesCounter);
-    events[pulsesCounter] = {'id': 'melodyCompleted'};
+    events[pulsesCounter] = {'id': 'melodyEnd'};
     return {'fragments': fragments, 'pulses': pulses, 'volume': this.music, 'events': events};
   } // titleScreenMelody
 

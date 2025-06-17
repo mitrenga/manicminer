@@ -81,7 +81,7 @@ export class MainModel extends AbstractModel {
         this.pianoKey2Entity.hide = false;
         return true;
 
-      case 'melodyCompleted':
+      case 'melodyEnd':
         this.pianoKey1Entity.hide = true;
         this.pianoKey2Entity.hide = true;
         return true;
