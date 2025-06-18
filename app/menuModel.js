@@ -48,6 +48,7 @@ export class MenuModel extends AbstractModel {
       {'id': 'guardian', 'x': 21, 'y': 160},
       {'id': 'floor', 'x': 13, 'y': 176}
     ];
+    this.dataLoaded = false;
     this.objectsEntities = [];
     this.copyrightEntity = null;
 
@@ -137,7 +138,7 @@ export class MenuModel extends AbstractModel {
       this.objectsEntities[o].x = object.x;
       this.objectsEntities[o].y = object.y;
     });
-    
+    this.dataLoaded = true;
     super.setData(data);
   } // setData
 
@@ -256,13 +257,15 @@ export class MenuModel extends AbstractModel {
     if (this.timer === false) {
       this.timer = timestamp;
     } else {
-      var counter = Math.round((timestamp-this.timer)/250);
-      this.logoEntity.animateState = counter%4;
+      if (this.dataLoaded) {
+        var counter = Math.round((timestamp-this.timer)/250);
+        this.logoEntity.animateState = counter%4;
 
-      counter = Math.round((timestamp-this.timer)/(1000/15));
-      this.objectsEntities.forEach((entity) => {
-        entity.frame = counter%entity.framesCount;
-      });
+        counter = Math.round((timestamp-this.timer)/(1000/15));
+        this.objectsEntities.forEach((entity) => {
+          entity.frame = counter%entity.framesCount;
+        });
+      }
     }
 
     this.drawModel();
