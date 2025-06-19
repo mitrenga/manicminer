@@ -24,6 +24,7 @@ export class BorderEntity  extends AbstractEntity {
   drawEntity() {
     super.drawEntity();
     if (this.animation === false) {
+      this.drawSubEntities();
       return;
     }
 
