@@ -1,15 +1,18 @@
 /**/
-const { ZXVideoRAMEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxVideoRAMEntity.js?ver='+window.srcVersion);
+const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
 /*/
-import ZXVideoRAMEntity from './svision/js/platform/canvas2D/zxSpectrum/zxVideoRAMEntity.js';
+import AbstractEntity from './svision/js/abstractEntity.js';
 /**/
 // begin code
 
-export class MainImageEntity extends ZXVideoRAMEntity {
+export class MainImageEntity extends AbstractEntity {
 
   constructor(parentEntity, x, y, width, height) {
     super(parentEntity, x, y, width, height);
     this.id = 'MainImageEntity';
+    this.drawCache = null;
+    this.drawCacheRatio = 0;
+    this.drawCacheCtx = false;
 
     this.introImageData = [
       '050000000000E000000000000000000000000000000001818180000000000000',
@@ -162,15 +165,41 @@ export class MainImageEntity extends ZXVideoRAMEntity {
     ]; // introImageAttributes
   } // constructor
 
-  getVideoRAMValue(addr) {
-    if (addr < 4096) {
-      return this.introImageData[Math.floor(addr/32)].substring((addr%32)*2, (addr%32)*2+2);
+  drawEntity() {
+    if (this.drawCache == null) {
+      this.drawCache = document.createElement('canvas');
+      this.drawCacheCtx = this.drawCache.getContext('2d');
     }
-    if (addr > 6143) {
-      return this.introImageAttributes[Math.floor((addr-6144)/32)].substring(((addr-6144)%32)*2, ((addr-6144)%32)*2+2);
+    if (this.drawCacheRatio != this.app.layout.ratio) {
+      this.drawCacheRatio = this.app.layout.ratio;
+      this.drawCache.width = this.width*this.drawCacheRatio;
+      this.drawCache.height = this.height*this.drawCacheRatio;
+      this.drawCacheCtx.clearRect(0, 0, this.width*this.drawCacheRatio, this.height*this.drawCacheRatio);
+
+      for (var block = 0; block < 2; block++) {
+        for (var row = 0; row < 8; row++) {
+          for (var column = 0; column < 32; column++) {
+            var attr = this.app.hexToInt(this.introImageAttributes[block*8+row].substring(column*2, column*2+2));
+            var bkColor = this.app.platform.bkColorByAttr(attr);
+            var penColor = this.app.platform.penColorByAttr(attr);
+            this.drawCacheCtx.fillStyle = bkColor;
+            this.drawCacheCtx.fillRect(column*8*this.drawCacheRatio, (block*8+row)*8*this.drawCacheRatio, 8*this.drawCacheRatio, 8*this.drawCacheRatio);
+            this.drawCacheCtx.fillStyle = penColor;
+            for (var line = 0; line < 8; line++) {
+              var binMask = this.app.hexToBin(this.introImageData[block*64+row+line*8].substring(column*2, column*2+2))
+              for (var point = 0; point < 8; point++) {
+                if (binMask[point] == '1') {
+                  this.drawCacheCtx.fillRect((column*8+point)*this.drawCacheRatio, (block*64+row*8+line)*this.drawCacheRatio, this.drawCacheRatio, this.drawCacheRatio);
+                }
+              }
+            }
+          }
+        }
+      }
     }
-    return false;
-  } // getVideoRAMValue
+    this.app.stack['ctx'].drawImage(this.drawCache, this.app.model.desktopEntity.x*this.drawCacheRatio, this.app.model.desktopEntity.y*this.drawCacheRatio);
+    super.drawSubEntities();
+  } // drawEntity
 
 } // class MainImageEntity
 

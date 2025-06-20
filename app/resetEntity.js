@@ -18,8 +18,6 @@ export class ResetEntity extends AbstractEntity {
   } // constructor
 
   drawEntity() {
-    super.drawEntity();
-    
     this.app.layout.paint(this, 0, 0, this.width, this.height, this.app.platform.colorByName('black'));
     var penColor = this.app.platform.colorByName('red');
     if (this.timeTrace < this.resetTime) {
