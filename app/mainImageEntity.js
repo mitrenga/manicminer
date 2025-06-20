@@ -10,9 +10,8 @@ export class MainImageEntity extends AbstractEntity {
   constructor(parentEntity, x, y, width, height) {
     super(parentEntity, x, y, width, height);
     this.id = 'MainImageEntity';
-    this.drawCache = null;
-    this.drawCacheRatio = 0;
-    this.drawCacheCtx = false;
+
+    this.app.layout.createDrawingCache(this, 0);
 
     this.introImageData = [
       '050000000000E000000000000000000000000000000001818180000000000000',
@@ -166,30 +165,19 @@ export class MainImageEntity extends AbstractEntity {
   } // constructor
 
   drawEntity() {
-    if (this.drawCache == null) {
-      this.drawCache = document.createElement('canvas');
-      this.drawCacheCtx = this.drawCache.getContext('2d');
-    }
-    if (this.drawCacheRatio != this.app.layout.ratio) {
-      this.drawCacheRatio = this.app.layout.ratio;
-      this.drawCache.width = this.width*this.drawCacheRatio;
-      this.drawCache.height = this.height*this.drawCacheRatio;
-      this.drawCacheCtx.clearRect(0, 0, this.width*this.drawCacheRatio, this.height*this.drawCacheRatio);
-
+    if (this.drawingCache[0].needRefresh(this)) {
       for (var block = 0; block < 2; block++) {
         for (var row = 0; row < 8; row++) {
           for (var column = 0; column < 32; column++) {
             var attr = this.app.hexToInt(this.introImageAttributes[block*8+row].substring(column*2, column*2+2));
             var bkColor = this.app.platform.bkColorByAttr(attr);
             var penColor = this.app.platform.penColorByAttr(attr);
-            this.drawCacheCtx.fillStyle = bkColor;
-            this.drawCacheCtx.fillRect(column*8*this.drawCacheRatio, (block*8+row)*8*this.drawCacheRatio, 8*this.drawCacheRatio, 8*this.drawCacheRatio);
-            this.drawCacheCtx.fillStyle = penColor;
+            this.app.layout.paintRect(this.drawingCache[0].ctx, column*8, (block*8+row)*8, 8, 8, bkColor);
             for (var line = 0; line < 8; line++) {
               var binMask = this.app.hexToBin(this.introImageData[block*64+row+line*8].substring(column*2, column*2+2))
               for (var point = 0; point < 8; point++) {
                 if (binMask[point] == '1') {
-                  this.drawCacheCtx.fillRect((column*8+point)*this.drawCacheRatio, (block*64+row*8+line)*this.drawCacheRatio, this.drawCacheRatio, this.drawCacheRatio);
+                  this.app.layout.paintRect(this.drawingCache[0].ctx, column*8+point, block*64+row*8+line, 1, 1, penColor);
                 }
               }
             }
@@ -197,7 +185,7 @@ export class MainImageEntity extends AbstractEntity {
         }
       }
     }
-    this.app.stack['ctx'].drawImage(this.drawCache, this.app.model.desktopEntity.x*this.drawCacheRatio, this.app.model.desktopEntity.y*this.drawCacheRatio);
+    this.app.layout.paintCache(this, 0);
     super.drawSubEntities();
   } // drawEntity
 
