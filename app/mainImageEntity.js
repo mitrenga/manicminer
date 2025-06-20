@@ -165,7 +165,7 @@ export class MainImageEntity extends AbstractEntity {
   } // constructor
 
   drawEntity() {
-    if (this.drawingCache[0].needRefresh(this)) {
+    if (this.drawingCache[0].needToRefresh(this)) {
       for (var block = 0; block < 2; block++) {
         for (var row = 0; row < 8; row++) {
           for (var column = 0; column < 32; column++) {
