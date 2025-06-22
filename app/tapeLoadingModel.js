@@ -88,6 +88,10 @@ export class TapeLoadingModel extends AbstractModel {
   } // init
 
   handleEvent(event) {
+    if (super.handleEvent(event)) {
+      return true;
+    }
+
     switch (event.id) {
 
       case 'changeFlashState':
@@ -177,7 +181,7 @@ export class TapeLoadingModel extends AbstractModel {
         return true;
     }
 
-    return super.handleEvent(event);
+    return false;
   } // handleEvent
 
   loopModel(timestamp) {

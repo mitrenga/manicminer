@@ -76,7 +76,7 @@ export class MenuModel extends AbstractModel {
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 13, 150, 230, 1, false, this.app.platform.colorByName('blue')));
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 242, 14, 1, 136, false, this.app.platform.colorByName('blue')));
 
-    this.menuSelectedRow = new ZXTextEntity(this.desktopEntity, 23, 22+this.selectedItem*16, 210, 12, '', false, this.app.platform.colorByName('brightBlue'), 0, false);
+    this.menuSelectedRow = new AbstractEntity(this.desktopEntity, 23, 22+this.selectedItem*16, 210, 12, false, this.app.platform.colorByName('brightBlue'));
     this.desktopEntity.addEntity(this.menuSelectedRow);
 
     for (var y = 0; y < this.menuItems.length; y++) {
@@ -127,10 +127,22 @@ export class MenuModel extends AbstractModel {
 
   refreshMenu() {
     for (var y = 0; y < this.menuItems.length; y++) {
-      this.menuEntities[y][0].text = this.menuItems[y].label;
-      this.menuEntities[y][1].text = this.menuParamValue(this.menuItems[y].event);
+      this.menuEntities[y][0].setText(this.menuItems[y].label);
+      this.menuEntities[y][1].setText(this.menuParamValue(this.menuItems[y].event));
     }
   } // refreshMenu
+
+  changeMenuItem(newItem) {
+    if (newItem < 0 || newItem >= this.menuItems.length) {
+      return;
+    }
+    this.menuEntities[this.selectedItem][0].setPenColor(this.penMenuItemColor);
+    this.menuEntities[this.selectedItem][1].setPenColor(this.penMenuItemColor);
+    this.selectedItem = newItem;
+    this.menuEntities[this.selectedItem][0].setPenColor(this.penSelectedMenuItemColor);
+    this.menuEntities[this.selectedItem][1].setPenColor(this.penSelectedMenuItemColor);
+    this.menuSelectedRow.y = 22+this.selectedItem*16;
+  } // changeMenuItem
 
   setData(data) {
     this.objects.forEach((object, o) => {
@@ -142,21 +154,8 @@ export class MenuModel extends AbstractModel {
     super.setData(data);
   } // setData
 
-  changeMenuItem(newItem) {
-    if (newItem < 0 || newItem >= this.menuItems.length) {
-      return;
-    }
-    this.menuEntities[this.selectedItem][0].penColor = this.penMenuItemColor;
-    this.menuEntities[this.selectedItem][1].penColor = this.penMenuItemColor;
-    this.selectedItem = newItem;
-    this.menuEntities[this.selectedItem][0].penColor = this.penSelectedMenuItemColor;
-    this.menuEntities[this.selectedItem][1].penColor = this.penSelectedMenuItemColor;
-    this.menuSelectedRow.y = 22+this.selectedItem*16;
-} // changeMenuItem
-
   handleEvent(event) {
-    var result = super.handleEvent(event);
-    if (result == true) {
+    if (super.handleEvent(event)) {
       return true;
     }
 
@@ -259,7 +258,7 @@ export class MenuModel extends AbstractModel {
     } else {
       if (this.dataLoaded) {
         var counter = Math.round((timestamp-this.timer)/250);
-        this.logoEntity.animateState = counter%4;
+        this.logoEntity.setAnimateState(counter%4);
 
         counter = Math.round((timestamp-this.timer)/(1000/15));
         this.objectsEntities.forEach((entity) => {

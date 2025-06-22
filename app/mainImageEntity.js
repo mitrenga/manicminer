@@ -11,7 +11,7 @@ export class MainImageEntity extends AbstractEntity {
     super(parentEntity, x, y, width, height);
     this.id = 'MainImageEntity';
 
-    this.app.layout.createDrawingCache(this, 0);
+    this.app.layout.newDrawingCache(this, 0);
 
     this.introImageData = [
       '050000000000E000000000000000000000000000000001818180000000000000',
@@ -165,7 +165,7 @@ export class MainImageEntity extends AbstractEntity {
   } // constructor
 
   drawEntity() {
-    if (this.drawingCache[0].needToRefresh(this)) {
+    if (this.drawingCache[0].needToRefresh(this, this.width, this.height)) {
       for (var block = 0; block < 2; block++) {
         for (var row = 0; row < 8; row++) {
           for (var column = 0; column < 32; column++) {

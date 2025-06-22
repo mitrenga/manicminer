@@ -2,14 +2,14 @@
 const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+window.srcVersion);
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
 const { MainImageEntity } = await import('./mainImageEntity.js?ver='+window.srcVersion);
-const { ZXTextEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxTextEntity.js?ver='+window.srcVersion);
+const { BannerTextEntity } = await import('./bannerTextEntity.js?ver='+window.srcVersion);
 const { AirEntity } = await import('./airEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import AbstractEntity from './svision/js/abstractEntity.js';
 import MainImageEntity from './mainImageEntity.js';
-import ZXTextEntity from './svision/js/platform/canvas2D/zxSpectrum/zxTextEntity.js';
+import BannerTextEntity from './bannerTextEntity.js';
 import AirEntity from './airEntity.js';
 import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
 /**/
@@ -27,6 +27,7 @@ export class MainModel extends AbstractModel {
     this.airEntity = null;
     this.blackBox = null;
     this.bannerTxt = '                                     MANIC MINER      writen by Matthew Smith      © 1983 SOFTWARE PROJECTS Ltd.      Guide Miner Willy through 20 lethal caverns.      Bonus Life for each 10.000 points.      M = Music (On/Off)      S = Sounds (On/Off)      ESC = Pause menu                                     ';
+    this.bannerLength = 1900;
     this.bannerEntity = null;
     this.willyEntity = null;
   } // constructor
@@ -53,7 +54,7 @@ export class MainModel extends AbstractModel {
     
     this.blackBox = new AbstractEntity(this.desktopEntity, 0, 17*8, 32*8, 7*8, false, this.app.platform.colorByName('black'));
     this.desktopEntity.addEntity(this.blackBox);
-    this.bannerEntity = new ZXTextEntity(this.blackBox, 0, 8, 32*8, 8, this.bannerTxt, this.app.platform.colorByName('yellow'), false, 0, true);
+    this.bannerEntity = new BannerTextEntity(this.blackBox, 0, 8, 32*8, 8, this.bannerTxt, this.app.platform.colorByName('yellow'), false, this.bannerLength);
     this.blackBox.addEntity(this.bannerEntity);
 
     if (this.app.audioManager.music > 0) {
@@ -97,12 +98,9 @@ export class MainModel extends AbstractModel {
       this.timer = timestamp;
     } else {
       if (timestamp-this.timer > 30000) {
-        this.bannerEntity.x = 0;
-        this.bannerEntity.width = 32*8;
+        this.bannerEntity.bannerPosition = 0;
       } else {
-        var pos = Math.round(1900*(timestamp-this.timer)/30000);
-        this.bannerEntity.x = -pos;
-        this.bannerEntity.width = 32*8+pos;
+        this.bannerEntity.bannerPosition = Math.round(this.bannerLength*(timestamp-this.timer)/30000);
         this.airEntity.value = (timestamp-this.timer)/30000;
       }
       

@@ -13,7 +13,7 @@ export class LogoEntity extends TextEntity {
     
     this.proportional = true;
     this.justify = 0;
-    this.animateState = 0;
+    this.animateState = false;
     this.scale = [1, 8];
     this.logoType = logoType;
     this.loadTimer = false;
@@ -48,6 +48,22 @@ export class LogoEntity extends TextEntity {
       this.logoLabel[6].resetCursor = true;
     }
   } // constructor
+
+  setAnimateState(state) {
+    if (this.animateState !== state) {
+      this.animateState = state;
+      this.drawingCache[0].cleanCache();
+    }
+  } // setAnimateState
+
+  handleEvent(event) {
+    switch (event.id) {
+      case 'changeFlashState':
+        this.drawingCache[0].cleanCache();
+        break;
+    }
+    return super.handleEvent(event);
+  } // handleEvent
 
   getTextChar(position) {
     if ((this.logoType == 1) && (position == 6)) {
@@ -115,6 +131,13 @@ export class LogoEntity extends TextEntity {
 
     return charObject;
   } // getCharData
+
+  drawEntity() {
+    if (this.logoType == 1 && this.loadTimer !== false) {
+      this.drawingCache[0].cleanCache();
+    }
+    super.drawEntity();
+  }
 
 } // class LogoEntity
 
