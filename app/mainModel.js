@@ -59,8 +59,8 @@ export class MainModel extends AbstractModel {
     this.blackBox.addEntity(this.bannerEntity);
 
     if (this.app.audioManager.music > 0) {
-      this.sendEvent(500, {'id': 'openAudioChannel', 'channel': 'music'});
-      this.sendEvent(750, {'id': 'playSound', 'channel': 'music', 'sound': 'titleScreenMelody', 'options': false});
+      this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'music'});
+      this.sendEvent(500, {'id': 'playSound', 'channel': 'music', 'sound': 'titleScreenMelody', 'options': false});
     }
   } // init
 

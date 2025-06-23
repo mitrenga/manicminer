@@ -59,6 +59,14 @@ export class CavernModel extends AbstractModel {
     this.desktopEntity.addEntity(this.scoreEntity);
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 20*8, 32*8, 8, false, this.app.platform.colorByName('black')));
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 21*8, 32*8, 3*8, false, this.app.platform.colorByName('black')));
+
+    if (this.app.audioManager.music > 0) {
+      this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'music'});
+      this.sendEvent(500, {'id': 'playSound', 'channel': 'music', 'sound': 'inGameMelody', 'options': {'repeat': true}});
+    }
+    if (this.app.audioManager.sounds > 0) {
+      this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'sounds'});
+    }
   } // init
 
   setData(data) {
