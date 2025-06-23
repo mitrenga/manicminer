@@ -49,10 +49,11 @@ export class MainModel extends AbstractModel {
     this.willyEntity.setGraphicsData(this.app.globalData.willy);
     this.mainImageEntity.addEntity(this.willyEntity);
 
-    this.airEntity = new AirEntity(this.desktopEntity, 0, 16*8, 32*8, 8, 0.0);
+    this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 16*8, 32*8, 8, false, this.app.platform.colorByName('yellow')));
+    this.airEntity = new AirEntity(this.desktopEntity, 0, 17*8, 32*8, 8, 0.0);
     this.desktopEntity.addEntity(this.airEntity);
     
-    this.blackBox = new AbstractEntity(this.desktopEntity, 0, 17*8, 32*8, 7*8, false, this.app.platform.colorByName('black'));
+    this.blackBox = new AbstractEntity(this.desktopEntity, 0, 18*8, 32*8, 6*8, false, this.app.platform.colorByName('black'));
     this.desktopEntity.addEntity(this.blackBox);
     this.bannerEntity = new BannerTextEntity(this.blackBox, 0, 8, 32*8, 8, this.bannerTxt, this.app.platform.colorByName('yellow'), false, this.bannerLength);
     this.blackBox.addEntity(this.bannerEntity);
@@ -86,7 +87,29 @@ export class MainModel extends AbstractModel {
         this.pianoKey1Entity.hide = true;
         this.pianoKey2Entity.hide = true;
         return true;
-    }
+
+      case 'keyPress':
+        switch (event.key) {
+          case 'Enter':
+            this.app.model.shutdown();
+            this.app.cavernNumber = 0;
+            this.app.model = this.app.newModel('CavernModel');
+            this.app.model.init();
+            this.app.resizeApp();
+            return true;
+        }
+
+      case 'mouseClick':
+        if (event.key == 'left') {
+            this.app.model.shutdown();
+            this.app.cavernNumber = 0;
+            this.app.model = this.app.newModel('CavernModel');
+            this.app.model.init();
+            this.app.resizeApp();
+            return true;
+        }
+        break;
+      }
 
     return super.handleEvent(event);
   } // handleEvent

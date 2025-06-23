@@ -14,8 +14,8 @@ export class AirEntity extends AbstractEntity {
   } // constructor
 
   drawEntity() {
-    this.app.layout.paint(this, 0, 0, 10*8, 8, this.app.platform.colorByName('brightRed'));
-    this.app.layout.paint(this, 10*8, 0, 22*8, 8, this.app.platform.colorByName('brightGreen'));
+    this.app.layout.paint(this, 0, 0, this.width-22*8, 8, this.app.platform.colorByName('brightRed'));
+    this.app.layout.paint(this, this.width-22*8, 0, 22*8, 8, this.app.platform.colorByName('brightGreen'));
     this.app.layout.paint(this, 0, 2, Math.round(this.width*this.value), 4, this.app.platform.colorByName('brightWhite'));
   } // drawEntity
 
