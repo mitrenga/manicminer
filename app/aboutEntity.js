@@ -40,7 +40,6 @@ export class AboutEntity extends AbstractEntity {
     this.addEntity(new MiniTextEntity(this, 1, 106, this.width-2, 7, 'GIVES` YOU` THE CHANCE` TO TRY COMPLETING', this.app.platform.colorByName('black'), false, 1, 1));
     this.addEntity(new MiniTextEntity(this, 1, 114, this.width-2, 7, 'ALL THE CAVES.', this.app.platform.colorByName('black'), false, 1, 1));
     this.addEntity(new MiniButtonEntity(this, this.width-38, this.height-15, 36, 13, 'CLOSE', 'closeAbout', ['Enter', 'Escape', ' '], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), 1, 4));
-    // MANIC MINER je remake původní hry z roku 1983 pro Sinclair ZX Spectrum od Matthew Smith. Tato hra mě fascinuje od prvního okamžiku, kdy jsem ji spatřil. Věřím, že si na tuto legendární hru rádo zavzpomíná mnoho hráčů, a to nejen z nostalgie. V tomto remaku máte nyní navíc možnost pokračovat v jeskyni, tam kde jste skončili předchozí hru, takže máte možnost si vyzkoušet úspěšně projít všemi jestkyněmi...
   } // init
 
   handleEvent(event) {

@@ -24,7 +24,7 @@
   ],
   "graphicData":{
      "41":{
-        "attribute":"floor",
+        "kind":"floor",
         "sprite":[
            "########",
            "########",
@@ -37,7 +37,7 @@
         ]
      },
      "01":{
-        "attribute":"crumblingFloor",
+        "kind":"crumblingFloor",
         "sprite":[
            "########",
            "##-##-##",
@@ -50,7 +50,7 @@
         ]
      },
      "0E":{
-        "attribute":"wall",
+        "kind":"wall",
         "sprite":[
            "#-#-#-#-",
            "-#-#-#-#",
@@ -63,7 +63,7 @@
         ]
      },
      "45":{
-        "attribute":"conveyor",
+        "kind":"conveyor",
         "sprite":[
            "#######-",
            "-##--##-",
@@ -76,7 +76,7 @@
         ]
      },
      "46":{
-        "attribute":"nasty",
+        "kind":"nasty",
         "sprite":[
            "---#----",
            "---#----",
@@ -89,7 +89,7 @@
         ]
      },
      "42":{
-        "attribute":"nasty",
+        "kind":"nasty",
         "sprite":[
            "---#----",
            "---#----",
@@ -102,7 +102,7 @@
         ]
      },
      "06":{
-        "attribute":"extra",
+        "kind":"extra",
         "sprite":[
            "########",
            "########",

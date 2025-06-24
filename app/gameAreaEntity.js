@@ -52,6 +52,24 @@ export class GameAreaEntity extends AbstractEntity {
             }
           }
         });
+        if ('image' in this.data) {
+          for (var y = 0; y < this.data.image.data.length; y++) {
+            for (var x = 0; x < this.data.image.data[y].length/2; x++) {
+              var hexByte = this.data.image.data[y].substring(x*2, x*2+2);
+              var binByte = this.app.hexToBin(hexByte);
+              var attr = this.app.hexToInt(this.data.image.attributes[(y%8)].substring(x*2, x*2+2));
+              for (var b = 0; b < binByte.length; b++) {
+                if (binByte[b] == '1') {
+                  this.app.layout.paintRect(this.drawingCache[0].ctx, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.penColorByAttr(attr));
+                } else {
+                  if (this.app.platform.bkColorByAttr(attr) != this.bkColor) {
+                    this.app.layout.paintRect(this.drawingCache[0].ctx, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.bkColorByAttr(attr));
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
     this.app.layout.paintCache(this, 0);

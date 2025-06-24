@@ -24,7 +24,7 @@
   ],
   "graphicData":{
      "05":{
-        "attribute":"floor",
+        "kind":"floor",
         "sprite":[
            "########",
            "########",
@@ -37,7 +37,7 @@
         ]
      },
      "42":{
-        "attribute":"crumblingFloor",
+        "kind":"crumblingFloor",
         "sprite":[
            "########",
            "##-##-##",
@@ -50,7 +50,7 @@
         ]
      },
      "16":{
-        "attribute":"wall",
+        "kind":"wall",
         "sprite":[
            "-#-##-#-",
            "-#-##-#-",
@@ -63,7 +63,7 @@
         ]
      },
      "04":{
-        "attribute":"conveyor",
+        "kind":"conveyor",
         "sprite":[
            "####----",
            "-##--##-",
@@ -76,7 +76,7 @@
         ]
      },
      "06":{
-        "attribute":"extra",
+        "kind":"extra",
         "sprite":[
            "########",
            "#------#",

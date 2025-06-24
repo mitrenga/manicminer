@@ -4,12 +4,14 @@ const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+wi
 const { ZXTextEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxTextEntity.js?ver='+window.srcVersion);
 const { GameAreaEntity } = await import('./gameAreaEntity.js?ver='+window.srcVersion);
 const { AirEntity } = await import('./airEntity.js?ver='+window.srcVersion);
+const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import AbstractEntity from './svision/js/abstractEntity.js';
 import ZXTextEntity from '././svision/js/platform/canvas2D/zxSpectrum/zxTextEntity.js';
 import GameAreaEntity from './gameAreaEntity.js';
 import AirEntity from './airEntity.js';
+import PauseGameEntity from './pauseGameEntity.js';
 /**/
 // begin code
 
@@ -25,6 +27,7 @@ export class CaveModel extends AbstractModel {
     this.bkCaveNameEntity = null;
     this.hiScoreEntity = null;
     this.scoreEntity = null;
+    this.worker = null;
     
     const http = new XMLHttpRequest();
     http.responser = this;
@@ -69,12 +72,18 @@ export class CaveModel extends AbstractModel {
     }
   } // init
 
+  shutdown() {
+    super.shutdown();
+    this.worker.terminate();
+    this.worker = null;
+  } // shutdown
+
   setData(data) {
     this.caveNameEntity.text = data.name;
     this.caveNameEntity.drawingCache[0].cleanCache();
     this.borderEntity.bkColor = this.app.platform.zxColorByAttr(this.app.hexToInt(data.borderColor), 7, 1);
-    
     super.setData(data);
+    this.worker = new Worker(this.app.importPath+'/gameWorker.js');
   } // setData
 
   handleEvent(event) {
@@ -93,9 +102,21 @@ export class CaveModel extends AbstractModel {
         );
         this.setData(Object.assign(event.data, {'willy': willy}));
         return true;
+
+      case 'keyPress':
+        switch (event.key) {
+          case 'Escape':
+            this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 9*8, 5*8, 14*8+1, 14*8+2, this.borderEntity.bkColor));
+            return true;
+        }
     }
     return super.handleEvent(event);
   } // handleEvent
+
+  loopModel(timestamp) {
+    super.loopModel(timestamp);
+    this.drawModel();
+  } // loopModel
 
 } // class CaveModel
 
