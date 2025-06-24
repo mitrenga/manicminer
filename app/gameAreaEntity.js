@@ -18,7 +18,7 @@ export class GameAreaEntity extends AbstractEntity {
 
     this.app.layout.newDrawingCache(this, 0); 
     this.graphicCache = {};
-    this.staticKinds = ['floor', 'wall', 'nasty'];
+    this.staticKinds = ['floor', 'wall', 'nasty', 'extra'];
   } // constructor
 
   drawEntity() {
