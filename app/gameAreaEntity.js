@@ -52,26 +52,29 @@ export class GameAreaEntity extends AbstractEntity {
             }
           }
         });
+
         if ('image' in this.data) {
-          for (var y = 0; y < this.data.image.data.length; y++) {
-            for (var x = 0; x < this.data.image.data[y].length/2; x++) {
-              var hexByte = this.data.image.data[y].substring(x*2, x*2+2);
-              var binByte = this.app.hexToBin(hexByte);
-              var attr = this.app.hexToInt(this.data.image.attributes[(y%8)].substring(x*2, x*2+2));
-              for (var b = 0; b < binByte.length; b++) {
-                if (binByte[b] == '1') {
-                  this.app.layout.paintRect(this.drawingCache[0].ctx, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.penColorByAttr(attr));
-                } else {
-                  if (this.app.platform.bkColorByAttr(attr) != this.bkColor) {
-                    this.app.layout.paintRect(this.drawingCache[0].ctx, x*8+b, (y%8)*8+Math.floor(y%64/8), 1, 1, this.app.platform.bkColorByAttr(attr));
+          for (var row = 0; row < 8; row++) {
+            for (var column = 0; column < 32; column++) {
+              var attr = this.app.hexToInt(this.data.image.attributes[row].substring(column*2, column*2+2));
+              var bkColor = this.app.platform.bkColorByAttr(attr);
+              var penColor = this.app.platform.penColorByAttr(attr);
+              this.app.layout.paintRect(this.drawingCache[0].ctx, column*8, (row)*8, 8, 8, bkColor);
+              for (var line = 0; line < 8; line++) {
+                var binMask = this.app.hexToBin(this.data.image.data[row+line*8].substring(column*2, column*2+2))
+                for (var point = 0; point < 8; point++) {
+                  if (binMask[point] == '1') {
+                    this.app.layout.paintRect(this.drawingCache[0].ctx, column*8+point, row*8+line, 1, 1, penColor);
                   }
                 }
               }
             }
           }
+
         }
       }
     }
+
     this.app.layout.paintCache(this, 0);
     super.drawSubEntities();
   } // drawEntity
