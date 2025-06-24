@@ -92,8 +92,8 @@ export class MainModel extends AbstractModel {
         switch (event.key) {
           case 'Enter':
             this.app.model.shutdown();
-            this.app.cavernNumber = 0;
-            this.app.model = this.app.newModel('CavernModel');
+            this.app.caveNumber = this.app.globalData.initCave;
+            this.app.model = this.app.newModel('CaveModel');
             this.app.model.init();
             this.app.resizeApp();
             return true;
@@ -102,8 +102,8 @@ export class MainModel extends AbstractModel {
       case 'mouseClick':
         if (event.key == 'left') {
             this.app.model.shutdown();
-            this.app.cavernNumber = 0;
-            this.app.model = this.app.newModel('CavernModel');
+            this.app.caveNumber = this.app.globalData.initCave;
+            this.app.model = this.app.newModel('CaveModel');
             this.app.model.init();
             this.app.resizeApp();
             return true;

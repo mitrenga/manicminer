@@ -102,7 +102,7 @@ export class TapeLoadingModel extends AbstractModel {
       case 'updateCommand':
         this.inputLineEntity.justify = 0;
         this.inputLineEntity.proportional = false;
-        this.inputLineEntity.text = this.command[this.phase];
+        this.inputLineEntity.setText(this.command[this.phase]);
         this.inputLineEntity.flashMask = '';
         if (this.command[this.phase].length > 0) {
           this.inputLineEntity.flashMask = this.inputLineEntity.flashMask.padStart (this.command[this.phase].length-1, ' ')+'#';

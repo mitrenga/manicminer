@@ -2,39 +2,39 @@
 const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+window.srcVersion);
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
 const { ZXTextEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxTextEntity.js?ver='+window.srcVersion);
-const { CavernEntity } = await import('./cavernEntity.js?ver='+window.srcVersion);
+const { GameAreaEntity } = await import('./gameAreaEntity.js?ver='+window.srcVersion);
 const { AirEntity } = await import('./airEntity.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import AbstractEntity from './svision/js/abstractEntity.js';
 import ZXTextEntity from '././svision/js/platform/canvas2D/zxSpectrum/zxTextEntity.js';
-import CavernEntity from './cavernEntity.js';
+import GameAreaEntity from './gameAreaEntity.js';
 import AirEntity from './airEntity.js';
 /**/
 // begin code
 
-export class CavernModel extends AbstractModel {
+export class CaveModel extends AbstractModel {
   
-  constructor(app, cavernNumber) {
+  constructor(app, caveNumber) {
     super(app);
-    this.id = 'CavernModel';
+    this.id = 'CaveModel';
 
-    this.cavernNumber = cavernNumber;
-    this.cavernEntity = null;
+    this.caveNumber = caveNumber;
+    this.gameAreaEntity = null;
     this.airEntity = null;
-    this.cavernNameEntity = null;
+    this.bkCaveNameEntity = null;
     this.hiScoreEntity = null;
     this.scoreEntity = null;
     
     const http = new XMLHttpRequest();
     http.responser = this;
-    http.open('GET', 'cavern'+this.cavernNumber.toString().padStart(2, '0')+'.data');
+    http.open('GET', 'cave'+this.caveNumber.toString().padStart(2, '0')+'.data');
     http.send();
 
     http.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         var data = JSON.parse(http.responseText);
-        this.responser.sendEvent(1, {'id': 'setCavernData', 'data': data});
+        this.responser.sendEvent(1, {'id': 'setCaveData', 'data': data});
       }
     }
   } // constructor
@@ -43,11 +43,11 @@ export class CavernModel extends AbstractModel {
     super.init();
 
     this.borderEntity.bkColor = this.app.platform.colorByName('black');
-    this.cavernEntity = new CavernEntity(this.desktopEntity, 0, 0, 32*8, 16*8, this.cavernNumber);
-    this.desktopEntity.addEntity(this.cavernEntity);
-    this.cavernNameEntity = new ZXTextEntity(this.desktopEntity, 0, 16*8, 32*8, 8, '', this.app.platform.colorByName('black'), this.app.platform.colorByName('yellow'), 0, true);
-    this.cavernNameEntity.justify = 2;
-    this.desktopEntity.addEntity(this.cavernNameEntity);
+    this.gameAreaEntity = new GameAreaEntity(this.desktopEntity, 0, 0, 32*8, 16*8, this.caveNumber);
+    this.desktopEntity.addEntity(this.gameAreaEntity);
+    this.caveNameEntity = new ZXTextEntity(this.desktopEntity, 0, 16*8, 32*8, 8, '', this.app.platform.colorByName('black'), this.app.platform.colorByName('yellow'), 0, true);
+    this.caveNameEntity.justify = 2;
+    this.desktopEntity.addEntity(this.caveNameEntity);
     this.desktopEntity.addEntity(new ZXTextEntity(this.desktopEntity, 0, 17*8, 4*8, 8, 'AIR', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightRed'), 0, true));
     this.desktopEntity.addEntity(new AirEntity(this.desktopEntity, 4*8, 17*8, 28*8, 8, 1.0));
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 18*8, 32*8, 8, false, this.app.platform.colorByName('black')));
@@ -70,8 +70,8 @@ export class CavernModel extends AbstractModel {
   } // init
 
   setData(data) {
-    this.cavernNameEntity.text = data.name;
-    this.cavernNameEntity.drawingCache[0].cleanCache();
+    this.caveNameEntity.text = data.name;
+    this.caveNameEntity.drawingCache[0].cleanCache();
     this.borderEntity.bkColor = this.app.platform.zxColorByAttr(this.app.hexToInt(data.borderColor), 7, 1);
     
     super.setData(data);
@@ -79,7 +79,7 @@ export class CavernModel extends AbstractModel {
 
   handleEvent(event) {
     switch (event.id) {
-      case 'setCavernData':
+      case 'setCaveData':
         var willy = Object.assign(
           event.data.willy,
           {
@@ -97,6 +97,6 @@ export class CavernModel extends AbstractModel {
     return super.handleEvent(event);
   } // handleEvent
 
-} // class CavernModel
+} // class CaveModel
 
-export default CavernModel;
+export default CaveModel;

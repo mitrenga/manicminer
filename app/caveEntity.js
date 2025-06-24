@@ -7,13 +7,13 @@ import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
 /**/
 // begin code
 
-export class CavernEntity extends AbstractEntity {
+export class CaveEntity extends AbstractEntity {
 
-  constructor(parentEntity, x, y, width, height, cavernNumber) {
+  constructor(parentEntity, x, y, width, height, caveNumber) {
     super(parentEntity, x, y, width, height);
-    this.id = 'CavernEntity';
+    this.id = 'CaveEntity';
 
-    this.cavernNumber = cavernNumber;
+    this.caveNumber = caveNumber;
     this.bkColor = this.app.platform.colorByName('black');
     this.lightBeam = false
     this.imageData = false;
@@ -61,7 +61,7 @@ export class CavernEntity extends AbstractEntity {
       for (var x = 0; x < row.length/2; x++) {
         var attr = row.substring(x*2, x*2+2);
         if (attr != data.bkColor) {
-          //if (['floor', 'wall'].includes(graphicData.kind)) {
+          //if (['floor', 'wall'].includes(data.graphicData.kind)) {
           {
             var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
             var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(attr));
@@ -123,9 +123,8 @@ export class CavernEntity extends AbstractEntity {
     }
     
     super.setData(data);
-  } // setData
-    
+  } // setData    
 
-} // class CavernEntity
+} // class CaveEntity
 
-export default CavernEntity;
+export default CaveEntity;
