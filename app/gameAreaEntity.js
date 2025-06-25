@@ -70,8 +70,8 @@ export class GameAreaEntity extends AbstractEntity {
               }
             }
           }
-
         }
+        
       }
     }
 

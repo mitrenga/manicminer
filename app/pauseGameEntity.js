@@ -15,6 +15,8 @@ export class PauseGameEntity extends AbstractEntity {
     super(parentEntity, x, y, width, height, false, false);
     this.id = 'PauseGameEntity';
     this.borderColor = borderColor;
+    this.buttons = [];
+    this.selectedButton = 0;
   } // constructor
 
   init() {
@@ -27,28 +29,58 @@ export class PauseGameEntity extends AbstractEntity {
     var titleEntity = new MiniTextEntity(this, 0, 0, this.width, 9, 'PAUSE', this.app.platform.colorByName('brightBlack'), this.app.platform.colorByName('brightWhite'), 1, 2);
     titleEntity.justify = 2;
     this.addEntity(titleEntity);
-    var button = new ZXButtonEntity(this, 10, 19, this.width-20, 14, 'RESUME GAME', 'closeAbout', ['Enter', 'Escape', ' '], this.app.platform.colorByName('brightBlack'), this.app.platform.colorByName('brightWhite'), 0, true);
-    button.margin = 3;
-    button.justify = 0;
-    this.addEntity(button);
-    button = new ZXButtonEntity(this, 10, 43, this.width-20, 14, 'SOUND OFF', 'closeAbout', ['Enter', 'Escape', ' '], this.app.platform.colorByName('brightBlack'), this.app.platform.colorByName('brightWhite'), 0, true);
-    button.margin = 3;
-    button.justify = 2;
-    this.addEntity(button);
-    button = new ZXButtonEntity(this, 10, 67, this.width-20, 14, 'MUSIC OFF', 'closeAbout', ['Enter', 'Escape', ' '], this.app.platform.colorByName('brightBlack'), this.app.platform.colorByName('brightWhite'), 0, true);
-    button.margin = 3;
-    button.justify = 2;
-    this.addEntity(button);
-    button = new ZXButtonEntity(this, 10, 91, this.width-20, 14, 'EXIT GAME', 'closeAbout', ['Enter', 'Escape', ' '], this.app.platform.colorByName('brightBlack'), this.app.platform.colorByName('brightWhite'), 0, true);
-    button.margin = 3;
-    button.justify = 2;
-    this.addEntity(button);
+    this.buttons[0] = new ZXButtonEntity(this, 10, 19, this.width-20, 14, 'RESUME GAME', 'closePauseGame', ['Escape'], this.app.platform.colorByName('black'), this.app.platform.colorByName('yellow'), 0, true);
+    this.buttons[0].margin = 3;
+    this.buttons[0].justify = 0;
+    this.addEntity(this.buttons[0]);
+    this.buttons[1] = new ZXButtonEntity(this, 10, 43, this.width-20, 14, 'SOUND OFF', 'changeSoundsState', [], this.app.platform.colorByName('black'), this.app.platform.colorByName('white'), 0, true);
+    this.buttons[1].margin = 3;
+    this.buttons[1].justify = 2;
+    this.addEntity(this.buttons[1]);
+    this.buttons[2] = new ZXButtonEntity(this, 10, 67, this.width-20, 14, 'MUSIC OFF', 'changeMusicState', [], this.app.platform.colorByName('black'), this.app.platform.colorByName('white'), 0, true);
+    this.buttons[2].margin = 3;
+    this.buttons[2].justify = 2;
+    this.addEntity(this.buttons[2]);
+    this.buttons[3] = new ZXButtonEntity(this, 10, 91, this.width-20, 14, 'EXIT GAME', 'exitGame', [], this.app.platform.colorByName('black'), this.app.platform.colorByName('white'), 0, true);
+    this.buttons[3].margin = 3;
+    this.buttons[3].justify = 2;
+    this.addEntity(this.buttons[3]);
   } // init
 
   handleEvent(event) {
     switch (event.id) {
-      case 'closeAbout':
+
+      case 'keyPress':
+        switch (event.key) {
+          case 'Enter':
+            this.sendEvent(0, 0, {'id': this.buttons[this.selectedButton].eventID});
+            return true;
+          case 'ArrowDown':
+            if (this.selectedButton < this.buttons.length-1) {
+              this.buttons[this.selectedButton].setBkColor(this.app.platform.colorByName('white'));
+              this.selectedButton++;
+              this.buttons[this.selectedButton].setBkColor(this.app.platform.colorByName('yellow'));
+            }
+            return true;
+          case 'ArrowUp':
+            if (this.selectedButton > 0) {
+              this.buttons[this.selectedButton].setBkColor(this.app.platform.colorByName('white'));
+              this.selectedButton--;
+              this.buttons[this.selectedButton].setBkColor(this.app.platform.colorByName('yellow'));
+            }
+            return true;
+          }
+        break;
+
+      case 'closePauseGame':
         this.destroy();
+        return true;
+
+      case 'exitGame':
+        this.app.model.shutdown();
+        this.app.model = this.app.newModel('MenuModel');
+        this.app.model.init();
+        this.app.resizeApp();
         return true;
     }
 

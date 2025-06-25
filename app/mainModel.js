@@ -5,6 +5,7 @@ const { MainImageEntity } = await import('./mainImageEntity.js?ver='+window.srcV
 const { BannerTextEntity } = await import('./bannerTextEntity.js?ver='+window.srcVersion);
 const { AirEntity } = await import('./airEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
+const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import AbstractEntity from './svision/js/abstractEntity.js';
@@ -12,6 +13,7 @@ import MainImageEntity from './mainImageEntity.js';
 import BannerTextEntity from './bannerTextEntity.js';
 import AirEntity from './airEntity.js';
 import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
+import PauseGameEntity from './pauseGameEntity.js';
 /**/
 // begin code
 
@@ -66,6 +68,10 @@ export class MainModel extends AbstractModel {
 
   
   handleEvent(event) {
+    if (super.handleEvent(event)) {
+      return true;
+    }
+
     switch (event.id) {
 
       case 'pianoKey':
@@ -89,29 +95,33 @@ export class MainModel extends AbstractModel {
         return true;
 
       case 'keyPress':
-        switch (event.key) {
-          case 'Enter':
-            this.app.model.shutdown();
-            this.app.caveNumber = this.app.globalData.initCave;
-            this.app.model = this.app.newModel('CaveModel');
-            this.app.model.init();
-            this.app.resizeApp();
-            return true;
-        }
+        if (this.desktopEntity.modalEntity == null) {
+          switch (event.key) {
+            case 'Enter':
+              this.app.model.shutdown();
+              this.app.caveNumber = this.app.globalData.initCave;
+              this.app.model = this.app.newModel('CaveModel');
+              this.app.model.init();
+              this.app.resizeApp();
+              return true;
 
-      case 'mouseClick':
-        if (event.key == 'left') {
-            this.app.model.shutdown();
-            this.app.caveNumber = this.app.globalData.initCave;
-            this.app.model = this.app.newModel('CaveModel');
-            this.app.model.init();
-            this.app.resizeApp();
-            return true;
+            case 'Escape':
+              this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 9*8, 5*8, 14*8+1, 14*8+2, this.app.platform.colorByName('blue')));
+              return true;
+          }
         }
         break;
-      }
 
-    return super.handleEvent(event);
+      case 'mouseClick':
+        this.app.model.shutdown();
+        this.app.caveNumber = this.app.globalData.initCave;
+        this.app.model = this.app.newModel('CaveModel');
+        this.app.model.init();
+        this.app.resizeApp();
+        return true;
+    }
+    
+    return false;
   } // handleEvent
 
   loopModel(timestamp) {

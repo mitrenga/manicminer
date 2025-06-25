@@ -79,14 +79,17 @@ export class CaveModel extends AbstractModel {
   } // shutdown
 
   setData(data) {
-    this.caveNameEntity.text = data.name;
-    this.caveNameEntity.drawingCache[0].cleanCache();
+    this.caveNameEntity.setText(data.name);
     this.borderEntity.bkColor = this.app.platform.zxColorByAttr(this.app.hexToInt(data.borderColor), 7, 1);
     super.setData(data);
     this.worker = new Worker(this.app.importPath+'/gameWorker.js');
   } // setData
 
   handleEvent(event) {
+    if (super.handleEvent(event)) {
+      return true;
+    }
+
     switch (event.id) {
       case 'setCaveData':
         var willy = Object.assign(
@@ -110,7 +113,8 @@ export class CaveModel extends AbstractModel {
             return true;
         }
     }
-    return super.handleEvent(event);
+
+    return false;
   } // handleEvent
 
   loopModel(timestamp) {

@@ -248,6 +248,8 @@ export class MenuModel extends AbstractModel {
         this.setData(Object.assign(event.data, {'willy': willy}));
         return true;
     }
+    
+    return false;
   } // handleEvent
 
   loopModel(timestamp) {
