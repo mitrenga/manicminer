@@ -27,8 +27,25 @@ export class CaveModel extends AbstractModel {
     this.bkCaveNameEntity = null;
     this.hiScoreEntity = null;
     this.scoreEntity = null;
-    this.worker = null;
-    
+
+    this.initData = {};
+
+    this.worker = new Worker(this.app.importPath+'/gameWorker.js');
+    this.worker.onmessage = (event) => {
+      switch (event.data.id) {
+        case 'update':
+          Object.keys(event.data.gameData).forEach((objectsType) => {
+            event.data.gameData[objectsType].forEach((object, g) => {
+              this.gameAreaEntity.spriteEntities[objectsType][g].x = object.x+object.paintCorrectionsX;
+              this.gameAreaEntity.spriteEntities[objectsType][g].y = object.y+object.paintCorrectionsY;
+              this.gameAreaEntity.spriteEntities[objectsType][g].frame = object.frame;
+              this.gameAreaEntity.spriteEntities[objectsType][g].direction = object.direction;
+            });
+          });
+          break;
+      }
+    } // onmessage
+
     const http = new XMLHttpRequest();
     http.responser = this;
     http.open('GET', 'cave'+this.caveNumber.toString().padStart(2, '0')+'.data');
@@ -46,7 +63,7 @@ export class CaveModel extends AbstractModel {
     super.init();
 
     this.borderEntity.bkColor = this.app.platform.colorByName('black');
-    this.gameAreaEntity = new GameAreaEntity(this.desktopEntity, 0, 0, 32*8, 16*8, this.caveNumber);
+    this.gameAreaEntity = new GameAreaEntity(this.desktopEntity, 0, 0, 32*8, 16*8, this.caveNumber, this.initData);
     this.desktopEntity.addEntity(this.gameAreaEntity);
     this.caveNameEntity = new ZXTextEntity(this.desktopEntity, 0, 16*8, 32*8, 8, '', this.app.platform.colorByName('black'), this.app.platform.colorByName('yellow'), 0, true);
     this.caveNameEntity.justify = 2;
@@ -82,7 +99,7 @@ export class CaveModel extends AbstractModel {
     this.caveNameEntity.setText(data.name);
     this.borderEntity.bkColor = this.app.platform.zxColorByAttr(this.app.hexToInt(data.borderColor), 7, 1);
     super.setData(data);
-    this.worker = new Worker(this.app.importPath+'/gameWorker.js');
+    this.worker.postMessage({'id': 'init', 'initData': this.initData});
   } // setData
 
   handleEvent(event) {
