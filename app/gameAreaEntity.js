@@ -23,7 +23,7 @@ export class GameAreaEntity extends AbstractEntity {
     this.graphicCache = {};
     this.staticKinds = ['floor', 'wall', 'nasty', 'extra'];
 
-    this.spriteEntities = {'guardians': []};
+    this.spriteEntities = {'crumblingFloor': [], 'conveyors': [], 'guardians': []};
   } // constructor
 
   drawEntity() {
@@ -96,6 +96,51 @@ export class GameAreaEntity extends AbstractEntity {
       }
     });
 
+    // layout
+    this.initData['crumblingFloor'] = [];
+    this.caveData.layout.forEach((row, r) => {
+      for (var column = 0; column < row.length/2; column++) {
+        var attr = row.substring(column*2, column*2+2);
+        if (attr != this.caveData.bkColor) {
+          var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
+          switch (this.caveData.graphicData[attr].kind) {
+            case 'floor':
+              break;
+            case 'crumblingFloor':
+              var entity = new SpriteEntity(this, column*8, r*8, penColor, false, 0, 0);
+              entity.setGraphicsData(this.caveData.graphicData[attr]);
+              this.addEntity(entity);
+              this.spriteEntities.crumblingFloor.push(entity);
+              //this.initData.crumblingFloor.push({'visible': true, 'type': guardianType, 'x': guardian.init.x, 'y': guardian.init.y, 'width': guardianTypeData.width, 'height': guardianTypeData.height, 'frame': guardian.init.frame, 'direction': guardian.init.direction, 'limitLeft': guardian.limits.left, 'limitRight': guardian.limits.right, 'paintCorrectionsX': guardianTypeData.paintCorrections.x, 'paintCorrectionsY': guardianTypeData.paintCorrections.y});
+              break;
+            case 'wall':
+              break;
+            case 'conveyor':
+              break;
+            case 'nasty':
+              break;
+            case 'extra':
+              break;
+          }
+        }
+      }
+    });
+
+    // conveyors
+    this.initData['conveyors'] = [];
+    if ('conveyors' in data) {
+      data.conveyors.forEach((conveyor, c) => {
+        var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(conveyor.attribute));
+        var entity = new SpriteEntity(this, conveyor.location.x*8, conveyor.location.y*8, penColor, false, 0, 0);
+        entity.repeatX = this.app.hexToInt(conveyor.length);
+        entity.setGraphicsData(conveyor);
+        this.addEntity(entity);
+        this.spriteEntities.conveyors.push(entity);
+        this.initData.conveyors.push({'visible': true, 'moving': conveyor.moving, 'x': conveyor.location.x*8, 'y': conveyor.location.y*8, 'length': this.app.hexToInt(conveyor.length)*8, 'height': 8, 'frame': 0, 'direction': 0});
+      });
+    }
+
+    // guardians
     this.initData['guardians'] = [];
     ['horizontal', 'vertical', 'forDropping', 'falling'].forEach((guardianType, type) => {
       if (guardianType in data.guardians) {
@@ -103,8 +148,8 @@ export class GameAreaEntity extends AbstractEntity {
         guardianTypeData.figures.forEach((guardian) => {
           var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(guardian.attribute));
           var entity = new SpriteEntity(this, guardian.init.x+guardianTypeData.paintCorrections.x, guardian.init.y+guardianTypeData.paintCorrections.y, penColor, false, guardian.init.frame, guardian.init.direction);
-          this.addEntity(entity);
           entity.setGraphicsData(guardianTypeData);
+          this.addEntity(entity);
           this.spriteEntities.guardians.push(entity);
           this.initData.guardians.push({'visible': true, 'type': guardianType, 'x': guardian.init.x, 'y': guardian.init.y, 'width': guardianTypeData.width, 'height': guardianTypeData.height, 'frame': guardian.init.frame, 'direction': guardian.init.direction, 'limitLeft': guardian.limits.left, 'limitRight': guardian.limits.right, 'paintCorrectionsX': guardianTypeData.paintCorrections.x, 'paintCorrectionsY': guardianTypeData.paintCorrections.y});
         });
