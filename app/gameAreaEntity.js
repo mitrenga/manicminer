@@ -137,7 +137,8 @@ export class GameAreaEntity extends AbstractEntity {
     if (conveyorData !== false) {
       var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(conveyorData.attr));
       var entity = new SpriteEntity(this, conveyorData.x*8, conveyorData.y*8, penColor, false, 0, 0);
-      entity.repeatX = conveyorData.length;
+      entity.setFixSize(8, 8);
+      entity.setRepeatX(conveyorData.length);
       entity.setGraphicsData(data.graphicData[conveyorData.attr]);
       entity.cloneSprite(0);
       var rotateDirection = 1;
