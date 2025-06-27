@@ -97,18 +97,19 @@ export class GameAreaEntity extends AbstractEntity {
     });
 
     // layout
+    var conveyorData = false;
     this.initData['crumblingFloor'] = [];
-    this.caveData.layout.forEach((row, r) => {
+    data.layout.forEach((row, r) => {
       for (var column = 0; column < row.length/2; column++) {
         var attr = row.substring(column*2, column*2+2);
-        if (attr != this.caveData.bkColor) {
+        if (attr != data.bkColor) {
           var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
-          switch (this.caveData.graphicData[attr].kind) {
+          switch (data.graphicData[attr].kind) {
             case 'floor':
               break;
             case 'crumblingFloor':
               var entity = new SpriteEntity(this, column*8, r*8, penColor, false, 0, 0);
-              entity.setGraphicsData(this.caveData.graphicData[attr]);
+              entity.setGraphicsData(data.graphicData[attr]);
               this.addEntity(entity);
               this.spriteEntities.crumblingFloor.push(entity);
               //this.initData.crumblingFloor.push({'visible': true, 'type': guardianType, 'x': guardian.init.x, 'y': guardian.init.y, 'width': guardianTypeData.width, 'height': guardianTypeData.height, 'frame': guardian.init.frame, 'direction': guardian.init.direction, 'limitLeft': guardian.limits.left, 'limitRight': guardian.limits.right, 'paintCorrectionsX': guardianTypeData.paintCorrections.x, 'paintCorrectionsY': guardianTypeData.paintCorrections.y});
@@ -116,6 +117,11 @@ export class GameAreaEntity extends AbstractEntity {
             case 'wall':
               break;
             case 'conveyor':
+              if (conveyorData === false) {
+                conveyorData = {'attr': attr, 'x': column, 'y': r, 'length': 1};
+              } else {
+                conveyorData.length++;
+              }
               break;
             case 'nasty':
               break;
@@ -126,18 +132,29 @@ export class GameAreaEntity extends AbstractEntity {
       }
     });
 
-    // conveyors
+    // conveyor
     this.initData['conveyors'] = [];
-    if ('conveyors' in data) {
-      data.conveyors.forEach((conveyor, c) => {
-        var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(conveyor.attribute));
-        var entity = new SpriteEntity(this, conveyor.location.x*8, conveyor.location.y*8, penColor, false, 0, 0);
-        entity.repeatX = this.app.hexToInt(conveyor.length);
-        entity.setGraphicsData(conveyor);
-        this.addEntity(entity);
-        this.spriteEntities.conveyors.push(entity);
-        this.initData.conveyors.push({'visible': true, 'moving': conveyor.moving, 'x': conveyor.location.x*8, 'y': conveyor.location.y*8, 'length': this.app.hexToInt(conveyor.length)*8, 'height': 8, 'frame': 0, 'direction': 0});
-      });
+    if (conveyorData !== false) {
+      var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(conveyorData.attr));
+      var entity = new SpriteEntity(this, conveyorData.x*8, conveyorData.y*8, penColor, false, 0, 0);
+      entity.repeatX = conveyorData.length;
+      entity.setGraphicsData(data.graphicData[conveyorData.attr]);
+      entity.cloneSprite(0);
+      var rotateDirection = 1;
+      if (data.graphicData[conveyorData.attr].moving == 'right') {
+        rotateDirection = -1;
+      }
+      entity.rotateSpriteRow(1, 0, -2*rotateDirection);
+      entity.rotateSpriteRow(1, 2, 2*rotateDirection);
+      entity.cloneSprite(1);
+      entity.rotateSpriteRow(2, 0, -2*rotateDirection);
+      entity.rotateSpriteRow(2, 2, 2*rotateDirection);
+      entity.cloneSprite(2);
+      entity.rotateSpriteRow(3, 0, -2*rotateDirection);
+      entity.rotateSpriteRow(3, 2, 2*rotateDirection);
+      this.addEntity(entity);
+      this.spriteEntities.conveyors.push(entity);
+      this.initData.conveyors.push({'visible': true, 'moving': conveyorData.moving, 'x': conveyorData.x*8, 'y': conveyorData.y*8, 'length': conveyorData.length*8, 'height': 8, 'frame': 0, 'direction': 0});
     }
 
     // guardians
