@@ -29,6 +29,8 @@ export class GameAreaEntity extends AbstractEntity {
   drawEntity() {
     if (this.caveData) {
       if (this.drawingCache[0].needToRefresh(this, this.width, this.height)) {
+
+        // layout
         this.app.layout.paintRect(this.drawingCache[0].ctx, 0, 0, this.width, this.height, this.app.platform.zxColorByAttr(this.app.hexToInt(this.caveData.bkColor), 56, 8));
         this.caveData.layout.forEach((row, r) => {
           for (var column = 0; column < row.length/2; column++) {
@@ -58,6 +60,7 @@ export class GameAreaEntity extends AbstractEntity {
           }
         });
 
+        // image
         if ('image' in this.caveData) {
           for (var row = 0; row < 8; row++) {
             for (var column = 0; column < 32; column++) {
@@ -78,10 +81,9 @@ export class GameAreaEntity extends AbstractEntity {
         }
         
       }
+      this.app.layout.paintCache(this, 0);
+      super.drawSubEntities();
     }
-
-    this.app.layout.paintCache(this, 0);
-    super.drawSubEntities();
   } // drawEntity
 
   setData(data) {
