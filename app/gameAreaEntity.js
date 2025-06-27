@@ -136,7 +136,11 @@ export class GameAreaEntity extends AbstractEntity {
     this.initData['conveyors'] = [];
     if (conveyorData !== false) {
       var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(conveyorData.attr));
-      var entity = new SpriteEntity(this, conveyorData.x*8, conveyorData.y*8, penColor, false, 0, 0);
+      var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(conveyorData.attr));
+      if (bkColor == this.app.platform.bkColorByAttr(this.app.hexToInt(data.bkColor))) {
+        bkColor = false;
+      }
+      var entity = new SpriteEntity(this, conveyorData.x*8, conveyorData.y*8, penColor, bkColor, 0, 0);
       entity.setFixSize(8, 8);
       entity.setRepeatX(conveyorData.length);
       entity.setGraphicsData(data.graphicData[conveyorData.attr]);
