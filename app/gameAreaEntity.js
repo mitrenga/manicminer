@@ -29,9 +29,9 @@ export class GameAreaEntity extends AbstractEntity {
   drawEntity() {
     if (this.caveData) {
       if (this.drawingCache[0].needToRefresh(this, this.width, this.height)) {
+        this.app.layout.paintRect(this.drawingCache[0].ctx, 0, 0, this.width, this.height, this.app.platform.zxColorByAttr(this.app.hexToInt(this.caveData.bkColor), 56, 8));
 
         // layout
-        this.app.layout.paintRect(this.drawingCache[0].ctx, 0, 0, this.width, this.height, this.app.platform.zxColorByAttr(this.app.hexToInt(this.caveData.bkColor), 56, 8));
         this.caveData.layout.forEach((row, r) => {
           for (var column = 0; column < row.length/2; column++) {
             var attr = row.substring(column*2, column*2+2);
