@@ -167,8 +167,11 @@ export class GameAreaEntity extends AbstractEntity {
     // items
     this.initData.items = [];
     data.items.data.forEach((item) => {
-      var itemColor = this.app.hexToInt(item.initAttribute);
+      var itemColor = this.app.hexToInt(item.initAttribute)&7;
       var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(item.initAttribute));
+      if (bkColor == this.app.platform.bkColorByAttr(this.app.hexToInt(data.bkColor))) {
+        bkColor = false;
+      }
       var tmpColor = itemColor;
       var penColor0 = this.app.platform.color(tmpColor);
       tmpColor = this.app.rotateInc(tmpColor, 3, 6);
@@ -177,7 +180,7 @@ export class GameAreaEntity extends AbstractEntity {
       var penColor2 = this.app.platform.color(tmpColor);
       tmpColor = this.app.rotateInc(tmpColor, 3, 6);
       var penColor3 = this.app.platform.color(tmpColor);
-      var entity = new SpriteEntity(this, item.x*8, item.y*8, false, false, 0, 0);
+      var entity = new SpriteEntity(this, item.x*8, item.y*8, false, bkColor, 0, 0);
       this.addEntity(entity);
       entity.setColorsMap({'#': {0: penColor0, 1: penColor1, 2: penColor2, 3: penColor3}});
       entity.setGraphicsData(data.items);
