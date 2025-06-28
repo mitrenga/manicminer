@@ -125,7 +125,8 @@ export class CaveModel extends AbstractModel {
             'width': this.app.globalData.willy.width,
             'height': this.app.globalData.willy.height,
             'frames': this.app.globalData.willy.frames,
-            'directions': this.app.globalData.willy.directions
+            'directions': this.app.globalData.willy.directions,
+            'attribute': this.app.globalData.willy.attribute
           }
         );
         this.setData(Object.assign(event.data, {'willy': willy}));

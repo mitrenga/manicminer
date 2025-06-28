@@ -23,7 +23,7 @@ export class GameAreaEntity extends AbstractEntity {
     this.graphicCache = {};
     this.staticKinds = ['floor', 'wall', 'nasty', 'extra'];
 
-    this.spriteEntities = {'crumblingFloor': [], 'conveyors': [], 'guardians': []};
+    this.spriteEntities = {'crumblingFloor': [], 'conveyors': [], 'guardians': [], 'items': [], 'willy': []};
   } // constructor
 
   drawEntity() {
@@ -179,6 +179,15 @@ export class GameAreaEntity extends AbstractEntity {
         });
       }
     });
+
+    // Willy
+    this.initData.willy = [];
+    var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(data.willy.attribute));
+    var entity = new SpriteEntity(this, data.willy.init.x, data.willy.init.y, penColor, false, data.willy.init.frame, data.willy.init.direction);
+    this.addEntity(entity);
+    entity.setGraphicsData(data.willy);
+    this.spriteEntities.willy.push(entity);
+    this.initData.willy.push({'visible': true, 'x': data.willy.init.x, 'y': data.willy.init.y, 'width': data.willy.width, 'height': data.willy.height, 'frame': data.willy.init.frame, 'direction': data.willy.init.direction, 'paintCorrectionsX': data.willy.paintCorrections.x, 'paintCorrectionsY': data.willy.paintCorrections.y});
   } // setData
     
 } // class GameAreaEntity
