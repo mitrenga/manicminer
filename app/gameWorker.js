@@ -33,33 +33,92 @@ function gameLoop() {
 
     // guardians
     gameData.guardians.forEach((guardian) => {
-      switch (guardian.direction) {
-        case 0:
-          if (guardian.x == guardian.limitRight)
-          {
-            guardian.direction = 1;
-          } else {
-            guardian.x += 2;
-            if (guardian.frame == 3) {
-              guardian.frame = 0;
-            } else {
-              guardian.frame++;
-            }
+      switch (guardian.type) {
+        case 'horizontal':
+          switch (guardian.direction) {
+            case 0:
+              if (guardian.x == guardian.limitRight)
+              {
+                guardian.direction = 1;
+              } else {
+                guardian.x += 2;
+                if (guardian.frame == 3) {
+                  guardian.frame = 0;
+                } else {
+                  guardian.frame++;
+                }
+              }
+              break;
+            case 1:
+              if (guardian.x == guardian.limitLeft)
+              {
+                guardian.direction = 0;
+              } else {
+                guardian.x -= 2;
+                if (guardian.frame == 0) {
+                  guardian.frame = 3;
+                } else {
+                  guardian.frame--;
+                }
+              }
+              break;
           }
           break;
-        case 1:
-          if (guardian.x == guardian.limitLeft)
-          {
-            guardian.direction = 0;
-          } else {
-            guardian.x -= 2;
-            if (guardian.frame == 0) {
-              guardian.frame = 3;
-            } else {
-              guardian.frame--;
+
+        case 'vertical':
+          switch (guardian.direction) {
+            case 0:
+              if (guardian.y == guardian.limitDown)
+              {
+                guardian.direction = 1;
+              } else {
+                guardian.y += 1;
+                if (guardian.frame == 3) {
+                  guardian.frame = 0;
+                } else {
+                  guardian.frame++;
+                }
+              }
+              break;
+            case 1:
+              if (guardian.y == guardian.limitUp)
+              {
+                guardian.direction = 0;
+              } else {
+                guardian.y -= 1;
+                if (guardian.frame == 0) {
+                  guardian.frame = 3;
+                } else {
+                  guardian.frame--;
+                }
+              }
+              break;
+          }
+          break;        
+
+        case 'forDropping':
+          if (counter%8 == 0) {
+            switch (guardian.direction) {
+              case 0:
+                if (guardian.frame == 1) {
+                  guardian.frame = 0;
+                } else {
+                  guardian.frame++;
+                }
+                break;
+              case 1:
+                if (guardian.frame == 1) {
+                  guardian.frame = 0;
+                } else {
+                  guardian.frame++;
+                }
+                break;
             }
           }
-          break;
+          break;        
+
+        case 'falling':
+          break;        
       }
     });
   }
