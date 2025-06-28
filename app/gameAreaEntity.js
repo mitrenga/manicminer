@@ -23,7 +23,7 @@ export class GameAreaEntity extends AbstractEntity {
     this.graphicCache = {};
     this.staticKinds = ['floor', 'wall', 'nasty', 'extra'];
 
-    this.spriteEntities = {'crumblingFloor': [], 'conveyors': [], 'guardians': [], 'items': [], 'willy': []};
+    this.spriteEntities = {'crumblingFloor': [], 'conveyors': [], 'guardians': [], 'items': [], 'willy': [], "portal": []};
   } // constructor
 
   drawEntity() {
@@ -114,7 +114,7 @@ export class GameAreaEntity extends AbstractEntity {
               entity.setGraphicsData(data.graphicData[attr]);
               this.addEntity(entity);
               this.spriteEntities.crumblingFloor.push(entity);
-              //this.initData.crumblingFloor.push({'visible': true, 'type': guardianType, 'x': guardian.init.x, 'y': guardian.init.y, 'width': guardianTypeData.width, 'height': guardianTypeData.height, 'frame': guardian.init.frame, 'direction': guardian.init.direction, 'limitLeft': guardian.limits.left, 'limitRight': guardian.limits.right, 'paintCorrectionsX': guardianTypeData.paintCorrections.x, 'paintCorrectionsY': guardianTypeData.paintCorrections.y});
+              this.initData.crumblingFloor.push({'visible': true, 'x': column*8, 'y': r*8, 'width': 8, 'height': 8, 'frame': 0, 'direction': 0});
               break;
             case 'wall':
               break;
@@ -213,6 +213,16 @@ export class GameAreaEntity extends AbstractEntity {
     entity.setGraphicsData(data.willy);
     this.spriteEntities.willy.push(entity);
     this.initData.willy.push({'visible': true, 'x': data.willy.init.x, 'y': data.willy.init.y, 'width': data.willy.width, 'height': data.willy.height, 'frame': data.willy.init.frame, 'direction': data.willy.init.direction, 'paintCorrectionsX': data.willy.paintCorrections.x, 'paintCorrectionsY': data.willy.paintCorrections.y});
+
+    // portal
+    this.initData.portal = [];
+    var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(data.portal.attribute));
+    var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(data.portal.attribute));
+    var entity = new SpriteEntity(this, data.portal.location.x*8, data.portal.location.y*8, penColor, bkColor, 0, 0);
+    this.addEntity(entity);
+    entity.setGraphicsData(data.portal);
+    this.spriteEntities.portal.push(entity);
+    this.initData.portal.push({'visible': true, 'x': data.portal.location.x*8, 'y': data.portal.location.y*8, 'frame': 0, 'direction': 0});
   } // setData
     
 } // class GameAreaEntity
