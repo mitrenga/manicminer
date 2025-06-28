@@ -262,7 +262,7 @@ export class MenuModel extends AbstractModel {
         var counter = Math.round((timestamp-this.timer)/250);
         this.logoEntity.setAnimateState(counter%4);
 
-        counter = Math.round((timestamp-this.timer)/(1000/15));
+        counter = Math.round((timestamp-this.timer)/72);
         this.objectsEntities.forEach((entity) => {
           entity.frame = counter%entity.framesCount;
         });
