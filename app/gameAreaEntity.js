@@ -164,6 +164,31 @@ export class GameAreaEntity extends AbstractEntity {
       this.initData.conveyors.push({'visible': true, 'moving': conveyorData.moving, 'x': conveyorData.x*8, 'y': conveyorData.y*8, 'length': conveyorData.length*8, 'height': 8, 'frame': 0, 'direction': 0});
     }
 
+    // items
+    this.initData.items = [];
+    data.items.data.forEach((item) => {
+      var itemColor = this.app.hexToInt(item.initAttribute);
+      var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(item.initAttribute));
+      var tmpColor = itemColor;
+      var penColor0 = this.app.platform.color(tmpColor);
+      tmpColor = this.app.rotateInc(tmpColor, 3, 6);
+      var penColor1 = this.app.platform.color(tmpColor);
+      tmpColor = this.app.rotateInc(tmpColor, 3, 6);
+      var penColor2 = this.app.platform.color(tmpColor);
+      tmpColor = this.app.rotateInc(tmpColor, 3, 6);
+      var penColor3 = this.app.platform.color(tmpColor);
+      var entity = new SpriteEntity(this, item.x*8, item.y*8, false, false, 0, 0);
+      this.addEntity(entity);
+      entity.setColorsMap({'#': {0: penColor0, 1: penColor1, 2: penColor2, 3: penColor3}});
+      entity.setGraphicsData(data.items);
+      entity.cloneSprite(0);
+      entity.cloneSprite(0);
+      entity.cloneSprite(0);
+      this.spriteEntities.items.push(entity);
+      this.initData.items.push({'visible': true, 'x': item.x*8, 'y': item.y*8, 'frame': 0, 'direction': 0});
+      itemColor = this.app.rotateInc(itemColor, 3, 6);
+    });
+
     // guardians
     this.initData['guardians'] = [];
     ['horizontal', 'vertical', 'forDropping', 'falling'].forEach((guardianType, type) => {

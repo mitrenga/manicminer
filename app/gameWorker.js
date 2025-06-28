@@ -22,6 +22,15 @@ function gameLoop() {
       }  
     });
 
+    // items
+    gameData.items.forEach((item) => {
+      if (item.frame == 3) {
+        item.frame = 0;
+      } else {
+        item.frame++;
+      }  
+    });
+
     // guardians
     gameData.guardians.forEach((guardian) => {
       switch (guardian.direction) {
