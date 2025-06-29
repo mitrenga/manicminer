@@ -133,8 +133,55 @@ function gameLoop() {
             }
           }
           break;        
-
+          
         case 'falling':
+          switch (guardian.direction) {
+            case 0:
+              if (guardian.y >= guardian.limitDown) {
+                guardian.direction = 1;
+              }
+              break;
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+              guardian.direction++;
+              break;
+            case 7:
+              guardian.direction = 0;
+              if (guardian.frame == guardian.frames-1) {
+                guardian.frame = 0;
+              } else {
+                guardian.frame++;
+              }
+              guardian.y = guardian.next[guardian.x].y;
+              guardian.x = guardian.next[guardian.x].x;
+              break;
+          }
+          switch (guardian.direction) {
+            case 0:
+              guardian.y += guardian.speed;
+              if (guardian.frame == guardian.frames-1) {
+                guardian.frame = 0;
+              } else {
+                guardian.frame++;
+              }
+              break;
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+              if (guardian.frame == guardian.frames-1) {
+                guardian.frame = 0;
+              } else {
+                guardian.frame++;
+              }
+              break;
+          }
           break;        
       }
     });
