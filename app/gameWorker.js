@@ -41,7 +41,7 @@ function gameLoop() {
               toMove = true;
               break;
             case 1:
-              if (counter%2 == 0) {
+              if (this.counter%2 == 0) {
                 toMove = true;
               }
               break;
@@ -49,31 +49,29 @@ function gameLoop() {
           if (toMove) {
             switch (guardian.direction) {
               case 0:
-                if (guardian.x == guardian.limitRight) {
+                if (guardian.x == guardian.limitRight)
+                {
                   guardian.direction = 1;
+                } else {
+                  guardian.x += 2;
+                  if (guardian.frame == 3) {
+                    guardian.frame = 0;
+                  } else {
+                    guardian.frame++;
+                  }
                 }
                 break;
               case 1:
-                if (guardian.x == guardian.limitLeft) {
+                if (guardian.x == guardian.limitLeft)
+                {
                   guardian.direction = 0;
-                }
-                break;
-            }
-            switch (guardian.direction) {
-              case 0:
-                guardian.x += 2;
-                if (guardian.frame == 3) {
-                  guardian.frame = 0;
                 } else {
-                  guardian.frame++;
-                }
-                break;
-              case 1:
-                guardian.x -= 2;
-                if (guardian.frame == 0) {
-                  guardian.frame = 3;
-                } else {
-                  guardian.frame--;
+                  guardian.x -= 2;
+                  if (guardian.frame == 0) {
+                    guardian.frame = 3;
+                  } else {
+                    guardian.frame--;
+                  }
                 }
                 break;
             }
