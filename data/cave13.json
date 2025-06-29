@@ -64,6 +64,7 @@
      },
      "4B":{
         "kind":"conveyor",
+        "moving":"left",
         "sprite":[
            "####----",
            "-##--##-",

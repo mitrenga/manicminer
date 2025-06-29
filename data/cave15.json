@@ -64,6 +64,7 @@
      },
      "46":{
         "kind":"conveyor",
+        "moving":"left",
         "sprite":[
            "####----",
            "-##--##-",
@@ -190,7 +191,7 @@
               "attribute":"06",
               "limits":{
                  "left":8,
-                 "right":60
+                 "right":62
               },
               "speed":0,
               "init":{
