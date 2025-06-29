@@ -64,6 +64,7 @@
      },
      "26":{
         "kind":"conveyor",
+        "moving":"left",
         "sprite":[
            "####----",
            "-##--##-",
@@ -371,12 +372,12 @@
                  "up":2,
                  "down":102
               },
+              "speed":3,
               "init":{
                  "x":40,
                  "y":64,
                  "direction":0,
-                 "frame":0,
-                 "pixelsIncrement":3
+                 "frame":0
               }
            },
            {
@@ -385,12 +386,12 @@
                  "up":48,
                  "down":102
               },
+              "speed":1,
               "init":{
                  "x":88,
                  "y":56,
                  "direction":1,
-                 "frame":2,
-                 "pixelsIncrement":1
+                 "frame":2
               }
            },
            {
@@ -399,12 +400,12 @@
                  "up":4,
                  "down":80
               },
+              "speed":1,
               "init":{
                  "x":128,
                  "y":80,
                  "direction":0,
-                 "frame":2,
-                 "pixelsIncrement":1
+                 "frame":2
               }
            }
         ],

@@ -61,19 +61,6 @@
            "#------#",
            "########"
         ]
-     },
-     "04":{
-        "kind":"conveyor",
-        "sprite":[
-           "####----",
-           "-##--##-",
-           "####----",
-           "-##--##-",
-           "--------",
-           "#--##--#",
-           "########",
-           "--------"
-        ]
      }
   },
   "portal":{
@@ -122,7 +109,7 @@
   },
   "willy":{
      "init":{
-        "x":240,
+        "x":238,
         "y":104,
         "direction":1,
         "frame":3
@@ -351,12 +338,12 @@
                  "up":5,
                  "down":104
               },
+              "speed":3,
               "init":{
                  "x":40,
                  "y":8,
                  "direction":0,
-                 "frame":0,
-                 "pixelsIncrement":3
+                 "frame":0
               }
            },
            {
@@ -365,12 +352,12 @@
                  "up":4,
                  "down":104
               },
+              "speed":2,
               "init":{
                  "x":80,
                  "y":8,
                  "direction":0,
-                 "frame":1,
-                 "pixelsIncrement":2
+                 "frame":1
               }
            },
            {
@@ -379,12 +366,12 @@
                  "up":4,
                  "down":104
               },
+              "speed":4,
               "init":{
                  "x":160,
                  "y":8,
                  "direction":0,
-                 "frame":2,
-                 "pixelsIncrement":4
+                 "frame":2
               }
            },
            {
@@ -393,12 +380,12 @@
                  "up":5,
                  "down":104
               },
+              "speed":1,
               "init":{
                  "x":200,
                  "y":8,
                  "direction":0,
-                 "frame":3,
-                 "pixelsIncrement":1
+                 "frame":3
               }
            }
         ],
