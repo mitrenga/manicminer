@@ -5,6 +5,7 @@ const { ZXTextEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum
 const { GameAreaEntity } = await import('./gameAreaEntity.js?ver='+window.srcVersion);
 const { AirEntity } = await import('./airEntity.js?ver='+window.srcVersion);
 const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcVersion);
+const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import AbstractEntity from './svision/js/abstractEntity.js';
@@ -12,6 +13,7 @@ import ZXTextEntity from '././svision/js/platform/canvas2D/zxSpectrum/zxTextEnti
 import GameAreaEntity from './gameAreaEntity.js';
 import AirEntity from './airEntity.js';
 import PauseGameEntity from './pauseGameEntity.js';
+import SpriteEntity from '././svision/js/platform/canvas2D/spriteEntity.js';
 /**/
 // begin code
 
@@ -27,28 +29,37 @@ export class CaveModel extends AbstractModel {
     this.bkCaveNameEntity = null;
     this.hiScoreEntity = null;
     this.scoreEntity = null;
+    this.liveEntities = [];
 
-    this.initData = {};
+    this.initData = {'info': [0, 0, 0, 0]};
 
     this.worker = new Worker(this.app.importPath+'/gameWorker.js?ver='+window.srcVersion);
     this.worker.onmessage = (event) => {
       switch (event.data.id) {
         case 'update':
           Object.keys(event.data.gameData).forEach((objectsType) => {
-            event.data.gameData[objectsType].forEach((object, g) => {
-              var x = object.x;
-              if ('paintCorrectionsX' in object) {
-                x += object.paintCorrectionsX;
+            if (objectsType != 'info') {
+              event.data.gameData[objectsType].forEach((object, g) => {
+                var x = object.x;
+                if ('paintCorrectionsX' in object) {
+                  x += object.paintCorrectionsX;
+                }
+                this.gameAreaEntity.spriteEntities[objectsType][g].x = x;
+                var y = object.y;
+                if ('paintCorrectionsY' in object) {
+                  y += object.paintCorrectionsY;
+                }
+                this.gameAreaEntity.spriteEntities[objectsType][g].y = y;
+                this.gameAreaEntity.spriteEntities[objectsType][g].frame = object.frame;
+                this.gameAreaEntity.spriteEntities[objectsType][g].direction = object.direction;
+              });
+            }
+            else {
+              for (var l = 0; l < this.app.lives; l++) {
+                this.liveEntities[l].x = event.data.gameData.info[3]%4*2+l*16;
+                this.liveEntities[l].frame = event.data.gameData.info[3]%4;
               }
-              this.gameAreaEntity.spriteEntities[objectsType][g].x = x;
-              var y = object.y;
-              if ('paintCorrectionsY' in object) {
-                y += object.paintCorrectionsY;
-              }
-              this.gameAreaEntity.spriteEntities[objectsType][g].y = y;
-              this.gameAreaEntity.spriteEntities[objectsType][g].frame = object.frame;
-              this.gameAreaEntity.spriteEntities[objectsType][g].direction = object.direction;
-            });
+            }
           });
           break;
       }
@@ -87,6 +98,10 @@ export class CaveModel extends AbstractModel {
     this.desktopEntity.addEntity(this.scoreEntity);
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 20*8, 32*8, 8, false, this.app.platform.colorByName('black')));
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 21*8, 32*8, 3*8, false, this.app.platform.colorByName('black')));
+    for (var l = 0; l < this.app.lives; l++) {
+      this.liveEntities[l] = new SpriteEntity(this.desktopEntity, l*16, 21*8, this.app.platform.colorByName('brightCyan'), false, 0, 0);
+      this.desktopEntity.addEntity(this.liveEntities[l]);
+    }
 
     if (this.app.audioManager.music > 0) {
       this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'music'});
@@ -106,6 +121,9 @@ export class CaveModel extends AbstractModel {
   setData(data) {
     this.caveNameEntity.setText(data.name);
     this.borderEntity.bkColor = this.app.platform.zxColorByAttr(this.app.hexToInt(data.borderColor), 7, 1);
+    for (var l = 0; l < this.app.lives; l++) {
+      this.liveEntities[l].setGraphicsData(data.willy);
+    }
     super.setData(data);
     this.worker.postMessage({'id': 'init', 'initData': this.initData});
   } // setData
