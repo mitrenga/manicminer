@@ -51,6 +51,7 @@
       },
       "44":{
          "kind":"conveyor",
+         "moving":"left",
          "sprite":[
             "####----",
             "-##--##-",
