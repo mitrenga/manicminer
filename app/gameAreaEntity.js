@@ -11,12 +11,13 @@ import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
 
 export class GameAreaEntity extends AbstractEntity {
 
-  constructor(parentEntity, x, y, width, height, caveNumber, initData) {
+  constructor(parentEntity, x, y, width, height, caveNumber, initData, demo) {
     super(parentEntity, x, y, width, height);
     this.id = 'GameAreaEntity';
 
     this.caveNumber = caveNumber;
     this.initData = initData;
+    this.demo = demo;
     this.caveData = null;
 
     this.app.layout.newDrawingCache(this, 0); 
@@ -223,12 +224,14 @@ export class GameAreaEntity extends AbstractEntity {
 
     // Willy
     this.initData.willy = [];
-    var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(data.willy.attribute));
-    var entity = new SpriteEntity(this, data.willy.init.x, data.willy.init.y, penColor, false, data.willy.init.frame, data.willy.init.direction);
-    this.addEntity(entity);
-    entity.setGraphicsData(data.willy);
-    this.spriteEntities.willy.push(entity);
-    this.initData.willy.push({'visible': true, 'x': data.willy.init.x, 'y': data.willy.init.y, 'width': data.willy.width, 'height': data.willy.height, 'frame': data.willy.init.frame, 'direction': data.willy.init.direction, 'paintCorrectionsX': data.willy.paintCorrections.x, 'paintCorrectionsY': data.willy.paintCorrections.y});
+    if (!this.demo) {
+      var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(data.willy.attribute));
+      var entity = new SpriteEntity(this, data.willy.init.x, data.willy.init.y, penColor, false, data.willy.init.frame, data.willy.init.direction);
+      this.addEntity(entity);
+      entity.setGraphicsData(data.willy);
+      this.spriteEntities.willy.push(entity);
+      this.initData.willy.push({'visible': true, 'x': data.willy.init.x, 'y': data.willy.init.y, 'width': data.willy.width, 'height': data.willy.height, 'frame': data.willy.init.frame, 'direction': data.willy.init.direction, 'paintCorrectionsX': data.willy.paintCorrections.x, 'paintCorrectionsY': data.willy.paintCorrections.y});
+    }
 
     // portal
     this.initData.portal = [];

@@ -27,6 +27,7 @@ export class GameApp extends AbstractApp {
     this.audioManager = new AudioManager(this);
 
     this.caveNumber = false;
+    this.demo = false;
     this.lives = 3;
     this.globalData = false;
     this.model = this.newModel('ResetModel');
@@ -38,7 +39,7 @@ export class GameApp extends AbstractApp {
       case 'ResetModel': return new ResetModel(this);
       case 'MenuModel': return new MenuModel(this);
       case 'MainModel': return new MainModel(this);
-      case 'CaveModel': return new CaveModel(this, this.caveNumber);
+      case 'CaveModel': return new CaveModel(this, this.caveNumber, this.demo);
       case 'GameOverModel': return new GameOverModel(this);
       case 'TapeLoadingModel': return new TapeLoadingModel(this);
     } // switch

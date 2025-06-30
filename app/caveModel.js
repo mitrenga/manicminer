@@ -19,7 +19,7 @@ import SpriteEntity from '././svision/js/platform/canvas2D/spriteEntity.js';
 
 export class CaveModel extends AbstractModel {
   
-  constructor(app, caveNumber) {
+  constructor(app, caveNumber, demo) {
     super(app);
     this.id = 'CaveModel';
 
@@ -30,11 +30,17 @@ export class CaveModel extends AbstractModel {
     this.hiScoreEntity = null;
     this.scoreEntity = null;
     this.liveEntities = [];
+    this.demo = demo;
 
     this.initData = {'info': [0, 0, 0, 0]};
 
     this.worker = new Worker(this.app.importPath+'/gameWorker.js?ver='+window.srcVersion);
     this.worker.onmessage = (event) => {
+
+      if (this.demo && event.data.gameData.info[0] == 80) {
+        this.sendEvent(1, {'id': 'demoCave', 'caveNumber': this.caveNumber+1});
+      }
+
       switch (event.data.id) {
         case 'update':
           Object.keys(event.data.gameData).forEach((objectsType) => {
@@ -82,7 +88,7 @@ export class CaveModel extends AbstractModel {
     super.init();
 
     this.borderEntity.bkColor = this.app.platform.colorByName('black');
-    this.gameAreaEntity = new GameAreaEntity(this.desktopEntity, 0, 0, 32*8, 16*8, this.caveNumber, this.initData);
+    this.gameAreaEntity = new GameAreaEntity(this.desktopEntity, 0, 0, 32*8, 16*8, this.caveNumber, this.initData, this.demo);
     this.desktopEntity.addEntity(this.gameAreaEntity);
     this.caveNameEntity = new ZXTextEntity(this.desktopEntity, 0, 16*8, 32*8, 8, '', this.app.platform.colorByName('black'), this.app.platform.colorByName('yellow'), 0, true);
     this.caveNameEntity.justify = 2;
@@ -151,11 +157,43 @@ export class CaveModel extends AbstractModel {
         return true;
 
       case 'keyPress':
+        if (this.demo) {
+          this.app.model.shutdown();
+          this.app.model = this.app.newModel('MainModel');
+          this.app.model.init();
+          this.app.resizeApp();
+          return true;
+        }
         switch (event.key) {
           case 'Escape':
             this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 9*8, 5*8, 14*8+1, 14*8+2, this.borderEntity.bkColor));
             return true;
         }
+        break;
+
+      case 'mouseClick':
+        if (this.demo) {
+          this.app.model.shutdown();
+          this.app.model = this.app.newModel('MainModel');
+          this.app.model.init();
+          this.app.resizeApp();
+          return true;
+        }
+        break;
+
+      case 'demoCave':
+        this.app.model.shutdown();
+        if (event.caveNumber < this.app.globalData.cavesCount) {
+          this.app.caveNumber = event.caveNumber;
+        } else {
+          this.app.caveNumber = this.app.globalData.initCave;
+        }
+        this.app.demo = true;
+        this.app.model = this.app.newModel('CaveModel');
+        this.app.model.init();
+        this.app.resizeApp();
+        return true;
+    
     }
 
     return false;
