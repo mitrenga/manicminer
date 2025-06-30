@@ -141,12 +141,11 @@
   },
   "lightBeam":{
    "attribute":"77",
-   "width":8,
-   "height":8,
    "init":{
       "x":184,
       "y":0,
-      "direction":0
+      "width":8,
+      "height":120
    }
   },
   "guardians":{

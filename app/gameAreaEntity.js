@@ -23,7 +23,7 @@ export class GameAreaEntity extends AbstractEntity {
     this.graphicCache = {};
     this.staticKinds = ['floor', 'wall', 'nasty', 'extra'];
 
-    this.spriteEntities = {'crumblingFloor': [], 'conveyors': [], 'guardians': [], 'items': [], 'willy': [], "portal": []};
+    this.spriteEntities = {'crumblingFloor': [], 'conveyors': [], 'guardians': [], 'items': [], 'willy': [], "portal": [], "lightBeam": []};
   } // constructor
 
   drawEntity() {
@@ -239,6 +239,17 @@ export class GameAreaEntity extends AbstractEntity {
     entity.setGraphicsData(data.portal);
     this.spriteEntities.portal.push(entity);
     this.initData.portal.push({'visible': true, 'x': data.portal.location.x*8, 'y': data.portal.location.y*8, 'frame': 0, 'direction': 0});
+
+    // light beam
+    this.initData.lightBeam = [];
+    if ('lightBeam' in data) {
+      var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(data.lightBeam.attribute));
+      var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(data.lightBeam.attribute));
+      var entity = new AbstractEntity(this, data.lightBeam.init.x, data.lightBeam.init.y, data.lightBeam.init.width, data.lightBeam.init.height, penColor, bkColor);
+      this.addEntity(entity);
+      this.spriteEntities.lightBeam.push(entity);
+      this.initData.lightBeam.push({'visible': true, 'x': data.lightBeam.init.x, 'y': data.lightBeam.init.y, 'width': data.lightBeam.init.width, 'height': data.lightBeam.init.height});
+    }
   } // setData
     
 } // class GameAreaEntity
