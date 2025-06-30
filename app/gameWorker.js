@@ -101,7 +101,7 @@ function gameLoop() {
             case 1:
               if (guardian.y-guardian.speed <= guardian.limitUp) {
                 guardian.direction = 0;
-                guardian.frame = (guardian.frames-guardian.frame)%guardian.frames;
+                guardian.frame = guardian.frames-guardian.frame-1;
               }
               break;
           }
