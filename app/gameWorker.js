@@ -198,10 +198,29 @@ function gameLoop() {
       }
     });
   }
+
+  // light beam
+  var posX = gameData.lightBeam[0].x;
+  var posY = gameData.lightBeam[0].y;
+  var touch = false;
+  while (!touch && posY < 14*8) {
+    for (var g = 0; !touch && g < gameData.guardians.length; g++) {
+      var guardian = gameData.guardians[g];
+      if (posX+8 < guardian.x || posY+8 < guardian.y || posX > guardian.x+guardian.width || posY > guardian.y+guardian.height) {
+      } else {
+        touch = true;
+      }
+    }
+    posY += 8;
+  }
+  gameData.lightBeam[0].height = posY+8;
+
+  // game counters
   gameData.info[0] = counter;
   gameData.info[1] = counter2;
   gameData.info[2] = counter4;
   gameData.info[3] = counter6;
+
   postMessage({'id': 'update', 'gameData': gameData});
 } // gameLoop
 

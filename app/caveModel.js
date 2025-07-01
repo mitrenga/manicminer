@@ -44,7 +44,13 @@ export class CaveModel extends AbstractModel {
       switch (event.data.id) {
         case 'update':
           Object.keys(event.data.gameData).forEach((objectsType) => {
-            if (objectsType != 'info') {
+            if (objectsType == 'info') {
+              for (var l = 0; l < this.app.lives; l++) {
+                this.liveEntities[l].x = event.data.gameData.info[3]%4*2+l*16;
+                this.liveEntities[l].frame = event.data.gameData.info[3]%4;
+              }
+            }
+            else {
               event.data.gameData[objectsType].forEach((object, g) => {
                 var x = object.x;
                 if ('paintCorrectionsX' in object) {
@@ -58,13 +64,21 @@ export class CaveModel extends AbstractModel {
                 this.gameAreaEntity.spriteEntities[objectsType][g].y = y;
                 this.gameAreaEntity.spriteEntities[objectsType][g].frame = object.frame;
                 this.gameAreaEntity.spriteEntities[objectsType][g].direction = object.direction;
+                if ('width' in object) {
+                  var width = object.width;
+                  if ('paintCorrectionsX' in object) {
+                    width -= object.paintCorrectionsX;
+                  }
+                  this.gameAreaEntity.spriteEntities[objectsType][g].width = width;
+                }
+                if ('height' in object) {
+                  var height = object.height;
+                  if ('paintCorrectionsY' in object) {
+                    height -= object.paintCorrectionsY;
+                  }
+                  this.gameAreaEntity.spriteEntities[objectsType][g].height = height;
+                }
               });
-            }
-            else {
-              for (var l = 0; l < this.app.lives; l++) {
-                this.liveEntities[l].x = event.data.gameData.info[3]%4*2+l*16;
-                this.liveEntities[l].frame = event.data.gameData.info[3]%4;
-              }
             }
           });
           break;

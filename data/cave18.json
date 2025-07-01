@@ -157,7 +157,7 @@
                  "left":184,
                  "right":238
               },
-              "speed":1,
+              "speed":0,
               "init":{
                  "x":192,
                  "y":24,
@@ -171,7 +171,7 @@
                  "left":176,
                  "right":238
               },
-              "speed":1,
+              "speed":0,
               "init":{
                  "x":224,
                  "y":48,
@@ -203,7 +203,7 @@
               "init":{
                  "x":128,
                  "y":104,
-                 "direction":1,
+                 "direction":0,
                  "frame":3
               }
            }
