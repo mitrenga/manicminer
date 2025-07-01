@@ -101,7 +101,11 @@ export class GameAreaEntity extends AbstractEntity {
 
     // layout
     var conveyorData = false;
-    this.initData['crumblingFloor'] = [];
+    this.initData.floor = [];
+    this.initData.wall = [];
+    this.initData.crumblingFloor = [];
+    this.initData.nasty = [];
+    this.initData.extra = [];
     data.layout.forEach((row, r) => {
       for (var column = 0; column < row.length/2; column++) {
         var attr = row.substring(column*2, column*2+2);
@@ -109,6 +113,7 @@ export class GameAreaEntity extends AbstractEntity {
           var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
           switch (data.graphicData[attr].kind) {
             case 'floor':
+              this.initData.floor.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
               break;
             case 'crumblingFloor':
               var entity = new SpriteEntity(this, column*8, r*8, penColor, false, 0, 0);
@@ -118,6 +123,7 @@ export class GameAreaEntity extends AbstractEntity {
               this.initData.crumblingFloor.push({'visible': true, 'x': column*8, 'y': r*8, 'width': 8, 'height': 8, 'frame': 0, 'direction': 0});
               break;
             case 'wall':
+              this.initData.wall.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
               break;
             case 'conveyor':
               if (conveyorData === false) {
@@ -127,8 +133,10 @@ export class GameAreaEntity extends AbstractEntity {
               }
               break;
             case 'nasty':
+              this.initData.nasty.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
               break;
             case 'extra':
+              this.initData.extra.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
               break;
           }
         }
@@ -136,7 +144,7 @@ export class GameAreaEntity extends AbstractEntity {
     });
 
     // conveyor
-    this.initData['conveyors'] = [];
+    this.initData.conveyors = [];
     if (conveyorData !== false) {
       var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(conveyorData.attr));
       var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(conveyorData.attr));
