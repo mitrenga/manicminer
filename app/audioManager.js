@@ -45,7 +45,7 @@ export class AudioManager extends AbstractAudioManager {
     var sampleRate = this.channels[channel].ctx.sampleRate;
     switch (sound) {
       case 'titleScreenMelody': return this.titleScreenMelody(sampleRate);
-      case 'inGameMelody': return this.inGameMelody(sampleRate);
+      case 'inGameMelody': return this.inGameMelody(sampleRate, options.caveNumber, options.demo);
       case 'tapePilotToneSound': return this.tapePilotToneSound(sampleRate);
       case 'tapeRndDataSound': return this.tapeRndDataSound(sampleRate);
       case 'tapeScreenAttrSound': return this.tapeScreenAttrSound(sampleRate);
@@ -145,16 +145,28 @@ export class AudioManager extends AbstractAudioManager {
     return {'fragments': fragments, 'pulses': pulses, 'volume': this.music, 'events': events};
   } // titleScreenMelody
 
-  inGameMelody(sampleRate) {
+  inGameMelody(sampleRate, caveNumber, demo) {
     var inGameTuneData = [
       0x80,0x72,0x66,0x60,0x56,0x66,0x56,0x56,0x51,0x60,0x51,0x51,0x56,0x66,0x56,0x56,0x80,0x72,0x66,0x60,0x56,0x66,0x56,0x56,0x51,0x60,0x51,0x51,0x56,0x56,0x56,0x56,
       0x80,0x72,0x66,0x60,0x56,0x66,0x56,0x56,0x51,0x60,0x51,0x51,0x56,0x66,0x56,0x56,0x80,0x72,0x66,0x60,0x56,0x66,0x56,0x40,0x56,0x66,0x80,0x66,0x56,0x56,0x56,0x56
     ];
 
+    var data = [];
+    if (demo) {
+      if (caveNumber%2 == 0) {
+        data = inGameTuneData.slice(0, inGameTuneData.length/2-1); 
+      } else {
+        data = inGameTuneData.slice(inGameTuneData.length/2); 
+      }
+    } else {
+      data = inGameTuneData;
+    }
+
     var fragments = [];
     var fKeys = {};
     var pulses = new Uint8Array(1500);
     var pulsesCounter = 0;
+    var events = {};
 
     var k = Math.round(sampleRate/787)/100;
     var frame = 0;
@@ -162,17 +174,17 @@ export class AudioManager extends AbstractAudioManager {
 
     var m = 0;
     for (var r = 0; r < 2; r++) {
-      for (var t = 0; t < inGameTuneData.length; t++) {
+      for (var t = 0; t < data.length; t++) {
         m++;
         var n = (m&126)>>1;
-        var e = inGameTuneData[n];
+        var e = data[n];
         var b = 256;
         var c = 3;
         do {
           do {
             e--;
             if (e == 0) {
-              e = inGameTuneData[n];
+              e = data[n];
               if (pulsesCounter == pulses.length) {
                 pulses = this.extendArray(pulses, 500);
               }
@@ -194,7 +206,10 @@ export class AudioManager extends AbstractAudioManager {
       }
     }
     pulses = this.resizeArray(pulses, pulsesCounter);
-    return {'fragments': fragments, 'pulses': pulses, 'volume': this.music};
+    if (demo) {
+      events[pulsesCounter] = {'id': 'newDemoCave'};
+    }
+    return {'fragments': fragments, 'pulses': pulses, 'volume': this.music, 'events': events};
   } // inGameMelody
 
   tapePilotToneSound(sampleRate) {

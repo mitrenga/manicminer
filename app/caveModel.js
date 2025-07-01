@@ -37,8 +37,8 @@ export class CaveModel extends AbstractModel {
     this.worker = new Worker(this.app.importPath+'/gameWorker.js?ver='+window.srcVersion);
     this.worker.onmessage = (event) => {
 
-      if (this.demo && event.data.gameData.info[0] == 80) {
-        this.sendEvent(1, {'id': 'demoCave', 'caveNumber': this.caveNumber+1});
+      if (this.demo && this.app.audioManager.music == 0 && event.data.gameData.info[0] == 80) {
+        this.sendEvent(1, {'id': 'newDemoCave'});
       }
 
       switch (event.data.id) {
@@ -111,7 +111,11 @@ export class CaveModel extends AbstractModel {
 
     if (this.app.audioManager.music > 0) {
       this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'music'});
-      this.sendEvent(500, {'id': 'playSound', 'channel': 'music', 'sound': 'inGameMelody', 'options': {'repeat': true}});
+      if (this.demo) {
+        this.sendEvent(500, {'id': 'playSound', 'channel': 'music', 'sound': 'inGameMelody', 'options': {'caveNumber': this.caveNumber, 'demo': true}});
+      } else {
+        this.sendEvent(500, {'id': 'playSound', 'channel': 'music', 'sound': 'inGameMelody', 'options': {'repeat': true, 'caveNumber': this.caveNumber, 'demo': false}});
+      }
     }
     if (this.app.audioManager.sounds > 0) {
       this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'sounds'});
@@ -181,10 +185,10 @@ export class CaveModel extends AbstractModel {
         }
         break;
 
-      case 'demoCave':
+      case 'newDemoCave':
         this.app.model.shutdown();
-        if (event.caveNumber < this.app.globalData.cavesCount) {
-          this.app.caveNumber = event.caveNumber;
+        if (this.app.caveNumber < this.app.globalData.cavesCount-1) {
+          this.app.caveNumber = this.app.caveNumber+1;
         } else {
           this.app.caveNumber = this.app.globalData.initCave;
         }

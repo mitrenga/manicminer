@@ -122,9 +122,9 @@ export class MainModel extends AbstractModel {
         this.app.resizeApp();
         return true;
         
-      case 'demoCave':
+      case 'newDemoCave':
         this.app.model.shutdown();
-        this.app.caveNumber = event.caveNumber;
+        this.app.caveNumber = this.app.globalData.initCave;
         this.app.demo = true;
         this.app.model = this.app.newModel('CaveModel');
         this.app.model.init();
@@ -143,7 +143,7 @@ export class MainModel extends AbstractModel {
     } else {
       if (timestamp-this.timer > 30000) {
         this.bannerEntity.bannerPosition = 0;
-        this.sendEvent(1, {'id': 'demoCave', 'caveNumber': this.app.globalData.initCave});
+        this.sendEvent(1, {'id': 'newDemoCave'});
       } else {
         this.bannerEntity.bannerPosition = Math.round(this.bannerLength*(timestamp-this.timer)/30000);
         this.airEntity.value = (timestamp-this.timer)/30000;
