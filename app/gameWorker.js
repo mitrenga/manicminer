@@ -201,47 +201,96 @@ function gameLoop() {
 
   // light beam
   if ('lightBeam' in gameData) {
-    var posX = gameData.lightBeam[0].x;
-    var posY = gameData.lightBeam[0].y;
-    var touchLight = false;
+    var part = -1;
     var cancelLight = false;
-    while (!touchLight && !cancelLight) {
-      for (var g = 0; !touchLight && g < gameData.guardians.length; g++) {
-        var guardian = gameData.guardians[g];
-        if (!(posX+8 <= guardian.x || posY+8 <= guardian.y || posX >= guardian.x+guardian.width || posY >= guardian.y+guardian.height)) {
-          touchLight = true;
+    while (!cancelLight) {
+      var touchLight = false;
+      part++;
+      if (part%2 == 0) { // to down
+        var posX = gameData.lightBeam[0].x;
+        var posY = gameData.lightBeam[0].y;
+        if (part > 0) {
+          posX = gameData.lightBeam[part-1].x;
+          posY = gameData.lightBeam[part-1].y+gameData.lightBeam[part-1].height;
         }
-      }
-      for (var w = 0; !touchLight && !cancelLight && w < gameData.wall.length; w++) {
-        var wall = gameData.wall[w];
-        if (!(posX+8 <= wall.x || posY+8 <= wall.y || posX >= wall.x+wall.width || posY >= wall.y+wall.height)) {
-          cancelLight = true;
+        gameData.lightBeam[part].x = posX;
+        gameData.lightBeam[part].y = posY;
+        gameData.lightBeam[part].width = 8;
+        gameData.lightBeam[part].height = 8;
+        gameData.lightBeam[part].hide = false;
+        while (!touchLight && !cancelLight) {
+          // check touch with guardians
+          for (var g = 0; !touchLight && g < gameData.guardians.length; g++) {
+            var guardian = gameData.guardians[g];
+            if (!(posX+8 <= guardian.x || posY+8 <= guardian.y || posX >= guardian.x+guardian.width || posY >= guardian.y+guardian.height)) {
+              touchLight = true;
+            }
+          }
+          // check touch with wall
+          for (var w = 0; !touchLight && !cancelLight && w < gameData.wall.length; w++) {
+            var wall = gameData.wall[w];
+            if (!(posX+8 <= wall.x || posY+8 <= wall.y || posX >= wall.x+wall.width || posY >= wall.y+wall.height)) {
+              cancelLight = true;
+            }
+          }
+          // check touch with floor
+          for (var f = 0; !touchLight && !cancelLight && f < gameData.floor.length; f++) {
+            var floor = gameData.floor[f];
+            if (!(posX+8 <= floor.x || posY+8 <= floor.y || posX >= floor.x+floor.width || posY >= floor.y+floor.height)) {
+              cancelLight = true;
+            }
+          }
+          if (!cancelLight) {
+            posY += 8;
+          }
         }
-      }
-      for (var f = 0; !touchLight && !cancelLight && f < gameData.floor.length; f++) {
-        var floor = gameData.floor[f];
-        if (!(posX+8 <= floor.x || posY+8 <= floor.y || posX >= floor.x+floor.width || posY >= floor.y+floor.height)) {
-          cancelLight = true;
+        gameData.lightBeam[part].width = 8;
+        gameData.lightBeam[part].height = posY-gameData.lightBeam[part].y;
+      } else { // to left
+        var posX = gameData.lightBeam[part-1].x-8;
+        var posY = gameData.lightBeam[part-1].y+gameData.lightBeam[part-1].height-8;
+        gameData.lightBeam[part].x = posX;
+        gameData.lightBeam[part].y = posY;
+        gameData.lightBeam[part].hide = false;
+        while (!touchLight && !cancelLight) {
+          // check touch with guardians
+          for (var g = 0; !touchLight && g < gameData.guardians.length; g++) {
+            var guardian = gameData.guardians[g];
+            if (!(posX+8 <= guardian.x || posY+8 <= guardian.y || posX >= guardian.x+guardian.width || posY >= guardian.y+guardian.height)) {
+              touchLight = true;
+            }
+          }
+          // check touch with wall
+          for (var w = 0; !touchLight && !cancelLight && w < gameData.wall.length; w++) {
+            var wall = gameData.wall[w];
+            if (!(posX+8 <= wall.x || posY+8 <= wall.y || posX >= wall.x+wall.width || posY >= wall.y+wall.height)) {
+              cancelLight = true;
+              console.log(posX);
+            }
+          }
+          // check touch with floor
+          for (var f = 0; !touchLight && !cancelLight && f < gameData.floor.length; f++) {
+            var floor = gameData.floor[f];
+            if (!(posX+8 <= floor.x || posY+8 <= floor.y || posX >= floor.x+floor.width || posY >= floor.y+floor.height)) {
+              cancelLight = true;
+            }
+          }
+          if (!cancelLight) {
+            posX -= 8;
+          }
         }
-      }
-      if (!cancelLight) {
-        posY += 8;
+        gameData.lightBeam[part].width = gameData.lightBeam[part].x-posX;
+        gameData.lightBeam[part].x = posX+8;
+        gameData.lightBeam[part].height = 8;
       }
     }
-    gameData.lightBeam[0].height = posY;
-
-    if (cancelLight) {
-      gameData.lightBeam[1].x = 0;
-      gameData.lightBeam[1].y = 0;
-      gameData.lightBeam[1].width = 0;
-      gameData.lightBeam[1].height = 0;
-      gameData.lightBeam[1].hide = true;
-    } else {
-      gameData.lightBeam[1].x = gameData.lightBeam[0].x-8;
-      gameData.lightBeam[1].y = gameData.lightBeam[0].y+gameData.lightBeam[0].height-8;
-      gameData.lightBeam[1].width = 8;
-      gameData.lightBeam[1].height = 8;
-      gameData.lightBeam[1].hide = false;
+    // reset & hide unused parts
+    for (var p = part+1; p < gameData.lightBeam.length; p++) {
+      gameData.lightBeam[p].x = 0;
+      gameData.lightBeam[p].y = 0;
+      gameData.lightBeam[p].width = 0;
+      gameData.lightBeam[p].height = 0;
+      gameData.lightBeam[p].hide = true;
     }
   }
 
