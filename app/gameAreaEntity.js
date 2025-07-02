@@ -120,7 +120,7 @@ export class GameAreaEntity extends AbstractEntity {
               entity.setGraphicsData(data.graphicData[attr]);
               this.addEntity(entity);
               this.spriteEntities.crumblingFloor.push(entity);
-              this.initData.crumblingFloor.push({'visible': true, 'x': column*8, 'y': r*8, 'width': 8, 'height': 8, 'frame': 0, 'direction': 0});
+              this.initData.crumblingFloor.push({'hide': false, 'x': column*8, 'y': r*8, 'width': 8, 'height': 8, 'frame': 0, 'direction': 0});
               break;
             case 'wall':
               this.initData.wall.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
@@ -170,7 +170,7 @@ export class GameAreaEntity extends AbstractEntity {
       entity.rotateSpriteRow(3, 2, 2*rotateDirection);
       this.addEntity(entity);
       this.spriteEntities.conveyors.push(entity);
-      this.initData.conveyors.push({'visible': true, 'moving': conveyorData.moving, 'x': conveyorData.x*8, 'y': conveyorData.y*8, 'length': conveyorData.length*8, 'height': 8, 'frame': 0, 'direction': 0});
+      this.initData.conveyors.push({'moving': conveyorData.moving, 'x': conveyorData.x*8, 'y': conveyorData.y*8, 'length': conveyorData.length*8, 'height': 8, 'frame': 0, 'direction': 0});
     }
 
     // items
@@ -197,7 +197,7 @@ export class GameAreaEntity extends AbstractEntity {
       entity.cloneSprite(0);
       entity.cloneSprite(0);
       this.spriteEntities.items.push(entity);
-      this.initData.items.push({'visible': true, 'x': item.x*8, 'y': item.y*8, 'frame': 0, 'direction': 0});
+      this.initData.items.push({'hide': false, 'x': item.x*8, 'y': item.y*8, 'frame': 0, 'direction': 0});
       itemColor = this.app.rotateInc(itemColor, 3, 6);
     });
 
@@ -214,16 +214,16 @@ export class GameAreaEntity extends AbstractEntity {
           this.spriteEntities.guardians.push(entity);
           switch (guardianType) {
             case 'horizontal':
-              this.initData.guardians.push({'visible': true, 'type': guardianType, 'speed': guardian.speed, 'x': guardian.init.x, 'y': guardian.init.y, 'width': guardianTypeData.width, 'height': guardianTypeData.height, 'frame': guardian.init.frame, 'direction': guardian.init.direction, 'limitLeft': guardian.limits.left, 'limitRight': guardian.limits.right, 'paintCorrectionsX': guardianTypeData.paintCorrections.x, 'paintCorrectionsY': guardianTypeData.paintCorrections.y});
+              this.initData.guardians.push({'type': guardianType, 'speed': guardian.speed, 'x': guardian.init.x, 'y': guardian.init.y, 'width': guardianTypeData.width, 'height': guardianTypeData.height, 'frame': guardian.init.frame, 'direction': guardian.init.direction, 'limitLeft': guardian.limits.left, 'limitRight': guardian.limits.right, 'paintCorrectionsX': guardianTypeData.paintCorrections.x, 'paintCorrectionsY': guardianTypeData.paintCorrections.y});
               break;
             case 'vertical':
-              this.initData.guardians.push({'visible': true, 'type': guardianType, 'speed': guardian.speed, 'x': guardian.init.x, 'y': guardian.init.y, 'width': guardianTypeData.width, 'height': guardianTypeData.height, 'frame': guardian.init.frame, 'frames': guardianTypeData.frames, 'direction': guardian.init.direction, 'limitUp': guardian.limits.up, 'limitDown': guardian.limits.down, 'paintCorrectionsX': guardianTypeData.paintCorrections.x, 'paintCorrectionsY': guardianTypeData.paintCorrections.y});
+              this.initData.guardians.push({'type': guardianType, 'speed': guardian.speed, 'x': guardian.init.x, 'y': guardian.init.y, 'width': guardianTypeData.width, 'height': guardianTypeData.height, 'frame': guardian.init.frame, 'frames': guardianTypeData.frames, 'direction': guardian.init.direction, 'limitUp': guardian.limits.up, 'limitDown': guardian.limits.down, 'paintCorrectionsX': guardianTypeData.paintCorrections.x, 'paintCorrectionsY': guardianTypeData.paintCorrections.y});
               break;
             case 'forDropping':
-              this.initData.guardians.push({'visible': true, 'type': guardianType, 'x': guardian.init.x, 'y': guardian.init.y, 'width': guardianTypeData.width, 'height': guardianTypeData.height, 'frame': guardian.init.frame, 'direction': guardian.init.direction, 'paintCorrectionsX': guardianTypeData.paintCorrections.x, 'paintCorrectionsY': guardianTypeData.paintCorrections.y});
+              this.initData.guardians.push({'type': guardianType, 'x': guardian.init.x, 'y': guardian.init.y, 'width': guardianTypeData.width, 'height': guardianTypeData.height, 'frame': guardian.init.frame, 'direction': guardian.init.direction, 'paintCorrectionsX': guardianTypeData.paintCorrections.x, 'paintCorrectionsY': guardianTypeData.paintCorrections.y});
               break;
             case 'falling':
-              this.initData.guardians.push({'visible': true, 'type': guardianType, 'speed': guardian.speed, 'next': guardian.next, 'x': guardian.init.x, 'y': guardian.init.y, 'width': guardianTypeData.width, 'height': guardianTypeData.height, 'frame': guardian.init.frame, 'frames': guardianTypeData.frames, 'direction': guardian.init.direction, 'limitUp': guardian.limits.up, 'limitDown': guardian.limits.down, 'paintCorrectionsX': guardianTypeData.paintCorrections.x, 'paintCorrectionsY': guardianTypeData.paintCorrections.y});
+              this.initData.guardians.push({'type': guardianType, 'speed': guardian.speed, 'next': guardian.next, 'x': guardian.init.x, 'y': guardian.init.y, 'width': guardianTypeData.width, 'height': guardianTypeData.height, 'frame': guardian.init.frame, 'frames': guardianTypeData.frames, 'direction': guardian.init.direction, 'limitUp': guardian.limits.up, 'limitDown': guardian.limits.down, 'paintCorrectionsX': guardianTypeData.paintCorrections.x, 'paintCorrectionsY': guardianTypeData.paintCorrections.y});
               break;
           }
         });
@@ -238,7 +238,7 @@ export class GameAreaEntity extends AbstractEntity {
       this.addEntity(entity);
       entity.setGraphicsData(data.willy);
       this.spriteEntities.willy.push(entity);
-      this.initData.willy.push({'visible': true, 'x': data.willy.init.x, 'y': data.willy.init.y, 'width': data.willy.width, 'height': data.willy.height, 'frame': data.willy.init.frame, 'direction': data.willy.init.direction, 'paintCorrectionsX': data.willy.paintCorrections.x, 'paintCorrectionsY': data.willy.paintCorrections.y});
+      this.initData.willy.push({'x': data.willy.init.x, 'y': data.willy.init.y, 'width': data.willy.width, 'height': data.willy.height, 'frame': data.willy.init.frame, 'direction': data.willy.init.direction, 'paintCorrectionsX': data.willy.paintCorrections.x, 'paintCorrectionsY': data.willy.paintCorrections.y});
     }
 
     // portal
@@ -249,18 +249,26 @@ export class GameAreaEntity extends AbstractEntity {
     this.addEntity(entity);
     entity.setGraphicsData(data.portal);
     this.spriteEntities.portal.push(entity);
-    this.initData.portal.push({'visible': true, 'x': data.portal.location.x*8, 'y': data.portal.location.y*8, 'frame': 0, 'direction': 0});
+    this.initData.portal.push({'x': data.portal.location.x*8, 'y': data.portal.location.y*8, 'frame': 0, 'direction': 0});
 
     // light beam
-    this.initData.lightBeam = [];
     if ('lightBeam' in data) {
+      this.initData.lightBeam = [];
       var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(data.lightBeam.attribute));
       var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(data.lightBeam.attribute));
-      var entity = new AbstractEntity(this, data.lightBeam.init.x, data.lightBeam.init.y, data.lightBeam.init.width, data.lightBeam.init.height, penColor, bkColor);
+      var entity = new AbstractEntity(this, data.lightBeam.init.x, data.lightBeam.init.y, data.lightBeam.init.width, data.lightBeam.init.height, false, bkColor);
       this.addEntity(entity);
       this.spriteEntities.lightBeam.push(entity);
-      this.initData.lightBeam.push({'visible': true, 'x': data.lightBeam.init.x, 'y': data.lightBeam.init.y, 'width': data.lightBeam.init.width, 'height': data.lightBeam.init.height});
+      this.initData.lightBeam.push({'x': data.lightBeam.init.x, 'y': data.lightBeam.init.y, 'width': data.lightBeam.init.width, 'height': data.lightBeam.init.height});
+      for (var l = 0; l < 14; l++) {
+        var entity = new AbstractEntity(this, 0, 0, 0, 0, penColor, bkColor);
+        entity.hide = true;
+        this.addEntity(entity);
+        this.spriteEntities.lightBeam.push(entity);
+        this.initData.lightBeam.push({'hide': true, 'x': 0, 'y': 0, 'width': 0, 'height': 0});
+      }
     }
+
   } // setData
     
 } // class GameAreaEntity

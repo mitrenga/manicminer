@@ -200,34 +200,50 @@ function gameLoop() {
   }
 
   // light beam
-  var posX = gameData.lightBeam[0].x;
-  var posY = gameData.lightBeam[0].y;
-  var touchLight = false;
-  var cancelLight = false;
-  while (!touchLight && !cancelLight) {
-    for (var g = 0; !touchLight && g < gameData.guardians.length; g++) {
-      var guardian = gameData.guardians[g];
-      if (!(posX+8 <= guardian.x || posY+8 <= guardian.y || posX >= guardian.x+guardian.width || posY >= guardian.y+guardian.height)) {
-        touchLight = true;
+  if ('lightBeam' in gameData) {
+    var posX = gameData.lightBeam[0].x;
+    var posY = gameData.lightBeam[0].y;
+    var touchLight = false;
+    var cancelLight = false;
+    while (!touchLight && !cancelLight) {
+      for (var g = 0; !touchLight && g < gameData.guardians.length; g++) {
+        var guardian = gameData.guardians[g];
+        if (!(posX+8 <= guardian.x || posY+8 <= guardian.y || posX >= guardian.x+guardian.width || posY >= guardian.y+guardian.height)) {
+          touchLight = true;
+        }
+      }
+      for (var w = 0; !touchLight && !cancelLight && w < gameData.wall.length; w++) {
+        var wall = gameData.wall[w];
+        if (!(posX+8 <= wall.x || posY+8 <= wall.y || posX >= wall.x+wall.width || posY >= wall.y+wall.height)) {
+          cancelLight = true;
+        }
+      }
+      for (var f = 0; !touchLight && !cancelLight && f < gameData.floor.length; f++) {
+        var floor = gameData.floor[f];
+        if (!(posX+8 <= floor.x || posY+8 <= floor.y || posX >= floor.x+floor.width || posY >= floor.y+floor.height)) {
+          cancelLight = true;
+        }
+      }
+      if (!cancelLight) {
+        posY += 8;
       }
     }
-    for (var w = 0; !touchLight && !cancelLight && w < gameData.wall.length; w++) {
-      var wall = gameData.wall[w];
-      if (!(posX+8 <= wall.x || posY+8 <= wall.y || posX >= wall.x+wall.width || posY >= wall.y+wall.height)) {
-        cancelLight = true;
-      }
-    }
-    for (var f = 0; !touchLight && !cancelLight && f < gameData.floor.length; f++) {
-      var floor = gameData.floor[f];
-      if (!(posX+8 <= floor.x || posY+8 <= floor.y || posX >= floor.x+floor.width || posY >= floor.y+floor.height)) {
-        cancelLight = true;
-      }
-    }
-    if (!cancelLight) {
-      posY += 8;
+    gameData.lightBeam[0].height = posY;
+
+    if (cancelLight) {
+      gameData.lightBeam[1].x = 0;
+      gameData.lightBeam[1].y = 0;
+      gameData.lightBeam[1].width = 0;
+      gameData.lightBeam[1].height = 0;
+      gameData.lightBeam[1].hide = true;
+    } else {
+      gameData.lightBeam[1].x = gameData.lightBeam[0].x-8;
+      gameData.lightBeam[1].y = gameData.lightBeam[0].y+gameData.lightBeam[0].height-8;
+      gameData.lightBeam[1].width = 8;
+      gameData.lightBeam[1].height = 8;
+      gameData.lightBeam[1].hide = false;
     }
   }
-  gameData.lightBeam[0].height = posY;
 
   // game counters
   gameData.info[0] = counter;

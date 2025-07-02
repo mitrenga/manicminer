@@ -86,6 +86,9 @@ export class CaveModel extends AbstractModel {
                     }
                     this.gameAreaEntity.spriteEntities[objectsType][g].height = height;
                   }
+                  if ('hide' in object) {
+                    this.gameAreaEntity.spriteEntities[objectsType][g].hide = object.hide;
+                  }
                 });
             }
           });
