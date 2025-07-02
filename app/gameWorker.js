@@ -11,11 +11,6 @@ var counter4 = 0;
 var counter6 = 0;
 var gameData = null;
 
-var posX = 0;
-var posY = 0;
-var cancelLight = false;
-var touchLight = false;
-
 function gameLoop() {
   setTimeout(gameLoop, 72);
   if (gameData != null) {
@@ -206,35 +201,36 @@ function gameLoop() {
 
   // light beam
   if ('lightBeam' in gameData) {
+    var lbData = {'x': 0, 'y': 0, 'cancel': false, 'touch': false};
     var part = -1;
-    cancelLight = false;
-    while (!cancelLight) {
-      touchLight = false;
+    lbData.cancelLight = false;
+    while (!lbData.cancelLight) {
+      lbData.touchLight = false;
       part++;
       if (part%2 == 0) { // to down
-        posX = gameData.lightBeam[0].x;
-        posY = gameData.lightBeam[0].y;
+        lbData.x = gameData.lightBeam[0].x;
+        lbData.y = gameData.lightBeam[0].y;
         if (part > 0) {
-          posX = gameData.lightBeam[part-1].x;
-          posY = gameData.lightBeam[part-1].y+gameData.lightBeam[part-1].height;
+          lbData.x = gameData.lightBeam[part-1].x;
+          lbData.y = gameData.lightBeam[part-1].y+gameData.lightBeam[part-1].height;
         }
-        gameData.lightBeam[part].x = posX;
-        gameData.lightBeam[part].y = posY;
+        gameData.lightBeam[part].x = lbData.x;
+        gameData.lightBeam[part].y = lbData.y;
         gameData.lightBeam[part].width = 8;
         gameData.lightBeam[part].height = 8;
         gameData.lightBeam[part].hide = false;
-        checkAllTouches(0, 8);
+        checkLightBeamTouch(lbData, 0, 8);
         gameData.lightBeam[part].width = 8;
-        gameData.lightBeam[part].height = posY-gameData.lightBeam[part].y;
+        gameData.lightBeam[part].height = lbData.y-gameData.lightBeam[part].y;
       } else { // to left
-        posX = gameData.lightBeam[part-1].x-8;
-        posY = gameData.lightBeam[part-1].y+gameData.lightBeam[part-1].height-8;
-        gameData.lightBeam[part].x = posX;
-        gameData.lightBeam[part].y = posY;
+        lbData.x = gameData.lightBeam[part-1].x-8;
+        lbData.y = gameData.lightBeam[part-1].y+gameData.lightBeam[part-1].height-8;
+        gameData.lightBeam[part].x = lbData.x;
+        gameData.lightBeam[part].y = lbData.y;
         gameData.lightBeam[part].hide = false;
-        checkAllTouches(-8, 0);
-        gameData.lightBeam[part].width = gameData.lightBeam[part].x-posX;
-        gameData.lightBeam[part].x = posX+8;
+        checkLightBeamTouch(lbData, -8, 0);
+        gameData.lightBeam[part].width = gameData.lightBeam[part].x-lbData.x;
+        gameData.lightBeam[part].x = lbData.x+8;
         gameData.lightBeam[part].height = 8;
       }
     }
@@ -253,33 +249,33 @@ function gameLoop() {
   postMessage({'id': 'update', 'gameData': gameData});
 } // gameLoop
 
-function checkAllTouches(moveX, moveY) {
-  while (!touchLight && !cancelLight) {
-    if (!touchLight && !cancelLight) {
-      touchLight = checkTouch(gameData.guardians, posX, posY);
+function checkLightBeamTouch(lbData, moveX, moveY) {
+  while (!lbData.touchLight && !lbData.cancelLight) {
+    if (!lbData.touchLight && !lbData.cancelLight) {
+      lbData.touchLight = checkTouchWithObjectsArray(lbData.x, lbData.y, 8, 8, gameData.guardians);
     }
-    if (!touchLight && !cancelLight) {
-      cancelLight = checkTouch(gameData.wall, posX, posY);
+    if (!lbData.touchLight && !lbData.cancelLight) {
+      lbData.cancelLight = checkTouchWithObjectsArray(lbData.x, lbData.y, 8, 8, gameData.wall);
     }
-    if (!touchLight && !cancelLight) {
-      cancelLight = checkTouch(gameData.floor, posX, posY);
+    if (!lbData.touchLight && !lbData.cancelLight) {
+      lbData.cancelLight = checkTouchWithObjectsArray(lbData.x, lbData.y, 8, 8, gameData.floor);
     }
-    if (!cancelLight) {
-      posX += moveX;
-      posY += moveY;
+    if (!lbData.cancelLight) {
+      lbData.x += moveX;
+      lbData.y += moveY;
     }
   }
-} // checkAllTouches
+} // checkLightBeamTouch
 
-function checkTouch(objects, posX, posY) {
+function checkTouchWithObjectsArray(x, y, width, height, objects) {
   for (var o = 0; o < objects.length; o++) {
     var obj = objects[o];
-    if (!(posX+8 <= obj.x || posY+8 <= obj.y || posX >= obj.x+obj.width || posY >= obj.y+obj.height)) {
+    if (!(x+width <= obj.x || y+height <= obj.y || x >= obj.x+obj.width || y >= obj.y+obj.height)) {
       return true;
     }
   }
   return false;
-} // checkTouch
+} // checkTouchWithObjectsArray
 
 onmessage = (event) => {
   switch (event.data.id) {
