@@ -11,6 +11,11 @@ var counter4 = 0;
 var counter6 = 0;
 var gameData = null;
 
+var posX = 0;
+var posY = 0;
+var cancelLight = false;
+var touchLight = false;
+
 function gameLoop() {
   setTimeout(gameLoop, 72);
   if (gameData != null) {
@@ -202,13 +207,13 @@ function gameLoop() {
   // light beam
   if ('lightBeam' in gameData) {
     var part = -1;
-    var cancelLight = false;
+    cancelLight = false;
     while (!cancelLight) {
-      var touchLight = false;
+      touchLight = false;
       part++;
       if (part%2 == 0) { // to down
-        var posX = gameData.lightBeam[0].x;
-        var posY = gameData.lightBeam[0].y;
+        posX = gameData.lightBeam[0].x;
+        posY = gameData.lightBeam[0].y;
         if (part > 0) {
           posX = gameData.lightBeam[part-1].x;
           posY = gameData.lightBeam[part-1].y+gameData.lightBeam[part-1].height;
@@ -218,42 +223,16 @@ function gameLoop() {
         gameData.lightBeam[part].width = 8;
         gameData.lightBeam[part].height = 8;
         gameData.lightBeam[part].hide = false;
-        while (!touchLight && !cancelLight) {
-          if (!touchLight && !cancelLight) {
-            touchLight = checkTouch(gameData.guardians, posX, posY);
-          }
-          if (!touchLight && !cancelLight) {
-            cancelLight = checkTouch(gameData.wall, posX, posY);
-          }
-          if (!touchLight && !cancelLight) {
-            cancelLight = checkTouch(gameData.floor, posX, posY);
-          }
-          if (!cancelLight) {
-            posY += 8;
-          }
-        }
+        checkAllTouches(0, 8);
         gameData.lightBeam[part].width = 8;
         gameData.lightBeam[part].height = posY-gameData.lightBeam[part].y;
       } else { // to left
-        var posX = gameData.lightBeam[part-1].x-8;
-        var posY = gameData.lightBeam[part-1].y+gameData.lightBeam[part-1].height-8;
+        posX = gameData.lightBeam[part-1].x-8;
+        posY = gameData.lightBeam[part-1].y+gameData.lightBeam[part-1].height-8;
         gameData.lightBeam[part].x = posX;
         gameData.lightBeam[part].y = posY;
         gameData.lightBeam[part].hide = false;
-        while (!touchLight && !cancelLight) {
-          if (!touchLight && !cancelLight) {
-            touchLight = checkTouch(gameData.guardians, posX, posY);
-          }
-          if (!touchLight && !cancelLight) {
-            cancelLight = checkTouch(gameData.wall, posX, posY);
-          }
-          if (!touchLight && !cancelLight) {
-            cancelLight = checkTouch(gameData.floor, posX, posY);
-          }
-          if (!cancelLight) {
-            posX -= 8;
-          }
-        }
+        checkAllTouches(-8, 0);
         gameData.lightBeam[part].width = gameData.lightBeam[part].x-posX;
         gameData.lightBeam[part].x = posX+8;
         gameData.lightBeam[part].height = 8;
@@ -277,6 +256,24 @@ function gameLoop() {
 
   postMessage({'id': 'update', 'gameData': gameData});
 } // gameLoop
+
+function checkAllTouches(moveX, moveY) {
+  while (!touchLight && !cancelLight) {
+    if (!touchLight && !cancelLight) {
+      touchLight = checkTouch(gameData.guardians, posX, posY);
+    }
+    if (!touchLight && !cancelLight) {
+      cancelLight = checkTouch(gameData.wall, posX, posY);
+    }
+    if (!touchLight && !cancelLight) {
+      cancelLight = checkTouch(gameData.floor, posX, posY);
+    }
+    if (!cancelLight) {
+      posX += moveX;
+      posY += moveY;
+    }
+  }
+} // checkAllTouches
 
 function checkTouch(objects, posX, posY) {
   for (var o = 0; o < objects.length; o++) {
