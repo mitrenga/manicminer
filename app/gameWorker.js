@@ -240,10 +240,6 @@ function gameLoop() {
     }
     // reset & hide unused parts
     for (var p = part+1; p < gameData.lightBeam.length; p++) {
-      gameData.lightBeam[p].x = 0;
-      gameData.lightBeam[p].y = 0;
-      gameData.lightBeam[p].width = 0;
-      gameData.lightBeam[p].height = 0;
       gameData.lightBeam[p].hide = true;
     }
   }
