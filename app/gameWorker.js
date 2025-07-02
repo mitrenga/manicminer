@@ -265,7 +265,6 @@ function gameLoop() {
             var wall = gameData.wall[w];
             if (!(posX+8 <= wall.x || posY+8 <= wall.y || posX >= wall.x+wall.width || posY >= wall.y+wall.height)) {
               cancelLight = true;
-              console.log(posX);
             }
           }
           // check touch with floor
