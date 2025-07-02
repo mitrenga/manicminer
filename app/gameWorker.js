@@ -197,54 +197,55 @@ function gameLoop() {
           break;        
       }
     });
-  }
 
-  // light beam
-  if ('lightBeam' in gameData) {
-    var lbData = {'x': 0, 'y': 0, 'cancel': false, 'touch': false};
-    var part = -1;
-    lbData.cancelLight = false;
-    while (!lbData.cancelLight) {
-      lbData.touchLight = false;
-      part++;
-      if (part%2 == 0) { // to down
-        lbData.x = gameData.lightBeam[0].x;
-        lbData.y = gameData.lightBeam[0].y;
-        if (part > 0) {
-          lbData.x = gameData.lightBeam[part-1].x;
-          lbData.y = gameData.lightBeam[part-1].y+gameData.lightBeam[part-1].height;
+    // light beam
+    if ('lightBeam' in gameData) {
+      var lbData = {'x': 0, 'y': 0, 'cancel': false, 'touch': false};
+      var part = -1;
+      lbData.cancelLight = false;
+      while (!lbData.cancelLight) {
+        lbData.touchLight = false;
+        part++;
+        if (part%2 == 0) { // to down
+          lbData.x = gameData.lightBeam[0].x;
+          lbData.y = gameData.lightBeam[0].y;
+          if (part > 0) {
+            lbData.x = gameData.lightBeam[part-1].x;
+            lbData.y = gameData.lightBeam[part-1].y+gameData.lightBeam[part-1].height;
+          }
+          gameData.lightBeam[part].x = lbData.x;
+          gameData.lightBeam[part].y = lbData.y;
+          gameData.lightBeam[part].width = 8;
+          gameData.lightBeam[part].height = 8;
+          gameData.lightBeam[part].hide = false;
+          checkLightBeamTouch(lbData, 0, 8);
+          gameData.lightBeam[part].width = 8;
+          gameData.lightBeam[part].height = lbData.y-gameData.lightBeam[part].y;
+        } else { // to left
+          lbData.x = gameData.lightBeam[part-1].x-8;
+          lbData.y = gameData.lightBeam[part-1].y+gameData.lightBeam[part-1].height-8;
+          gameData.lightBeam[part].x = lbData.x;
+          gameData.lightBeam[part].y = lbData.y;
+          gameData.lightBeam[part].hide = false;
+          checkLightBeamTouch(lbData, -8, 0);
+          gameData.lightBeam[part].width = gameData.lightBeam[part].x-lbData.x;
+          gameData.lightBeam[part].x = lbData.x+8;
+          gameData.lightBeam[part].height = 8;
         }
-        gameData.lightBeam[part].x = lbData.x;
-        gameData.lightBeam[part].y = lbData.y;
-        gameData.lightBeam[part].width = 8;
-        gameData.lightBeam[part].height = 8;
-        gameData.lightBeam[part].hide = false;
-        checkLightBeamTouch(lbData, 0, 8);
-        gameData.lightBeam[part].width = 8;
-        gameData.lightBeam[part].height = lbData.y-gameData.lightBeam[part].y;
-      } else { // to left
-        lbData.x = gameData.lightBeam[part-1].x-8;
-        lbData.y = gameData.lightBeam[part-1].y+gameData.lightBeam[part-1].height-8;
-        gameData.lightBeam[part].x = lbData.x;
-        gameData.lightBeam[part].y = lbData.y;
-        gameData.lightBeam[part].hide = false;
-        checkLightBeamTouch(lbData, -8, 0);
-        gameData.lightBeam[part].width = gameData.lightBeam[part].x-lbData.x;
-        gameData.lightBeam[part].x = lbData.x+8;
-        gameData.lightBeam[part].height = 8;
+      }
+      // reset & hide unused parts
+      for (var p = part+1; p < gameData.lightBeam.length; p++) {
+        gameData.lightBeam[p].hide = true;
       }
     }
-    // reset & hide unused parts
-    for (var p = part+1; p < gameData.lightBeam.length; p++) {
-      gameData.lightBeam[p].hide = true;
-    }
-  }
 
-  // game counters
-  gameData.info[0] = counter;
-  gameData.info[1] = counter2;
-  gameData.info[2] = counter4;
-  gameData.info[3] = counter6;
+    // game counters
+    gameData.info[0] = counter;
+    gameData.info[1] = counter2;
+    gameData.info[2] = counter4;
+    gameData.info[3] = counter6;
+
+  }
 
   postMessage({'id': 'update', 'gameData': gameData});
 } // gameLoop
