@@ -307,35 +307,35 @@ export class GameAreaEntity extends AbstractEntity {
   } // setData
 
   updateData(data, objectsType) {
-    data.gameData[objectsType].forEach((object, g) => {
+    data.gameData[objectsType].forEach((object, o) => {
       var x = object.x;
       if ('paintCorrectionsX' in object) {
         x += object.paintCorrectionsX;
       }
-      this.spriteEntities[objectsType][g].x = x;
+      this.spriteEntities[objectsType][o].x = x;
       var y = object.y;
       if ('paintCorrectionsY' in object) {
         y += object.paintCorrectionsY;
       }
-      this.spriteEntities[objectsType][g].y = y;
-      this.spriteEntities[objectsType][g].frame = object.frame;
-      this.spriteEntities[objectsType][g].direction = object.direction;
+      this.spriteEntities[objectsType][o].y = y;
+      this.spriteEntities[objectsType][o].frame = object.frame;
+      this.spriteEntities[objectsType][o].direction = object.direction;
       if ('width' in object) {
         var width = object.width;
         if ('paintCorrectionsX' in object) {
           width -= object.paintCorrectionsX;
         }
-        this.spriteEntities[objectsType][g].width = width;
+        this.spriteEntities[objectsType][o].width = width;
       }
       if ('height' in object) {
         var height = object.height;
         if ('paintCorrectionsY' in object) {
           height -= object.paintCorrectionsY;
         }
-        this.spriteEntities[objectsType][g].height = height;
+        this.spriteEntities[objectsType][o].height = height;
       }
       if ('hide' in object) {
-        this.spriteEntities[objectsType][g].hide = object.hide;
+        this.spriteEntities[objectsType][o].hide = object.hide;
       }
     });
   } // updateData
