@@ -264,7 +264,7 @@ export class MenuModel extends AbstractModel {
 
         counter = Math.round((timestamp-this.timer)/72);
         this.objectsEntities.forEach((entity) => {
-          entity.frame = counter%entity.framesCount;
+          entity.frame = counter%entity.frames;
         });
       }
     }
