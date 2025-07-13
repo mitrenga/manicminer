@@ -60,10 +60,10 @@ export class MainModel extends AbstractModel {
     this.bannerEntity = new BannerTextEntity(this.blackBox, 0, 8, 32*8, 8, this.bannerTxt, this.app.platform.colorByName('yellow'), false, this.bannerLength);
     this.blackBox.addEntity(this.bannerEntity);
 
-    if (this.app.audioManager.music > 0) {
-      this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'music'});
-      this.sendEvent(500, {'id': 'playSound', 'channel': 'music', 'sound': 'titleScreenMelody', 'options': false});
-    }
+    this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'music'});
+    this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'sounds'});
+    this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'extra'});
+    this.sendEvent(500, {'id': 'playSound', 'channel': 'music', 'sound': 'titleScreenMelody', 'options': false});
   } // init
 
   
