@@ -13,6 +13,7 @@ var gameData = null;
 
 function gameLoop() {
   setTimeout(gameLoop, 72);
+  
   if (gameData != null) {
     counter++;
     if (counter%2 == 0) {
@@ -242,7 +243,6 @@ function gameLoop() {
     gameData.info[1] = counter2;
     gameData.info[2] = counter4;
     gameData.info[3] = counter6;
-
   }
 
   postMessage({'id': 'update', 'gameData': gameData});
