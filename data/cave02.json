@@ -2,7 +2,7 @@
   "name":"The Menagerie",
   "bkColor":"00",
   "borderColor":"02",
-  "airSuply":"3F",
+  "airSupply":"3F",
   "gameClock":"80",
   "layout":[
      "0D0000000000000000004300000000000000030000000000000000430000000D",

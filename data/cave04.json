@@ -2,7 +2,7 @@
   "name":"Eugene's Lair",
   "bkColor":"10",
   "borderColor":"01",
-  "airSuply":"3F",
+  "airSupply":"3F",
   "gameClock":"80",
   "layout":[
      "2E1010101010101010101010101010101010101013101010101010101010102E",

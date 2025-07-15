@@ -2,7 +2,7 @@
   "name":"The Bank",
   "bkColor":"00",
   "borderColor":"02",
-  "airSuply":"3F",
+  "airSupply":"3F",
   "gameClock":"FC",
   "layout":[
      "0E00000000000E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E0E",

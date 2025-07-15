@@ -2,7 +2,7 @@
   "name":"Amoebatrons' Revenge",
   "bkColor":"00",
   "borderColor":"01",
-  "airSuply":"3F",
+  "airSupply":"3F",
   "gameClock":"80",
   "layout":[
      "1600000000000000000000000000000000000000000000000000000016000016",

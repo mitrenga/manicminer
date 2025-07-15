@@ -2,7 +2,7 @@
   "name":"Skylab Landing Bay",
   "bkColor":"08",
   "borderColor":"06",
-  "airSuply":"3F",
+  "airSupply":"3F",
   "gameClock":"F8",
   "layout":[
      "6808080808080808080808080808080808080808080808080808080808080868",

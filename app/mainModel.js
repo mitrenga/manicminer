@@ -149,7 +149,7 @@ export class MainModel extends AbstractModel {
         this.airEntity.value = (timestamp-this.timer)/30000;
       }
       
-      var steps = Math.round((timestamp-this.timer)/77);
+      var steps = Math.round((timestamp-this.timer)/80);
       var direction = Math.round(steps%20/20);
       var position = Math.abs((10*direction)-steps%10);
       this.willyEntity.frame = steps%4+direction*4;

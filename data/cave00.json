@@ -2,7 +2,7 @@
    "name":"Central Cavern",
    "bkColor":"00",
    "borderColor":"02",
-   "airSuply":"3F",
+   "airSupply":"3F",
    "gameClock":"FC",
    "layout":[
       "1600000000000000000000050000000005000000000000000000000000000016",
