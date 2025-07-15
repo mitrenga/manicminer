@@ -12,7 +12,7 @@ var counter6 = 0;
 var gameData = null;
 
 function gameLoop() {
-  setTimeout(gameLoop, 72);
+  setTimeout(gameLoop, 77);
   
   if (gameData != null) {
     counter++;
