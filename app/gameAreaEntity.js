@@ -40,7 +40,7 @@ export class GameAreaEntity extends AbstractEntity {
               if (this.staticKinds.includes(this.caveData.graphicData[attr].kind)) {
                 if (this.graphicCache[attr].needToRefresh(this, 8, 8)) {
                   var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
-                  var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(attr));
+                  var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(attr)&63);
                   if (bkColor == this.app.platform.bkColorByAttr(this.app.hexToInt(this.caveData.bkColor))) {
                     bkColor = false;
                   }
@@ -147,7 +147,7 @@ export class GameAreaEntity extends AbstractEntity {
     this.initData.conveyors = [];
     if (conveyorData !== false) {
       var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(conveyorData.attr));
-      var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(conveyorData.attr));
+      var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(conveyorData.attr)&63);
       if (bkColor == this.app.platform.bkColorByAttr(this.app.hexToInt(data.bkColor))) {
         bkColor = false;
       }
