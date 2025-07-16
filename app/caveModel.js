@@ -26,6 +26,8 @@ export class CaveModel extends AbstractModel {
     this.caveNumber = caveNumber;
     this.gameAreaEntity = null;
     this.airEntity = null;
+    this.gameClock = 0;
+    this.airSupply = 63;
     this.bkCaveNameEntity = null;
     this.hiScoreEntity = null;
     this.scoreEntity = null;
@@ -49,7 +51,13 @@ export class CaveModel extends AbstractModel {
                 for (var l = 0; l < this.app.lives; l++) {
                   this.liveEntities[l].x = event.data.gameData.info[3]%4*2+l*16;
                   this.liveEntities[l].frame = event.data.gameData.info[3]%4;
+                }                
+                var ptrClock = event.data.gameData.info[0]+this.gameClock;
+                if (event.data.gameData.info[0] < 2) {
+                  ptrClock = event.data.gameData.info[0];
                 }
+                var maxClock = (this.airSupply-36+1)*(256/4);
+                this.airEntity.value = 1-(ptrClock/maxClock);
                 break;
                 
               case 'floor':
@@ -89,7 +97,8 @@ export class CaveModel extends AbstractModel {
     this.caveNameEntity.justify = 2;
     this.desktopEntity.addEntity(this.caveNameEntity);
     this.desktopEntity.addEntity(new ZXTextEntity(this.desktopEntity, 0, 17*8, 4*8, 8, 'AIR', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightRed'), 0, true));
-    this.desktopEntity.addEntity(new AirEntity(this.desktopEntity, 4*8, 17*8, 28*8, 8, 1.0));
+    this.airEntity = new AirEntity(this.desktopEntity, 4*8, 17*8, 28*8, 8, 1.0);
+    this.desktopEntity.addEntity(this.airEntity);
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 18*8, 32*8, 8, false, this.app.platform.colorByName('black')));
     this.desktopEntity.addEntity(new ZXTextEntity(this.desktopEntity, 0, 19*8, 10*8, 8, 'High Score', this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, true));
     this.hiScoreEntity = new ZXTextEntity(this.desktopEntity, 10*8, 19*8, 10*8, 8, '000000', this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, false);
@@ -125,6 +134,8 @@ export class CaveModel extends AbstractModel {
 
   setData(data) {
     this.caveNameEntity.setText(data.name);
+    this.gameClock = (256-this.app.hexToInt(data.gameClock))/4;
+    this.airSupply = this.app.hexToInt(data.airSupply);
     this.borderEntity.bkColor = this.app.platform.zxColorByAttr(this.app.hexToInt(data.borderColor), 7, 1);
     for (var l = 0; l < this.app.lives; l++) {
       this.liveEntities[l].setGraphicsData(data.willy);
