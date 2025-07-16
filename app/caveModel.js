@@ -57,6 +57,9 @@ export class CaveModel extends AbstractModel {
                   ptrClock = event.data.gameData.info[0];
                 }
                 var maxClock = (this.airSupply-36+1)*(256/4);
+                if (ptrClock > maxClock) {
+                  this.sendEvent(0, {'id': 'gameOver'});
+                }
                 this.airEntity.value = 1-(ptrClock/maxClock);
                 break;
                 
@@ -204,6 +207,18 @@ export class CaveModel extends AbstractModel {
         this.app.resizeApp();
         return true;
     
+      case 'gameOver':
+        this.app.model.shutdown();
+        this.app.model = this.app.newModel('MainModel');
+        this.app.model.init();
+        this.app.resizeApp();
+        return true;
+
+      case 'changeFlashState':
+        this.app.stack.flashState = !this.app.stack.flashState;
+        this.sendEvent(330, {'id': 'changeFlashState'});
+        return true;
+
     }
 
     return false;
