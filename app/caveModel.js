@@ -63,9 +63,9 @@ export class CaveModel extends AbstractModel {
                 this.airEntity.value = 1-(ptrClock/maxClock);
                 break;
                 
-              case 'floor':
-              case 'wall':
-              case 'nasty':
+              case 'floors':
+              case 'walls':
+              case 'nasties':
               case 'extra':
                 break;
 

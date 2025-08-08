@@ -57,7 +57,7 @@ function gameLoop() {
     if ((controls.right && !controls.left && jumpCounter == 0) || (jumpCounter > 0 && jumpDirection == 1)) {
       if (gameData.willy[0].direction == 1) {
         gameData.willy[0].direction = 0;
-      } else {
+      } else if (canGoRight(2)) {
         moveDirection = 1;
         gameData.willy[0].x += 2;
         if (gameData.willy[0].frame == 3) {
@@ -70,7 +70,7 @@ function gameLoop() {
     if ((controls.left && !controls.right && jumpCounter == 0) || (jumpCounter > 0 && jumpDirection == -1)) {
       if (gameData.willy[0].direction == 0) {
         gameData.willy[0].direction = 1;
-      } else {
+      } else if (canGoLeft(2)) {
         moveDirection = -1;
         gameData.willy[0].x -= 2;
         if (gameData.willy[0].frame == 0) {
@@ -300,10 +300,10 @@ function checkLightBeamTouch(lbData, moveX, moveY) {
       lbData.touchLight = checkTouchWithObjectsArray(lbData.x, lbData.y, 8, 8, gameData.guardians);
     }
     if (!lbData.touchLight && !lbData.cancelLight) {
-      lbData.cancelLight = checkTouchWithObjectsArray(lbData.x, lbData.y, 8, 8, gameData.wall);
+      lbData.cancelLight = checkTouchWithObjectsArray(lbData.x, lbData.y, 8, 8, gameData.walls);
     }
     if (!lbData.touchLight && !lbData.cancelLight) {
-      lbData.cancelLight = checkTouchWithObjectsArray(lbData.x, lbData.y, 8, 8, gameData.floor);
+      lbData.cancelLight = checkTouchWithObjectsArray(lbData.x, lbData.y, 8, 8, gameData.floors);
     }
     if (!lbData.cancelLight) {
       lbData.x += moveX;
@@ -321,6 +321,14 @@ function checkTouchWithObjectsArray(x, y, width, height, objects) {
   }
   return false;
 } // checkTouchWithObjectsArray
+
+function canGoRight(step) {
+  return !checkTouchWithObjectsArray(gameData.willy[0].x+step, gameData.willy[0].y, 10, 16, gameData.walls);
+} // canGoRight
+
+function canGoLeft(step) {
+  return !checkTouchWithObjectsArray(gameData.willy[0].x-step, gameData.willy[0].y, 10, 16, gameData.walls);
+} // canGoLeft
 
 onmessage = (event) => {
   switch (event.data.id) {

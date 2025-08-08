@@ -24,7 +24,7 @@ export class GameAreaEntity extends AbstractEntity {
     this.graphicCache = {};
     this.staticKinds = ['floor', 'wall', 'nasty', 'extra'];
 
-    this.spriteEntities = {'crumblingFloor': [], 'conveyors': [], 'guardians': [], 'items': [], 'willy': [], "portal": [], "lightBeam": []};
+    this.spriteEntities = {'crumblingFloors': [], 'conveyors': [], 'guardians': [], 'items': [], 'willy': [], "portal": [], "lightBeam": []};
   } // constructor
 
   drawEntity() {
@@ -101,10 +101,10 @@ export class GameAreaEntity extends AbstractEntity {
 
     // layout
     var conveyorData = false;
-    this.initData.floor = [];
-    this.initData.wall = [];
-    this.initData.crumblingFloor = [];
-    this.initData.nasty = [];
+    this.initData.floors = [];
+    this.initData.walls = [];
+    this.initData.crumblingFloors = [];
+    this.initData.nasties = [];
     this.initData.extra = [];
     data.layout.forEach((row, r) => {
       for (var column = 0; column < row.length/2; column++) {
@@ -113,17 +113,17 @@ export class GameAreaEntity extends AbstractEntity {
           var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
           switch (data.graphicData[attr].kind) {
             case 'floor':
-              this.initData.floor.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
+              this.initData.floors.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
               break;
             case 'crumblingFloor':
               var entity = new SpriteEntity(this, column*8, r*8, penColor, false, 0, 0);
               entity.setGraphicsData(data.graphicData[attr]);
               this.addEntity(entity);
-              this.spriteEntities.crumblingFloor.push(entity);
-              this.initData.crumblingFloor.push({'hide': false, 'x': column*8, 'y': r*8, 'width': 8, 'height': 8, 'frame': 0, 'direction': 0});
+              this.spriteEntities.crumblingFloors.push(entity);
+              this.initData.crumblingFloors.push({'hide': false, 'x': column*8, 'y': r*8, 'width': 8, 'height': 8, 'frame': 0, 'direction': 0});
               break;
             case 'wall':
-              this.initData.wall.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
+              this.initData.walls.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
               break;
             case 'conveyor':
               if (conveyorData === false) {
@@ -133,7 +133,7 @@ export class GameAreaEntity extends AbstractEntity {
               }
               break;
             case 'nasty':
-              this.initData.nasty.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
+              this.initData.nasties.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
               break;
             case 'extra':
               this.initData.extra.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
