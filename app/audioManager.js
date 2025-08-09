@@ -59,10 +59,16 @@ export class AudioManager extends AbstractAudioManager {
   } // createAudioHandler
 
   audioData(channel, sound, options) {
+    var data = super.audioData(channel, sound, options);
+    if (data !== false) {
+      return data;
+    }
+
     var sampleRate = this.channels[channel].getSampleRate();
     switch (sound) {
       case 'titleScreenMelody': return this.titleScreenMelody(sampleRate);
       case 'inGameMelody': return this.inGameMelody(sampleRate, options.caveNumber, options.demo);
+      case 'jumpSound': return this.jumpSound(sampleRate);
       case 'tapePilotToneSound': return this.tapePilotToneSound(sampleRate);
       case 'tapeRndDataSound': return this.tapeRndDataSound(sampleRate);
       case 'tapeScreenAttrSound': return this.tapeScreenAttrSound(sampleRate);
@@ -228,6 +234,38 @@ export class AudioManager extends AbstractAudioManager {
     }
     return {'fragments': fragments, 'pulses': pulses, 'volume': this.music, 'events': events};
   } // inGameMelody
+
+  jumpSound(sampleRate) {
+    var fragments = [];
+    var pulses = new Uint8Array(30*18+18);
+    var pulsesCounter = 0;
+    
+    var k = Math.round(sampleRate/658)/100;
+    fragments.push(Math.round(sampleRate/13.78125));
+    var frame = 0;
+    var lastPos = -1;
+    
+    for (var x = 0; x < 18; x++) {
+      var d = Math.round(2*(1+Math.abs(7-x))*k);
+      fragments.push(d);
+      for (var o = 0; o < 30; o++) {
+        if (pulsesCounter == pulses.length) {
+          pulses = this.extendArray(pulses, 100);
+        }
+        pulses[pulsesCounter] = fragments.length-1;
+        pulsesCounter++;
+      }
+      if (pulsesCounter == pulses.length) {
+        pulses = this.extendArray(pulses, 100);
+      }
+      pulses[pulsesCounter] = 0;
+      pulsesCounter++;
+    }
+
+    pulses = this.resizeArray(pulses, pulsesCounter);
+    this.audioDataCache.sounds.jumpSound = {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
+    return this.audioDataCache.sounds.jumpSound;
+  } // jumpSound
 
   tapePilotToneSound(sampleRate) {
     // T-state is 1/3500000 = 0.0000002867 sec. 
