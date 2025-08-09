@@ -34,7 +34,7 @@ export class CaveModel extends AbstractModel {
     this.liveEntities = [];
     this.demo = demo;
 
-    this.initData = {'info': [0, 0, 0, 0]};
+    this.initData = {'info': [0, 0, 0, 0, demo]};
 
     this.worker = new Worker(this.app.importPath+'/gameWorker.js?ver='+window.srcVersion);
     this.worker.onmessage = (event) => {
@@ -130,6 +130,7 @@ export class CaveModel extends AbstractModel {
     }
     if (this.app.audioManager.sounds > 0) {
       this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'sounds'});
+      this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'extra'});
     }
   } // init
 

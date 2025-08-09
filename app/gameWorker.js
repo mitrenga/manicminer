@@ -285,6 +285,14 @@ function gameLoop() {
       }
     }
 
+    if (!gameData.info[4]) { // if not demo
+      checkTouchItems();
+      checkTouchNasties();
+      checkTouchGuardians();
+      checkTouchPortal();
+      checkTouchLightBeam();
+    }
+
     // game counters
     gameData.info[0] = counter;
     gameData.info[1] = counter2;
@@ -294,6 +302,18 @@ function gameLoop() {
 
   postMessage({'id': 'update', 'gameData': gameData});
 } // gameLoop
+
+function checkTouchWithObjectsArray(x, y, width, height, objects) {
+  for (var o = 0; o < objects.length; o++) {
+    var obj = objects[o];
+    if (!('hide' in obj) || !obj.hide) {
+      if (!(x+width <= obj.x || y+height <= obj.y || x >= obj.x+obj.width || y >= obj.y+obj.height)) {
+        return o+1;
+      }
+    }
+  }
+  return 0;
+} // checkTouchWithObjectsArray
 
 function checkLightBeamTouch(lbData, moveX, moveY) {
   while (!lbData.touchLight && !lbData.cancelLight) {
@@ -313,16 +333,6 @@ function checkLightBeamTouch(lbData, moveX, moveY) {
   }
 } // checkLightBeamTouch
 
-function checkTouchWithObjectsArray(x, y, width, height, objects) {
-  for (var o = 0; o < objects.length; o++) {
-    var obj = objects[o];
-    if (!(x+width <= obj.x || y+height <= obj.y || x >= obj.x+obj.width || y >= obj.y+obj.height)) {
-      return true;
-    }
-  }
-  return false;
-} // checkTouchWithObjectsArray
-
 function canGoRight(step) {
   return !checkTouchWithObjectsArray(gameData.willy[0].x+step, gameData.willy[0].y, 10, 16, gameData.walls);
 } // canGoRight
@@ -330,6 +340,29 @@ function canGoRight(step) {
 function canGoLeft(step) {
   return !checkTouchWithObjectsArray(gameData.willy[0].x-step, gameData.willy[0].y, 10, 16, gameData.walls);
 } // canGoLeft
+
+function checkTouchItems() {
+  var touchId = checkTouchWithObjectsArray(gameData.willy[0].x, gameData.willy[0].y, 10, 16, gameData.items);
+  if (touchId) {
+    gameData.items[touchId-1].hide = true;
+    postMessage({'id': 'playSound', 'channel': 'extra', 'sound': 'itemSound'});
+  }
+} // checkTouchItems
+
+function checkTouchNasties() {
+} // checkTouchNasties
+
+function checkTouchGuardians() {
+} // checkTouchGuardians
+
+function checkTouchPortal() {
+  if (checkTouchWithObjectsArray(gameData.willy[0].x, gameData.willy[0].y, 10, 16, gameData.portal)) {
+    console.log('portal');
+  }
+} // checkTouchPortal
+
+function checkTouchLightBeam() {
+} // checkTouchLightBeam
 
 onmessage = (event) => {
   switch (event.data.id) {

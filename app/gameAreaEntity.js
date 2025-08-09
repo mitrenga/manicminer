@@ -205,7 +205,7 @@ export class GameAreaEntity extends AbstractEntity {
       entity.cloneSprite(0);
       entity.cloneSprite(0);
       this.spriteEntities.items.push(entity);
-      this.initData.items.push({'hide': false, 'x': item.x*8, 'y': item.y*8, 'frame': 0, 'direction': 0});
+      this.initData.items.push({'hide': false, 'x': item.x*8, 'y': item.y*8, 'width': 8, 'height': 8, 'frame': 0, 'direction': 0});
       itemColor = this.app.rotateInc(itemColor, 3, 6);
     });
 
