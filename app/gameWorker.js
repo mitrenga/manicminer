@@ -51,7 +51,7 @@ function gameLoop() {
 
     // Willy
     if (!gameData.info[4]) { // if not demo
-      
+
       if (jumpCounter == jumpMap.length) {
         jumpCounter = 0;
         jumpDirection = 0;
@@ -73,6 +73,7 @@ function gameLoop() {
       if (fallingCounter) {
         if (standingOn.length) {
           fallingCounter = 0;
+          postMessage({'id': 'stopChannel', 'channel': 'sounds'});
         } else {
           gameData.willy[0].y += 4;
           fallingCounter++;
@@ -80,6 +81,7 @@ function gameLoop() {
       } else {
         if (jumpCounter == 0 && standingOn.length == 0) {
           fallingCounter = 1;
+          postMessage({'id': 'playSound', 'channel': 'sounds', 'sound': 'fallingSound'});
         }
       }
 
@@ -99,7 +101,7 @@ function gameLoop() {
           jumpCounter = 0;
           jumpDirection = 0;
           fallingCounter = 1;
-          postMessage({'id': 'stopChannel', 'channel': 'sounds'});
+          postMessage({'id': 'playSound', 'channel': 'sounds', 'sound': 'fallingSound'});
         }
       }
 
