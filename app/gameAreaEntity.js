@@ -173,7 +173,7 @@ export class GameAreaEntity extends AbstractEntity {
       this.initData.conveyors.push({
         'x': conveyorData.x*8,
         'y': conveyorData.y*8,
-        'length': conveyorData.length*8,
+        'width': conveyorData.length*8,
         'height': 8,
         'frame': 0,
         'direction': 0,
@@ -284,7 +284,7 @@ export class GameAreaEntity extends AbstractEntity {
     this.addEntity(entity);
     entity.setGraphicsData(data.portal);
     this.spriteEntities.portal.push(entity);
-    this.initData.portal.push({'x': data.portal.location.x*8, 'y': data.portal.location.y*8, 'frame': 0, 'direction': 0});
+    this.initData.portal.push({'x': data.portal.location.x*8, 'y': data.portal.location.y*8, 'width': 16, 'height': 16, 'frame': 0, 'direction': 0});
 
     // light beam
     if ('lightBeam' in data) {

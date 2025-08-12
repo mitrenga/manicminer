@@ -34,7 +34,7 @@ export class CaveModel extends AbstractModel {
     this.liveEntities = [];
     this.demo = demo;
 
-    this.initData = {'info': [0, 0, 0, 0, demo]};
+    this.initData = {'info': [0, 0, 0, 0, demo, false]};
 
     this.worker = new Worker(this.app.importPath+'/gameWorker.js?ver='+window.srcVersion);
     this.worker.onmessage = (event) => {
@@ -60,6 +60,9 @@ export class CaveModel extends AbstractModel {
                 if (ptrClock > maxClock) {
                   this.sendEvent(0, {'id': 'gameOver'});
                 }
+                if (event.data.gameData.info[5]) {
+                  this.sendEvent(0, {'id': 'gameOver'});
+                }
                 this.airEntity.value = 1-(ptrClock/maxClock);
                 break;
                 
@@ -77,6 +80,10 @@ export class CaveModel extends AbstractModel {
 
         case 'playSound':
           this.sendEvent(0, {'id': 'playSound', 'channel': event.data.channel, 'sound': event.data.sound, 'options': false});
+          break;
+
+        case 'stopChannel':
+          this.sendEvent(0, {'id': 'stopChannel', 'channel': event.data.channel});
           break;
       }
     } // onmessage
