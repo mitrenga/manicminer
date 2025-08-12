@@ -146,7 +146,7 @@ export class GameAreaEntity extends AbstractEntity {
               }
               this.addEntity(entity);
               this.spriteEntities.crumblingFloors.push(entity);
-              this.initData.crumblingFloors.push({'hide': false, 'x': column*8, 'y': r*8, 'width': 8, 'height': 8, 'frame': 0, 'direction': 0});
+              this.initData.crumblingFloors.push({'crumbling': true, 'hide': false, 'x': column*8, 'y': r*8, 'width': 8, 'height': 8, 'frame': 0, 'direction': 0});
               break;
             case 'wall':
               this.initData.walls.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
