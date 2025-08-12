@@ -140,6 +140,10 @@ export class GameAreaEntity extends AbstractEntity {
             case 'crumblingFloor':
               var entity = new SpriteEntity(this, column*8, r*8, penColor, false, 0, 0);
               entity.setGraphicsData(data.graphicData[attr]);
+              for (var c = 0; c < 7; c++) {
+                entity.cloneSprite(0);
+                entity.moveSpriteWithCrop(c+1, 0, c+1, 8, 8);
+              }
               this.addEntity(entity);
               this.spriteEntities.crumblingFloors.push(entity);
               this.initData.crumblingFloors.push({'hide': false, 'x': column*8, 'y': r*8, 'width': 8, 'height': 8, 'frame': 0, 'direction': 0});
