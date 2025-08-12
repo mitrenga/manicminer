@@ -28,10 +28,10 @@ export class GameAreaEntity extends AbstractEntity {
   } // constructor
 
   drawEntity() {
+    super.drawEntity();
+
     if (this.caveData) {
       if (this.drawingCache[0].needToRefresh(this, this.width, this.height)) {
-        this.app.layout.paintRect(this.drawingCache[0].ctx, 0, 0, this.width, this.height, this.app.platform.zxColorByAttr(this.app.hexToInt(this.caveData.bkColor), 56, 8));
-
         // layout
         this.caveData.layout.forEach((row, r) => {
           for (var column = 0; column < row.length/2; column++) {
@@ -83,12 +83,34 @@ export class GameAreaEntity extends AbstractEntity {
         
       }
       this.app.layout.paintCache(this, 0);
-      super.drawSubEntities();
     }
   } // drawEntity
 
   setData(data) {
     this.caveData = data;
+    
+    this.bkColor = this.app.platform.zxColorByAttr(this.app.hexToInt(this.caveData.bkColor), 56, 8);
+
+    // Willy
+    this.initData.willy = [];
+    if (!this.demo) {
+      var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(data.willy.attribute));
+      var entity = new SpriteEntity(this, data.willy.init.x, data.willy.init.y, penColor, false, data.willy.init.frame, data.willy.init.direction);
+      this.addEntity(entity);
+      entity.setGraphicsData(data.willy);
+      this.spriteEntities.willy.push(entity);
+      this.initData.willy.push({
+        'x': data.willy.init.x,
+        'y': data.willy.init.y,
+        'width': data.willy.width,
+        'height': data.willy.height,
+        'paintCorrectionsX': data.willy.paintCorrections.x,
+        'paintCorrectionsY': data.willy.paintCorrections.y,
+        'frame': data.willy.init.frame,
+        'frames': data.willy.init.frames,
+        'direction': data.willy.init.direction
+      });
+    }
 
     // prepare drawing caches for layout
     this.drawingCache[0].cleanCache();
@@ -254,27 +276,6 @@ export class GameAreaEntity extends AbstractEntity {
         });
       }
     });
-
-    // Willy
-    this.initData.willy = [];
-    if (!this.demo) {
-      var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(data.willy.attribute));
-      var entity = new SpriteEntity(this, data.willy.init.x, data.willy.init.y, penColor, false, data.willy.init.frame, data.willy.init.direction);
-      this.addEntity(entity);
-      entity.setGraphicsData(data.willy);
-      this.spriteEntities.willy.push(entity);
-      this.initData.willy.push({
-        'x': data.willy.init.x,
-        'y': data.willy.init.y,
-        'width': data.willy.width,
-        'height': data.willy.height,
-        'paintCorrectionsX': data.willy.paintCorrections.x,
-        'paintCorrectionsY': data.willy.paintCorrections.y,
-        'frame': data.willy.init.frame,
-        'frames': data.willy.init.frames,
-        'direction': data.willy.init.direction
-      });
-    }
 
     // portal
     this.initData.portal = [];
