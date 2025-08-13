@@ -127,6 +127,8 @@ export class CaveModel extends AbstractModel {
       this.desktopEntity.addEntity(this.liveEntities[l]);
     }
 
+    this.sendEvent(330, {'id': 'changeFlashState'});
+
     if (this.app.audioManager.music > 0) {
       this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'music'});
       if (this.demo) {

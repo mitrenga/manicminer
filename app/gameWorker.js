@@ -16,6 +16,7 @@ var jumpDirection = 0;
 var jumpMap = [-4, -4, -3, -3, -2, -2, -1, -1, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4];
 var fallingCounter = 0;
 var movingDirection = 0;
+var completed = 0;
 
 function gameLoop() {
   setTimeout(gameLoop, 80);
@@ -450,6 +451,10 @@ function checkTouchItems() {
   var touchId = checkTouchWithObjectsArray(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.items]);
   if (touchId) {
     gameData.items[touchId-1].hide = true;
+    completed++;
+    if (completed == gameData.items.length) {
+      gameData.portal[0].flashShiftFrames = 1;
+    }
     postMessage({'id': 'playSound', 'channel': 'extra', 'sound': 'itemSound'});
   }
 } // checkTouchItems
@@ -462,7 +467,7 @@ function checkCrash() {
 } // checkCrash
 
 function checkTouchPortal() {
-  if (checkInsideWithObjectsArray(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.portal])) {
+  if (gameData.portal[0].flashShiftFrames && checkInsideWithObjectsArray(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.portal])) {
     console.log('portal');
   }
 } // checkTouchPortal

@@ -287,11 +287,13 @@ export class GameAreaEntity extends AbstractEntity {
     this.initData.portal = [];
     var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(data.portal.attribute));
     var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(data.portal.attribute));
-    var entity = new SpriteEntity(this, data.portal.location.x*8, data.portal.location.y*8, penColor, bkColor, 0, 0);
+    var entity = new SpriteEntity(this, data.portal.location.x*8, data.portal.location.y*8, false, false, 0, 0);
     this.addEntity(entity);
+    entity.setColorsMap({'-': {0: bkColor, 1: penColor}, '#': {0: penColor, 1: bkColor}});
     entity.setGraphicsData(data.portal);
+    entity.cloneSprite(0);
     this.spriteEntities.portal.push(entity);
-    this.initData.portal.push({'x': data.portal.location.x*8, 'y': data.portal.location.y*8, 'width': 16, 'height': 16, 'frame': 0, 'direction': 0});
+    this.initData.portal.push({'x': data.portal.location.x*8, 'y': data.portal.location.y*8, 'width': 16, 'height': 16, 'frame': 0, 'direction': 0, 'flashShiftFrames': 0});
 
     // light beam
     if ('lightBeam' in data) {
@@ -325,7 +327,11 @@ export class GameAreaEntity extends AbstractEntity {
         y += object.paintCorrectionsY;
       }
       this.spriteEntities[objectsType][o].y = y;
-      this.spriteEntities[objectsType][o].frame = object.frame;
+      var flashShiftFrames = 0;
+      if (('flashShiftFrames' in object) && this.app.stack.flashState) {
+        flashShiftFrames = object.flashShiftFrames;
+      }
+      this.spriteEntities[objectsType][o].frame = object.frame+flashShiftFrames;
       this.spriteEntities[objectsType][o].direction = object.direction;
       if ('width' in object) {
         var width = object.width;
