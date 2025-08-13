@@ -34,7 +34,15 @@ export class CaveModel extends AbstractModel {
     this.liveEntities = [];
     this.demo = demo;
 
-    this.initData = {'info': [0, 0, 0, 0, demo, false]};
+    this.initData = {'info': [
+      0, // counter
+      0, // counter2
+      0, // counter4
+      0, // counter6
+      demo,
+      false, // crash
+      this.app.score
+    ]};
 
     this.worker = new Worker(this.app.importPath+'/gameWorker.js?ver='+window.srcVersion);
     this.worker.onmessage = (event) => {
@@ -64,6 +72,11 @@ export class CaveModel extends AbstractModel {
                   this.sendEvent(0, {'id': 'gameOver'});
                 }
                 this.airEntity.value = 1-(ptrClock/maxClock);
+                console.log(this.app.score);
+                if (this.app.score != event.data.gameData.info[6]) {
+                  this.app.score = event.data.gameData.info[6];
+                  this.scoreEntity.setText(this.app.score.toString().padStart(6, '0'));
+                }
                 break;
                 
               case 'floors':
@@ -115,10 +128,10 @@ export class CaveModel extends AbstractModel {
     this.desktopEntity.addEntity(this.airEntity);
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 18*8, 32*8, 8, false, this.app.platform.colorByName('black')));
     this.desktopEntity.addEntity(new ZXTextEntity(this.desktopEntity, 0, 19*8, 10*8, 8, 'High Score', this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, true));
-    this.hiScoreEntity = new ZXTextEntity(this.desktopEntity, 10*8, 19*8, 10*8, 8, '000000', this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, false);
+    this.hiScoreEntity = new ZXTextEntity(this.desktopEntity, 10*8, 19*8, 10*8, 8, this.app.hiScore.toString().padStart(6, '0'), this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, false);
     this.desktopEntity.addEntity(this.hiScoreEntity);
     this.desktopEntity.addEntity(new ZXTextEntity(this.desktopEntity, 20*8, 19*8, 6*8, 8, 'Score', this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, true));
-    this.scoreEntity = new ZXTextEntity(this.desktopEntity, 26*8, 19*8, 6*8, 8, '000000', this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, false);
+    this.scoreEntity = new ZXTextEntity(this.desktopEntity, 26*8, 19*8, 6*8, 8, this.app.score.toString().padStart(6, '0'), this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, false);
     this.desktopEntity.addEntity(this.scoreEntity);
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 20*8, 32*8, 8, false, this.app.platform.colorByName('black')));
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 21*8, 32*8, 3*8, false, this.app.platform.colorByName('black')));

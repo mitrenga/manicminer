@@ -29,6 +29,8 @@ export class GameApp extends AbstractApp {
     this.caveNumber = false;
     this.demo = false;
     this.lives = 2;
+    this.score = 0;
+    this.hiScore = 0;
     this.globalData = false;
     this.model = this.newModel('ResetModel');
     this.model.init();

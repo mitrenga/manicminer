@@ -452,6 +452,7 @@ function checkTouchItems() {
   if (touchId) {
     gameData.items[touchId-1].hide = true;
     completed++;
+    gameData.info[6] += 100;
     if (completed == gameData.items.length) {
       gameData.portal[0].flashShiftFrames = 1;
     }
