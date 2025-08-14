@@ -72,7 +72,6 @@ export class CaveModel extends AbstractModel {
                   this.sendEvent(0, {'id': 'gameOver'});
                 }
                 this.airEntity.value = 1-(ptrClock/maxClock);
-                console.log(this.app.score);
                 if (this.app.score != event.data.gameData.info[6]) {
                   this.app.score = event.data.gameData.info[6];
                   this.scoreEntity.setText(this.app.score.toString().padStart(6, '0'));
