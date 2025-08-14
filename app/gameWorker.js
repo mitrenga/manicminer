@@ -18,6 +18,7 @@ var fallingCounter = 0;
 var fallingDirection = 0;
 var mustMovingDirection = 0;
 var canMovingDirection = 0;
+var previousDirection = 0;
 var completed = 0;
 
 function gameLoop() {
@@ -142,9 +143,14 @@ function gameLoop() {
         mustMovingDirection = -1;
       }
 
-      if ((controls.right && !controls.left && !jumpCounter && !fallingCounter && !mustMovingDirection) || (jumpCounter && jumpDirection == 1) || (mustMovingDirection == 1)) {
+      var newDirection = 0;
+      if ((controls.right && !controls.left && !jumpCounter && !fallingCounter && !mustMovingDirection && (!canMovingDirection || (canMovingDirection == -1 && previousDirection == 1))) ||
+          (jumpCounter && jumpDirection == 1) ||
+          (mustMovingDirection == 1)) {
+
+        newDirection = 1;
         if (gameData.willy[0].direction == 1) {
-          gameData.willy[0].direction = 0;
+         gameData.willy[0].direction = 0;
         } else {
           jumpDirection = 1;
           if (canMove(2, 0)) {
@@ -158,7 +164,11 @@ function gameLoop() {
         }
       }
 
-      if ((controls.left && !controls.right && !jumpCounter && !fallingCounter && !mustMovingDirection) || (jumpCounter && jumpDirection == -1) || (mustMovingDirection == -1)) {
+      if ((controls.left && !controls.right && !jumpCounter && !fallingCounter && !mustMovingDirection && (!canMovingDirection || (canMovingDirection == 1 && previousDirection == -1))) ||
+          (jumpCounter && jumpDirection == -1) ||
+          (mustMovingDirection == -1)) {
+
+        newDirection = -1;
         if (gameData.willy[0].direction == 0) {
           gameData.willy[0].direction = 1;
         } else {
@@ -173,6 +183,8 @@ function gameLoop() {
           }
         }
       }
+
+      previousDirection = newDirection;
 
       if (!jumpCounter && !fallingCounter && controls.jump) {
         if (canMove(0, jumpMap[jumpCounter])) {
