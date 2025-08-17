@@ -77,6 +77,8 @@ function items() {
 } // items
 
 function willy() {
+  var willy = gameData.willy[0];
+
   if (jumpCounter == jumpMap.length) {
     jumpCounter = 0;
     fallingDirection = jumpDirection;
@@ -86,7 +88,7 @@ function willy() {
 
   canMovingDirection = 0;
 
-  var standingOn = checkStandingWithObjectsArray(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.walls, gameData.floors, gameData.crumblingFloors, gameData.conveyors]);
+  var standingOn = checkStandingWithObjectsArray(willy.x, willy.y, 10, 16, [gameData.walls, gameData.floors, gameData.crumblingFloors, gameData.conveyors]);
 
   standingOn.forEach((object) => {
     if ('crumbling' in object) {
@@ -121,7 +123,7 @@ function willy() {
       fallingDirection = 0;
       postMessage({'id': 'stopChannel', 'channel': 'sounds'});
     } else {
-      gameData.willy[0].y += 4;
+      willy.y += 4;
       fallingCounter++;
     }
   } else {
@@ -146,7 +148,7 @@ function willy() {
   if (jumpCounter > 0) {
     if (canMove(0, jumpMap[jumpCounter])) {
       jumpCounter++;
-      gameData.willy[0].y += jumpMap[jumpCounter-1]; 
+      willy.y += jumpMap[jumpCounter-1]; 
     } else {
       jumpCounter = 0;
       jumpDirection = 0;
@@ -169,16 +171,16 @@ function willy() {
       (mustMovingDirection == 1)) {
 
     newDirection = 1;
-    if (gameData.willy[0].direction == 1) {
-      gameData.willy[0].direction = 0;
+    if (willy.direction == 1) {
+      willy.direction = 0;
     } else {
       jumpDirection = 1;
       if (canMove(2, 0)) {
-        gameData.willy[0].x += 2;
-        if (gameData.willy[0].frame == 3) {
-          gameData.willy[0].frame = 0;
+        willy.x += 2;
+        if (willy.frame == 3) {
+          willy.frame = 0;
         } else {
-          gameData.willy[0].frame++;
+          willy.frame++;
         }
       }
     }
@@ -189,16 +191,16 @@ function willy() {
       (mustMovingDirection == -1)) {
 
     newDirection = -1;
-    if (gameData.willy[0].direction == 0) {
-      gameData.willy[0].direction = 1;
+    if (willy.direction == 0) {
+      willy.direction = 1;
     } else {
       jumpDirection = -1;
       if (canMove(-2, 0)) {
-        gameData.willy[0].x -= 2;
-        if (gameData.willy[0].frame == 0) {
-          gameData.willy[0].frame = 3;
+        willy.x -= 2;
+        if (willy.frame == 0) {
+          willy.frame = 3;
         } else {
-          gameData.willy[0].frame--;
+          willy.frame--;
         }
       }
     }
@@ -209,7 +211,7 @@ function willy() {
   if (!jumpCounter && !fallingCounter && controls.jump) {
     if (canMove(0, jumpMap[jumpCounter])) {
       jumpCounter = 1;
-      gameData.willy[0].y += jumpMap[jumpCounter-1]; 
+      willy.y += jumpMap[jumpCounter-1]; 
       postMessage({'id': 'playSound', 'channel': 'sounds', 'sound': 'jumpSound'});
     }
   }
