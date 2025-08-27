@@ -99,6 +99,7 @@ export class MainModel extends AbstractModel {
           switch (event.key) {
             case 'Enter':
               this.app.model.shutdown();
+              this.app.score = 0;
               this.app.caveNumber = this.app.globalData.initCave;
               this.app.demo = false;
               this.app.model = this.app.newModel('CaveModel');
@@ -115,6 +116,7 @@ export class MainModel extends AbstractModel {
 
       case 'mouseClick':
         this.app.model.shutdown();
+        this.app.score = 0;
         this.app.caveNumber = this.app.globalData.initCave;
         this.app.demo = false;
         this.app.model = this.app.newModel('CaveModel');
