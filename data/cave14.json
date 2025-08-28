@@ -103,7 +103,7 @@
         ]
      },
      "06":{
-        "kind":"extra",
+        "kind":"floor",
         "sprite":[
            "########",
            "########",
@@ -154,7 +154,7 @@
            "initAttribute":"04"
         },
         {
-           "x":264,
+           "x":26,
            "y":14,
            "initAttribute":"05"
         }
