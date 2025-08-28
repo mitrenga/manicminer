@@ -516,8 +516,12 @@ function checkCrash() {
 } // checkCrash
 
 function checkTouchPortal() {
-  if (gameData.portal[0].flashShiftFrames && checkInsideWithObjectsArray(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.portal])) {
-    postMessage({'id': 'caveDone'});
+  if (gameData.portal[0].flashShiftFrames) {
+    var willy = gameData.willy[0];
+    var portal = gameData.portal[0];
+    if (!(willy.x+willy.width <= portal.x+8 || willy.y+willy.height <= portal.y+8 || willy.x >= portal.x+portal.width-8 || willy.y >= portal.y+portal.height-8)) {
+      postMessage({'id': 'caveDone'});
+    }
   }
 } // checkTouchPortal
 
