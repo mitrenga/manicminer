@@ -435,6 +435,7 @@ function checkTouchWithObjectsArray(x, y, width, height, objectsArray) {
   return 0;
 } // checkTouchWithObjectsArray
 
+/*
 function checkInsideWithObjectsArray(x, y, width, height, objectsArray) {
   for (var a = 0; a < objectsArray.length; a++) {
     var objects = objectsArray[a];
@@ -449,6 +450,7 @@ function checkInsideWithObjectsArray(x, y, width, height, objectsArray) {
   }
   return 0;
 } // checkInsideWithObjectsArray
+*/
 
 function checkStandingWithObjectsArray(x, y, width, height, objectsArray) {
   var result = [];
