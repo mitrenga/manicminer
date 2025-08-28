@@ -398,7 +398,7 @@ function lightBeam() {
         gameData.lightBeam[part].width = 8;
         gameData.lightBeam[part].height = 8;
         gameData.lightBeam[part].hide = false;
-        checkLightBeamTouch(lbData, 0, 8);
+        checkTurnLightBeam(lbData, 0, 8);
         gameData.lightBeam[part].width = 8;
         gameData.lightBeam[part].height = lbData.y-gameData.lightBeam[part].y;
       } else { // to left
@@ -407,7 +407,7 @@ function lightBeam() {
         gameData.lightBeam[part].x = lbData.x;
         gameData.lightBeam[part].y = lbData.y;
         gameData.lightBeam[part].hide = false;
-        checkLightBeamTouch(lbData, -8, 0);
+        checkTurnLightBeam(lbData, -8, 0);
         gameData.lightBeam[part].width = gameData.lightBeam[part].x-lbData.x;
         gameData.lightBeam[part].x = lbData.x+8;
         gameData.lightBeam[part].height = 8;
@@ -471,7 +471,7 @@ function checkStandingWithObjectsArray(x, y, width, height, objectsArray) {
   return result;
 } // checkStandingWithObjectsArray
 
-function checkLightBeamTouch(lbData, moveX, moveY) {
+function checkTurnLightBeam(lbData, moveX, moveY) {
   while (!lbData.touchLight && !lbData.cancelLight) {
     if (!lbData.touchLight && !lbData.cancelLight) {
       lbData.touchLight = checkTouchWithObjectsArray(lbData.x, lbData.y, 8, 8, [gameData.guardians]);
@@ -487,7 +487,7 @@ function checkLightBeamTouch(lbData, moveX, moveY) {
       lbData.y += moveY;
     }
   }
-} // checkLightBeamTouch
+} // checkTurnLightBeam
 
 function canMove(moveX, moveY) {
   return !checkTouchWithObjectsArray(gameData.willy[0].x+moveX, gameData.willy[0].y+moveY, 10, 16, [gameData.walls]);
