@@ -515,7 +515,7 @@ function checkCrash() {
 
 function checkTouchPortal() {
   if (gameData.portal[0].flashShiftFrames && checkInsideWithObjectsArray(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.portal])) {
-    console.log('portal');
+    postMessage({'id': 'caveDone'});
   }
 } // checkTouchPortal
 

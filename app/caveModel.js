@@ -33,6 +33,7 @@ export class CaveModel extends AbstractModel {
     this.scoreEntity = null;
     this.liveEntities = [];
     this.demo = demo;
+    this.bkAnimation = false;
 
     this.initData = {'info': [
       0, // counter
@@ -53,13 +54,21 @@ export class CaveModel extends AbstractModel {
 
       switch (event.data.id) {
         case 'update':
+          if (this.bkAnimation !== false) {
+            this.gameAreaEntity.bkColor = this.app.platform.color(this.bkAnimation);
+            if (this.bkAnimation >= 0) {
+              this.bkAnimation--;
+            } else {
+              this.bkAnimation = false;
+            }
+            if (this.bkAnimation < 0) {
+              this.gameAreaEntity.restoreBkColor();
+              this.bkAnimation = false;
+            }
+          }
           Object.keys(event.data.gameData).forEach((objectsType) => {
             switch (objectsType) {
               case 'info':
-                for (var l = 0; l < this.app.lives; l++) {
-                  this.liveEntities[l].x = event.data.gameData.info[3]%4*2+l*16;
-                  this.liveEntities[l].frame = event.data.gameData.info[3]%4;
-                }                
                 var ptrClock = event.data.gameData.info[0]+this.gameClock;
                 if (event.data.gameData.info[0] < 2) {
                   ptrClock = event.data.gameData.info[0];
@@ -75,7 +84,17 @@ export class CaveModel extends AbstractModel {
                 if (this.app.score != event.data.gameData.info[6]) {
                   this.app.score = event.data.gameData.info[6];
                   this.scoreEntity.setText(this.app.score.toString().padStart(6, '0'));
+                  if (this.app.lives < 16 && this.app.lastBonusScore+10000 <= this.app.score) {
+                    this.app.lastBonusScore += 10000;
+                    this.liveEntities[this.app.lives].hide = false;
+                    this.app.lives++;
+                    this.bkAnimation = 7;
+                  }
                 }
+                for (var l = 0; l < this.app.lives; l++) {
+                  this.liveEntities[l].x = event.data.gameData.info[3]%4*2+l*16;
+                  this.liveEntities[l].frame = event.data.gameData.info[3]%4;
+                }                
                 break;
                 
               case 'floors':
@@ -96,6 +115,10 @@ export class CaveModel extends AbstractModel {
 
         case 'stopChannel':
           this.sendEvent(0, {'id': 'stopChannel', 'channel': event.data.channel});
+          break;
+
+        case 'caveDone':
+          this.sendEvent(0, {'id': 'newCave'});
           break;
       }
     } // onmessage
@@ -134,9 +157,12 @@ export class CaveModel extends AbstractModel {
     this.desktopEntity.addEntity(this.scoreEntity);
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 20*8, 32*8, 8, false, this.app.platform.colorByName('black')));
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 21*8, 32*8, 3*8, false, this.app.platform.colorByName('black')));
-    for (var l = 0; l < this.app.lives; l++) {
+    for (var l = 0; l < 16; l++) {
       this.liveEntities[l] = new SpriteEntity(this.desktopEntity, l*16, 21*8, this.app.platform.colorByName('brightCyan'), false, 0, 0);
       this.desktopEntity.addEntity(this.liveEntities[l]);
+      if (l >= this.app.lives) {
+        this.liveEntities[l].hide = true;
+      }
     }
 
     this.sendEvent(330, {'id': 'changeFlashState'});
@@ -166,7 +192,7 @@ export class CaveModel extends AbstractModel {
     this.gameClock = (256-this.app.hexToInt(data.gameClock))/4;
     this.airSupply = this.app.hexToInt(data.airSupply);
     this.borderEntity.bkColor = this.app.platform.zxColorByAttr(this.app.hexToInt(data.borderColor), 7, 1);
-    for (var l = 0; l < this.app.lives; l++) {
+    for (var l = 0; l < 16; l++) {
       this.liveEntities[l].setGraphicsData(data.willy);
     }
     super.setData(data);
@@ -245,17 +271,27 @@ export class CaveModel extends AbstractModel {
         }
         break;
 
+      case 'newCave':
+        this.app.model.shutdown();
+        if (this.app.caveNumber < this.app.globalData.cavesCount-1) {
+          this.app.caveNumber = this.app.caveNumber+1;
+        } else {
+          this.app.caveNumber = this.app.globalData.initCave;
+        }
+        this.app.model = this.app.newModel('CaveModel');
+        this.app.model.init();
+        this.app.resizeApp();
+        return true;
+
       case 'newDemoCave':
         this.app.model.shutdown();
         if (this.app.caveNumber < this.app.globalData.cavesCount-1) {
           this.app.caveNumber = this.app.caveNumber+1;
           this.app.demo = true;
           this.app.model = this.app.newModel('CaveModel');
-          this.app.model.init();
-          this.app.resizeApp();
-          return true;
+        } else {
+          this.app.model = this.app.newModel('MainModel');
         }
-        this.app.model = this.app.newModel('MainModel');
         this.app.model.init();
         this.app.resizeApp();
         return true;

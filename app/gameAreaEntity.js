@@ -19,6 +19,7 @@ export class GameAreaEntity extends AbstractEntity {
     this.initData = initData;
     this.demo = demo;
     this.caveData = null;
+    this.bkColorForRestore = false;
 
     this.app.layout.newDrawingCache(this, 0); 
     this.graphicCache = {};
@@ -92,6 +93,7 @@ export class GameAreaEntity extends AbstractEntity {
     this.caveData = data;
     
     this.bkColor = this.app.platform.zxColorByAttr(this.app.hexToInt(this.caveData.bkColor), 56, 8);
+    this.bkColorForRestore = this.bkColor;
 
     // Willy
     this.initData.willy = [];
@@ -353,6 +355,12 @@ export class GameAreaEntity extends AbstractEntity {
     });
   } // updateData
     
+  restoreBkColor() {
+    if (this.restoreBkColor !== false) {
+      this.bkColor = this.bkColorForRestore;
+    }
+  } // restoreBkColor
+
 } // class GameAreaEntity
 
 export default GameAreaEntity;
