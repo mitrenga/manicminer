@@ -130,6 +130,9 @@ export class MainModel extends AbstractModel {
         
       case 'newDemoCave':
         this.app.model.shutdown();
+        this.app.score = 0;
+        this.app.lastBonusScore = 0;
+        this.app.lives = 2;
         this.app.caveNumber = this.app.globalData.initCave;
         this.app.demo = true;
         this.app.model = this.app.newModel('CaveModel');

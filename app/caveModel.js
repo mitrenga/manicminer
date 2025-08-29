@@ -1,19 +1,13 @@
 /**/
 const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+window.srcVersion);
-const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
-const { ZXTextEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxTextEntity.js?ver='+window.srcVersion);
 const { GameAreaEntity } = await import('./gameAreaEntity.js?ver='+window.srcVersion);
-const { AirEntity } = await import('./airEntity.js?ver='+window.srcVersion);
+const { GameInfoEntity } = await import('./gameInfoEntity.js?ver='+window.srcVersion);
 const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcVersion);
-const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
-import AbstractEntity from './svision/js/abstractEntity.js';
-import ZXTextEntity from '././svision/js/platform/canvas2D/zxSpectrum/zxTextEntity.js';
 import GameAreaEntity from './gameAreaEntity.js';
-import AirEntity from './airEntity.js';
+import GameInfoEntity from './gameInfoEntity.js';
 import PauseGameEntity from './pauseGameEntity.js';
-import SpriteEntity from '././svision/js/platform/canvas2D/spriteEntity.js';
 /**/
 // begin code
 
@@ -25,13 +19,9 @@ export class CaveModel extends AbstractModel {
 
     this.caveNumber = caveNumber;
     this.gameAreaEntity = null;
-    this.airEntity = null;
+    this.gameInfoEntity = null;
     this.gameClock = 0;
     this.airSupply = 63;
-    this.bkCaveNameEntity = null;
-    this.hiScoreEntity = null;
-    this.scoreEntity = null;
-    this.liveEntities = [];
     this.demo = demo;
     this.bkAnimation = false;
 
@@ -80,20 +70,21 @@ export class CaveModel extends AbstractModel {
                 if (event.data.gameData.info[5]) {
                   this.sendEvent(0, {'id': 'gameOver'});
                 }
-                this.airEntity.value = 1-(ptrClock/maxClock);
+                this.app.airValue = 1-(ptrClock/maxClock);
+                this.gameInfoEntity.airEntity.value = this.app.airValue;
                 if (this.app.score != event.data.gameData.info[6]) {
                   this.app.score = event.data.gameData.info[6];
-                  this.scoreEntity.setText(this.app.score.toString().padStart(6, '0'));
+                  this.gameInfoEntity.scoreEntity.setText(this.app.score.toString().padStart(6, '0'));
                   if (this.app.lives < 16 && this.app.lastBonusScore+10000 <= this.app.score) {
                     this.app.lastBonusScore += 10000;
-                    this.liveEntities[this.app.lives].hide = false;
+                    this.gameInfoEntity.liveEntities[this.app.lives].hide = false;
                     this.app.lives++;
                     this.bkAnimation = 7;
                   }
                 }
                 for (var l = 0; l < this.app.lives; l++) {
-                  this.liveEntities[l].x = event.data.gameData.info[3]%4*2+l*16;
-                  this.liveEntities[l].frame = event.data.gameData.info[3]%4;
+                  this.gameInfoEntity.liveEntities[l].x = event.data.gameData.info[3]%4*2+l*16;
+                  this.gameInfoEntity.liveEntities[l].frame = event.data.gameData.info[3]%4;
                 }                
                 break;
                 
@@ -142,28 +133,8 @@ export class CaveModel extends AbstractModel {
     this.borderEntity.bkColor = this.app.platform.colorByName('black');
     this.gameAreaEntity = new GameAreaEntity(this.desktopEntity, 0, 0, 32*8, 16*8, this.caveNumber, this.initData, this.demo);
     this.desktopEntity.addEntity(this.gameAreaEntity);
-    this.caveNameEntity = new ZXTextEntity(this.desktopEntity, 0, 16*8, 32*8, 8, '', this.app.platform.colorByName('black'), this.app.platform.colorByName('yellow'), 0, true);
-    this.caveNameEntity.justify = 2;
-    this.desktopEntity.addEntity(this.caveNameEntity);
-    this.desktopEntity.addEntity(new ZXTextEntity(this.desktopEntity, 0, 17*8, 4*8, 8, 'AIR', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightRed'), 0, true));
-    this.airEntity = new AirEntity(this.desktopEntity, 4*8, 17*8, 28*8, 8, 1.0);
-    this.desktopEntity.addEntity(this.airEntity);
-    this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 18*8, 32*8, 8, false, this.app.platform.colorByName('black')));
-    this.desktopEntity.addEntity(new ZXTextEntity(this.desktopEntity, 0, 19*8, 10*8, 8, 'High Score', this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, true));
-    this.hiScoreEntity = new ZXTextEntity(this.desktopEntity, 10*8, 19*8, 10*8, 8, this.app.hiScore.toString().padStart(6, '0'), this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, false);
-    this.desktopEntity.addEntity(this.hiScoreEntity);
-    this.desktopEntity.addEntity(new ZXTextEntity(this.desktopEntity, 20*8, 19*8, 6*8, 8, 'Score', this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, true));
-    this.scoreEntity = new ZXTextEntity(this.desktopEntity, 26*8, 19*8, 6*8, 8, this.app.score.toString().padStart(6, '0'), this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), 0, false);
-    this.desktopEntity.addEntity(this.scoreEntity);
-    this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 20*8, 32*8, 8, false, this.app.platform.colorByName('black')));
-    this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 0, 21*8, 32*8, 3*8, false, this.app.platform.colorByName('black')));
-    for (var l = 0; l < 16; l++) {
-      this.liveEntities[l] = new SpriteEntity(this.desktopEntity, l*16, 21*8, this.app.platform.colorByName('brightCyan'), false, 0, 0);
-      this.desktopEntity.addEntity(this.liveEntities[l]);
-      if (l >= this.app.lives) {
-        this.liveEntities[l].hide = true;
-      }
-    }
+    this.gameInfoEntity = new GameInfoEntity(this.desktopEntity, 0, 16*8, 32*8, 8*8);
+    this.desktopEntity.addEntity(this.gameInfoEntity);
 
     this.sendEvent(330, {'id': 'changeFlashState'});
 
@@ -188,12 +159,13 @@ export class CaveModel extends AbstractModel {
   } // shutdown
 
   setData(data) {
-    this.caveNameEntity.setText(data.name);
+    this.gameInfoEntity.caveNameEntity.setText(data.name);
+    this.app.caveName = data.name;
     this.gameClock = (256-this.app.hexToInt(data.gameClock))/4;
     this.airSupply = this.app.hexToInt(data.airSupply);
     this.borderEntity.bkColor = this.app.platform.zxColorByAttr(this.app.hexToInt(data.borderColor), 7, 1);
     for (var l = 0; l < 16; l++) {
-      this.liveEntities[l].setGraphicsData(data.willy);
+      this.gameInfoEntity.liveEntities[l].setGraphicsData(data.willy);
     }
     super.setData(data);
     this.worker.postMessage({'id': 'init', 'initData': this.initData});
@@ -298,7 +270,7 @@ export class CaveModel extends AbstractModel {
     
       case 'gameOver':
         this.app.model.shutdown();
-        this.app.model = this.app.newModel('MainModel');
+        this.app.model = this.app.newModel('GameOverModel');
         this.app.model.init();
         this.app.resizeApp();
         return true;

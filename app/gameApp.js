@@ -27,6 +27,8 @@ export class GameApp extends AbstractApp {
     this.audioManager = new AudioManager(this);
 
     this.caveNumber = false;
+    this.caveName = '';
+    this.airValue = 0;
     this.demo = false;
     this.lives = 2;
     this.score = 0;
