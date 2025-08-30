@@ -138,18 +138,14 @@ export class CaveModel extends AbstractModel {
 
     this.sendEvent(330, {'id': 'changeFlashState'});
 
-    if (this.app.audioManager.music > 0) {
-      this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'music'});
-      if (this.demo) {
-        this.sendEvent(500, {'id': 'playSound', 'channel': 'music', 'sound': 'inGameMelody', 'options': {'caveNumber': this.caveNumber, 'demo': true}});
-      } else {
-        this.sendEvent(500, {'id': 'playSound', 'channel': 'music', 'sound': 'inGameMelody', 'options': {'repeat': true, 'caveNumber': this.caveNumber, 'demo': false}});
-      }
+    this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'music'});
+    if (this.demo) {
+      this.sendEvent(500, {'id': 'playSound', 'channel': 'music', 'sound': 'inGameMelody', 'options': {'caveNumber': this.caveNumber, 'demo': true}});
+    } else {
+      this.sendEvent(500, {'id': 'playSound', 'channel': 'music', 'sound': 'inGameMelody', 'options': {'repeat': true, 'caveNumber': this.caveNumber, 'demo': false}});
     }
-    if (this.app.audioManager.sounds > 0) {
-      this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'sounds'});
-      this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'extra'});
-    }
+    this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'sounds'});
+    this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'extra'});
   } // init
 
   shutdown() {
