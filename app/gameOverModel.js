@@ -30,6 +30,7 @@ export class GameOverModel extends AbstractModel {
     this.timerEntity = null;
     this.colorCounter = 65;
     this.colorTimer = false;
+    this.fallTimer = 0;
   } // constructor
 
   init() {
@@ -94,21 +95,27 @@ export class GameOverModel extends AbstractModel {
       case 'keyPress':
         switch (event.key) {
           case 'Enter':
-            this.app.model.shutdown();
-            this.app.score = 0;
-            this.app.lastBonusScore = 0;
-            this.app.lives = 2;
-            this.app.demo = false;
-            this.app.model = this.app.newModel('CaveModel');
-            this.app.model.init();
-            this.app.resizeApp();
-            return true;
+            if (this.app.caveNumber != this.app.globalData.initCave && this.fallTimer == 2000) {
+              this.app.model.shutdown();
+              this.app.score = 0;
+              this.app.lastBonusScore = 0;
+              this.app.lives = 2;
+              this.app.demo = false;
+              this.app.model = this.app.newModel('CaveModel');
+              this.app.model.init();
+              this.app.resizeApp();
+              return true;
+            }
+            break;
           case 'Escape':
-            this.app.model.shutdown();
-            this.app.model = this.app.newModel('MainModel');
-            this.app.model.init();
-            this.app.resizeApp();
-            return true;
+            if (this.app.caveNumber != this.app.globalData.initCave && this.fallTimer == 2000) {
+              this.app.model.shutdown();
+              this.app.model = this.app.newModel('MainModel');
+              this.app.model.init();
+              this.app.resizeApp();
+              return true;
+            }
+            break;
         }
         break;
       case 'MainModel':
@@ -127,13 +134,17 @@ export class GameOverModel extends AbstractModel {
     if (this.timer === false) {
       this.timer = timestamp;
     }
-    var fallTimer = timestamp-this.timer;
-    if (fallTimer > 2000) {
-      fallTimer = 2000;
+    this.fallTimer = timestamp-this.timer;
+    if (this.fallTimer > 2000) {
+      this.fallTimer = 2000;
       this.gameEntity.hide = false;
       this.overEntity.hide = false;
-      this.contiueEntity.hide = false;
-      this.timerEntity.hide = false;
+      var countdownLength = 2;
+      if (this.app.caveNumber != this.app.globalData.initCave) {
+        this.contiueEntity.hide = false;
+        this.timerEntity.hide = false;
+        countdownLength = 10;
+      }
       if (this.colorTimer === false) {
         this.colorTimer = timestamp;
       }
@@ -150,16 +161,16 @@ export class GameOverModel extends AbstractModel {
         }
         this.overEntity.drawingCache[0].cleanCache();
       }
-      var countdown = 10-Math.floor((timestamp-this.timer-2000)/1000);
+      var countdown = countdownLength-Math.floor((timestamp-this.timer-2000)/1000);
       if (countdown < 0) {
         this.sendEvent(0, {'id': 'MainModel'});
       } else {
         this.timerEntity.setText(countdown.toString());
       }
     }
-    this.desktopEntity.bkColor = this.app.platform.color((Math.floor((fallTimer%200)/50)));
+    this.desktopEntity.bkColor = this.app.platform.color((Math.floor((this.fallTimer%200)/50)));
     this.shoeEntity.bkColor = this.desktopEntity.bkColor;
-    this.shoeEntity.y = Math.round(12*8*fallTimer/2000);
+    this.shoeEntity.y = Math.round(12*8*this.fallTimer/2000);
     this.pillarEntity.height = this.shoeEntity.y;
 
     this.drawModel();
