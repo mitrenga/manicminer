@@ -25,7 +25,7 @@ export class GameAreaEntity extends AbstractEntity {
     this.graphicCache = {};
     this.staticKinds = ['floor', 'wall', 'nasty', 'extra'];
 
-    this.spriteEntities = {'crumblingFloors': [], 'conveyors': [], 'guardians': [], 'items': [], 'willy': [], "portal": [], "lightBeam": []};
+    this.spriteEntities = {'crumblingFloors': [], 'conveyors': [], 'guardians': [], 'items': [], 'willy': [], "barriers": [], "switches":[], "portal": [], "lightBeam": []};
   } // constructor
 
   drawEntity() {
@@ -41,7 +41,7 @@ export class GameAreaEntity extends AbstractEntity {
               if (this.staticKinds.includes(this.caveData.graphicData[attr].kind)) {
                 if (this.graphicCache[attr].needToRefresh(this, 8, 8)) {
                   var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
-                  var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(attr)&63);
+                  var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(attr));
                   if (bkColor == this.app.platform.bkColorByAttr(this.app.hexToInt(this.caveData.bkColor))) {
                     bkColor = false;
                   }
@@ -177,7 +177,7 @@ export class GameAreaEntity extends AbstractEntity {
     this.initData.conveyors = [];
     if (conveyorData !== false) {
       var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(conveyorData.attr));
-      var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(conveyorData.attr)&63);
+      var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(conveyorData.attr));
       if (bkColor == this.app.platform.bkColorByAttr(this.app.hexToInt(data.bkColor))) {
         bkColor = false;
       }
@@ -285,17 +285,65 @@ export class GameAreaEntity extends AbstractEntity {
       }
     });
 
+    // barriers
+    this.initData.barriers = [];
+    if ('barriers' in data) {
+      data.barriers.data.forEach((barrier) => {
+        var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(barrier.attribute));
+        var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(barrier.attribute));
+        var entity = new SpriteEntity(this, barrier.x*8, barrier.y*8, penColor, bkColor, 0, 0);
+        this.addEntity(entity);
+        entity.setGraphicsData(barrier);
+        this.spriteEntities.barriers.push(entity);
+        this.initData.barriers.push({
+          'x': barrier.x*8,
+          'y': barrier.y*8,
+          'width': barrier.width,
+          'height': barrier.height,
+          'frame': 0,
+          'direction': 0,
+          'frames': barrier.frames,
+          'directions': barrier.directions,
+          'actions': barrier.actions
+        });
+      });
+    }
+
+    // switches
+    this.initData.switches = [];
+    if ('switches' in data) {
+      data.switches.data.forEach((swtch) => {
+        var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(swtch.attribute));
+        var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(swtch.attribute));
+        var entity = new SpriteEntity(this, swtch.x*8, swtch.y*8, penColor, bkColor, 0, 0);
+        this.addEntity(entity);
+        entity.setGraphicsData(data.switches);
+        this.spriteEntities.switches.push(entity);
+        this.initData.switches.push({
+          'x': swtch.x*8,
+          'y': swtch.y*8,
+          'width': 8,
+          'height': 8,
+          'frame': 0,
+          'direction': 0,
+          'frames': data.switches.frames,
+          'directions': data.switches.directions,
+          'actions': swtch.actions
+        });
+      });
+    }
+
     // portal
     this.initData.portal = [];
     var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(data.portal.attribute));
     var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(data.portal.attribute));
-    var entity = new SpriteEntity(this, data.portal.location.x*8, data.portal.location.y*8, false, false, 0, 0);
+    var entity = new SpriteEntity(this, data.portal.x*8, data.portal.y*8, false, false, 0, 0);
     this.addEntity(entity);
     entity.setColorsMap({'-': {0: bkColor, 1: penColor}, '#': {0: penColor, 1: bkColor}});
     entity.setGraphicsData(data.portal);
     entity.cloneSprite(0);
     this.spriteEntities.portal.push(entity);
-    this.initData.portal.push({'x': data.portal.location.x*8, 'y': data.portal.location.y*8, 'width': 16, 'height': 16, 'frame': 0, 'direction': 0, 'flashShiftFrames': 0});
+    this.initData.portal.push({'x': data.portal.x*8, 'y': data.portal.y*8, 'width': 16, 'height': 16, 'frame': 0, 'direction': 0, 'flashShiftFrames': 0});
 
     // light beam
     if ('lightBeam' in data) {

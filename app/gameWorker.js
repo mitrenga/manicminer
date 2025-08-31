@@ -42,11 +42,13 @@ function gameLoop() {
     }
     guardians();
     lightBeam();
+    barriers();
     if (!gameData.info[4]) { // if not demo
       checkTouchItems();
       checkCrash();
       checkTouchPortal();
       checkTouchLightBeam();
+      checkTouchSwitches();
     }
     gameData.info[0] = counter;
     gameData.info[1] = counter2;
@@ -420,6 +422,29 @@ function lightBeam() {
   }
 } // lightBeam
 
+function barriers() {
+  if ('barriers' in gameData) {
+    gameData.barriers.forEach((barrier) => {
+      if (!barrier.hide && barrier.frame) {
+        barrier.frame++;
+        if (barrier.frame == barrier.frames-1) {
+          barrier.hide = true;
+          if ('actions' in barrier) {
+            var actions = barrier.actions;
+            actions.forEach((action) => {
+              switch(action.type) {
+                case 'setValue':
+                  gameData[action.objectsArray][action.index][action.variable] = action.value;
+                  break;
+              }
+            });
+          }
+        }
+      }
+    });
+  }
+} // barriers
+
 function checkTouchWithObjectsArray(x, y, width, height, objectsArray) {
   for (var a = 0; a < objectsArray.length; a++) {
     var objects = objectsArray[a];
@@ -492,7 +517,7 @@ function checkTurnLightBeam(lbData, moveX, moveY) {
 } // checkTurnLightBeam
 
 function canMove(moveX, moveY) {
-  return !checkTouchWithObjectsArray(gameData.willy[0].x+moveX, gameData.willy[0].y+moveY, 10, 16, [gameData.walls]);
+  return !checkTouchWithObjectsArray(gameData.willy[0].x+moveX, gameData.willy[0].y+moveY, 10, 16, [gameData.walls, gameData.barriers]);
 } // canMove
 
 function checkTouchItems() {
@@ -527,6 +552,23 @@ function checkTouchPortal() {
 
 function checkTouchLightBeam() {
 } // checkTouchLightBeam
+
+function checkTouchSwitches() {
+  var touchId = checkTouchWithObjectsArray(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.switches]);
+  if (touchId) {
+    if (gameData.switches[touchId-1].frame == 0) {
+      gameData.switches[touchId-1].frame = 1;
+      var actions = gameData.switches[touchId-1].actions;
+      actions.forEach((action) => {
+        switch(action.type) {
+          case 'setValue':
+            gameData[action.objectsArray][action.index][action.variable] = action.value;
+            break;
+        }
+      });
+    }
+  }
+} // checkTouchSwitches
 
 onmessage = (event) => {
   switch (event.data.id) {
