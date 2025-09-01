@@ -570,6 +570,10 @@ function checkTouchPortal() {
 } // checkTouchPortal
 
 function checkTouchLightBeam() {
+  var touchId = checkTouchWithObjectsArray(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.lightBeam]);
+  if (touchId) {
+    gameData.info[7] += 4;
+  }
 } // checkTouchLightBeam
 
 function checkTouchSwitches() {

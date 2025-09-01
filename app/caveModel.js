@@ -32,7 +32,8 @@ export class CaveModel extends AbstractModel {
       0, // counter6
       demo,
       false, // crash
-      this.app.score
+      this.app.score,
+      0 // light beam touches
     ]};
 
     this.worker = new Worker(this.app.importPath+'/gameWorker.js?ver='+window.srcVersion);
@@ -59,7 +60,7 @@ export class CaveModel extends AbstractModel {
           Object.keys(event.data.gameData).forEach((objectsType) => {
             switch (objectsType) {
               case 'info':
-                var ptrClock = event.data.gameData.info[0]+this.gameClock;
+                var ptrClock = event.data.gameData.info[0]+event.data.gameData.info[7]+this.gameClock;
                 if (event.data.gameData.info[0] < 2) {
                   ptrClock = event.data.gameData.info[0];
                 }
