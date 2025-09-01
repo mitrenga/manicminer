@@ -17,7 +17,7 @@ export class AudioManager extends AbstractAudioManager {
     super(app);
     this.id = 'AudioManager';
     this.sounds = Number(this.app.getCookie('audioChannelSounds', 0.2));
-    this.music = Number(this.app.getCookie('audioChannelMusic', 0.2));
+    this.music = Number(this.app.getCookie('audioChannelMusic', 0.07));
   } // constructor
 
   createAudioHandler(channel) {
@@ -71,6 +71,7 @@ export class AudioManager extends AbstractAudioManager {
       case 'jumpSound': return this.jumpSound(sampleRate);
       case 'fallingSound': return this.fallingSound(sampleRate);
       case 'itemSound': return this.itemSound(sampleRate);
+      case 'fallingKongSound': return this.fallingKongSound(sampleRate);
       case 'gameOverSound': return this.gameOverSound(sampleRate);
       case 'tapePilotToneSound': return this.tapePilotToneSound(sampleRate);
       case 'tapeRndDataSound': return this.tapeRndDataSound(sampleRate);
@@ -292,7 +293,6 @@ export class AudioManager extends AbstractAudioManager {
     return this.audioDataCache.sounds.jumpSound;
   } // jumpSound
 
-
   fallingSound(sampleRate) {
     var fragments = [];
     var pulses = new Uint8Array(32*27);
@@ -352,6 +352,35 @@ export class AudioManager extends AbstractAudioManager {
     this.audioDataCache.extra.itemSound = {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
     return this.audioDataCache.extra.itemSound;
   } // itemSound
+
+  fallingKongSound(sampleRate) {
+    var fragments = [];
+    var pulses = new Uint8Array(15*25);
+    var pulsesCounter = 0;
+    
+    var k = Math.round(sampleRate/441)/100;
+    fragments.push(Math.round(sampleRate/11.7));
+    
+    for (var x = 0; x < 25; x++) {
+      var d = Math.round((x+2)*k);
+      fragments.push(d);
+      for (var o = 0; o < 15; o++) {
+        if (pulsesCounter == pulses.length) {
+          pulses = this.extendArray(pulses, 100);
+        }
+        pulses[pulsesCounter] = fragments.length-1;
+        pulsesCounter++;
+      }
+      if (pulsesCounter == pulses.length) {
+        pulses = this.extendArray(pulses, 100);
+      }
+      pulses[pulsesCounter] = 0;
+      pulsesCounter++;
+    }
+
+    pulses = this.resizeArray(pulses, pulsesCounter);
+    return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
+  } // fallingKongSound
 
   gameOverSound(sampleRate) {
     var fragments = [];

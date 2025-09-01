@@ -51,7 +51,7 @@
       },
       "44":{
          "kind":"conveyor",
-         "moving":"left",
+         "moving":"right",
          "sprite":[
             "####----",
             "-##--##-",
@@ -109,7 +109,28 @@
          {
             "attribute":"06",
             "x":18,
-            "y":0
+            "y":0,
+            "actions":[
+               {
+                  "type":"setValue",
+                  "objectsArray":"guardians",
+                  "index":3,
+                  "variable":"direction",
+                  "value":1
+               },
+               {
+                  "type":"bonus",
+                  "value":2500
+               },
+               {
+                  "type":"playSound",
+                  "channel":"extra",
+                  "sound":"fallingKongSound",
+                  "options":false
+               }
+
+
+            ]
          }
       ],
       "frames":2,
@@ -527,6 +548,9 @@
                   "y":0,
                   "direction":0,
                   "frame":0
+               },
+               "limits":{
+                  "down":104
                }
             }
          ],

@@ -273,6 +273,8 @@ export class GameAreaEntity extends AbstractEntity {
               guardianInitData.limitDown = guardian.limits.down;
               break;
             case 'forDropping':
+              guardianInitData.limitDown = guardian.limits.down;
+              guardianInitData.hide = false;
               break;
             case 'falling':
               guardianInitData.limitUp = guardian.limits.up;

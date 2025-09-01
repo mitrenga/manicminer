@@ -20,6 +20,8 @@ var mustMovingDirection = 0;
 var canMovingDirection = 0;
 var previousDirection = 0;
 var completed = 0;
+var bonus = 0;
+
 
 function gameLoop() {
   setTimeout(gameLoop, 80);
@@ -54,8 +56,19 @@ function gameLoop() {
     gameData.info[1] = counter2;
     gameData.info[2] = counter4;
     gameData.info[3] = counter6;
+
+    if (bonus) {
+      if (bonus < 100) {
+        gameData.info[6] += bonus;
+        bonus = 0;
+      } else {
+        gameData.info[6] += 100;
+        bonus -= 100;
+      }
+    }
+  
+    postMessage({'id': 'update', 'gameData': gameData});
   }
-  postMessage({'id': 'update', 'gameData': gameData});
 } // gameLoop
 
 function conveyors() {
@@ -325,6 +338,12 @@ function guardians() {
               break;
           }
         }
+        if (guardian.hide == false && guardian.direction == 1) {
+          guardian.y += 4;
+          if (guardian.y == guardian.limitDown) {
+            guardian.hide = true;
+          }
+        }
         break;        
         
       case 'falling':
@@ -563,6 +582,12 @@ function checkTouchSwitches() {
         switch(action.type) {
           case 'setValue':
             gameData[action.objectsArray][action.index][action.variable] = action.value;
+            break;
+          case 'bonus':
+            bonus += action.value;
+            break;
+          case 'playSound':
+            postMessage({'id': 'playSound', 'channel': action.channel, 'sound': action.sound, 'options': action.options});
             break;
         }
       });
