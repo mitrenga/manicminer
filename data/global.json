@@ -1,6 +1,6 @@
 {
    "cavesCount":20,
-   "initCave":7,
+   "initCave":0,
    "willy":{
       "width":11,
       "height":16,
