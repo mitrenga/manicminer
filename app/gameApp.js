@@ -35,22 +35,54 @@ export class GameApp extends AbstractApp {
     this.hiScore = 0;
     this.lastBonusScore = 0;
     this.globalData = false;
-    this.model = this.newModel('ResetModel');
-    this.model.init();
+    this.setModel('ResetModel');
   } // constructor
 
-  newModel(model) {
+  setModel(model) {
+    var needResizeApp = false;
+    if (this.model) {
+      this.model.shutdown();
+      needResizeApp = true;
+    }
     switch (model) {
-      case 'ResetModel': return new ResetModel(this);
-      case 'MenuModel': return new MenuModel(this);
-      case 'MainModel': return new MainModel(this);
-      case 'CaveModel': return new CaveModel(this, this.caveNumber, this.demo);
-      case 'GameOverModel': return new GameOverModel(this);
-      case 'TapeLoadingModel': return new TapeLoadingModel(this);
+      case 'ResetModel':
+        this.model = new ResetModel(this);
+        break;
+      case 'MenuModel':
+        this.model = new MenuModel(this);
+        break;
+      case 'MainModel':
+        this.model = new MainModel(this);
+        break;
+      case 'CaveModel':
+        this.model = new CaveModel(this, this.caveNumber, this.demo);
+        break;
+      case 'GameOverModel':
+        this.model = new GameOverModel(this);
+        break;
+      case 'TapeLoadingModel':
+        this.model = new TapeLoadingModel(this);
+        break;
     } // switch
-    return null;
-  } // newModel
+    this.model.init();
+    if (needResizeApp) {
+      this.resizeApp();
+    }
+  } // setModel
   
+  startCave(demo, newGame, setInitCave) {
+    if (newGame) {
+      this.score = 0;
+      this.lastBonusScore = 0;
+      this.lives = 2;
+      if (setInitCave) {
+        this.caveNumber = this.globalData.initCave;
+      }
+    }
+    this.demo = demo;
+    this.setModel('CaveModel');
+  } // startCave
+
   setGlobalData(data) {
     this.globalData = data;
   } // setGlobalData

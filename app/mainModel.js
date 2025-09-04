@@ -65,7 +65,6 @@ export class MainModel extends AbstractModel {
     this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'extra'});
     this.sendEvent(500, {'id': 'playSound', 'channel': 'music', 'sound': 'titleScreenMelody', 'options': false});
   } // init
-
   
   handleEvent(event) {
     if (super.handleEvent(event)) {
@@ -98,15 +97,7 @@ export class MainModel extends AbstractModel {
         if (this.desktopEntity.modalEntity == null) {
           switch (event.key) {
             case 'Enter':
-              this.app.model.shutdown();
-              this.app.score = 0;
-              this.app.lastBonusScore = 0;
-              this.app.lives = 2;
-              this.app.caveNumber = this.app.globalData.initCave;
-              this.app.demo = false;
-              this.app.model = this.app.newModel('CaveModel');
-              this.app.model.init();
-              this.app.resizeApp();
+              this.app.startCave(false, true, true);
               return true;
 
             case 'Escape':
@@ -117,27 +108,11 @@ export class MainModel extends AbstractModel {
         break;
 
       case 'mouseClick':
-        this.app.model.shutdown();
-        this.app.score = 0;
-        this.app.lastBonusScore = 0;
-        this.app.lives = 2;
-        this.app.caveNumber = this.app.globalData.initCave;
-        this.app.demo = false;
-        this.app.model = this.app.newModel('CaveModel');
-        this.app.model.init();
-        this.app.resizeApp();
+        this.app.startCave(false, true, true);
         return true;
         
       case 'newDemoCave':
-        this.app.model.shutdown();
-        this.app.score = 0;
-        this.app.lastBonusScore = 0;
-        this.app.lives = 2;
-        this.app.caveNumber = this.app.globalData.initCave;
-        this.app.demo = true;
-        this.app.model = this.app.newModel('CaveModel');
-        this.app.model.init();
-        this.app.resizeApp();
+        this.app.startCave(true, true, true);
         return true;
     }
     

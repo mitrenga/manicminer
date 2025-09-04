@@ -192,10 +192,7 @@ export class CaveModel extends AbstractModel {
 
       case 'keyPress':
         if (this.demo) {
-          this.app.model.shutdown();
-          this.app.model = this.app.newModel('MainModel');
-          this.app.model.init();
-          this.app.resizeApp();
+          this.app.setModel('MainModel');
           return true;
         }
         switch (event.key) {
@@ -232,10 +229,7 @@ export class CaveModel extends AbstractModel {
 
       case 'mouseClick':
         if (this.demo) {
-          this.app.model.shutdown();
-          this.app.model = this.app.newModel('MainModel');
-          this.app.model.init();
-          this.app.resizeApp();
+          this.app.setModel('MainModel');
           return true;
         }
         break;
@@ -247,19 +241,16 @@ export class CaveModel extends AbstractModel {
         } else {
           this.app.caveNumber = this.app.globalData.initCave;
         }
-        this.app.model = this.app.newModel('CaveModel');
-        this.app.model.init();
-        this.app.resizeApp();
+        this.app.startCave(false, false, false);
         return true;
 
       case 'newDemoCave':
         this.app.model.shutdown();
         if (this.app.caveNumber < this.app.globalData.cavesCount-1) {
           this.app.caveNumber = this.app.caveNumber+1;
-          this.app.demo = true;
-          this.app.model = this.app.newModel('CaveModel');
+          this.app.startCave(true, false, false);
         } else {
-          this.app.model = this.app.newModel('MainModel');
+          this.app.setModel('MainModel');
         }
         this.app.model.init();
         this.app.resizeApp();

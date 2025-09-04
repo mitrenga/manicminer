@@ -96,33 +96,20 @@ export class GameOverModel extends AbstractModel {
         switch (event.key) {
           case 'Enter':
             if (this.app.caveNumber != this.app.globalData.initCave && this.fallTimer == 2000) {
-              this.app.model.shutdown();
-              this.app.score = 0;
-              this.app.lastBonusScore = 0;
-              this.app.lives = 2;
-              this.app.demo = false;
-              this.app.model = this.app.newModel('CaveModel');
-              this.app.model.init();
-              this.app.resizeApp();
+              this.app.startCave(false, true, false);
               return true;
             }
             break;
           case 'Escape':
             if (this.app.caveNumber != this.app.globalData.initCave && this.fallTimer == 2000) {
-              this.app.model.shutdown();
-              this.app.model = this.app.newModel('MainModel');
-              this.app.model.init();
-              this.app.resizeApp();
+              this.app.setModel('MainModel');
               return true;
             }
             break;
         }
         break;
       case 'MainModel':
-        this.app.model.shutdown();
-        this.app.model = this.app.newModel('MainModel');
-        this.app.model.init();
-        this.app.resizeApp();
+        this.app.setModel('MainModel');
         return true;
     }
     return false;
