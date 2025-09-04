@@ -29,7 +29,7 @@ export class CaveModel extends AbstractModel {
       0, // counter
       0, // counter2
       0, // counter4
-      0, // counter6
+      0, // unused
       demo,
       false, // crash
       this.app.score,
