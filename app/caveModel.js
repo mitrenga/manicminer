@@ -235,7 +235,6 @@ export class CaveModel extends AbstractModel {
         break;
 
       case 'newCave':
-        this.app.model.shutdown();
         if (this.app.caveNumber < this.app.globalData.cavesCount-1) {
           this.app.caveNumber = this.app.caveNumber+1;
         } else {
