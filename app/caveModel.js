@@ -245,15 +245,12 @@ export class CaveModel extends AbstractModel {
         return true;
 
       case 'newDemoCave':
-        this.app.model.shutdown();
         if (this.app.caveNumber < this.app.globalData.cavesCount-1) {
           this.app.caveNumber = this.app.caveNumber+1;
           this.app.startCave(true, false, false);
         } else {
           this.app.setModel('MainModel');
         }
-        this.app.model.init();
-        this.app.resizeApp();
         return true;
     
       case 'gameOver':
