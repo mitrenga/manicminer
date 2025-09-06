@@ -173,7 +173,7 @@ export class TapeLoadingModel extends AbstractModel {
         return true;
 
       case 'setMenuModel':
-        this.app.model = this.app.setModel('MenuModel');
+        this.app.setModel('MenuModel');
         return true;
 
       case 'keyPress':
