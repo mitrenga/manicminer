@@ -24,12 +24,13 @@ export class CaveModel extends AbstractModel {
     this.airSupply = 63;
     this.demo = demo;
     this.bkAnimation = false;
+    this.crashTime = false;
 
     this.initData = {'info': [
       0, // counter
       0, // counter2
       0, // counter4
-      0, // unused
+      0, // counter6
       demo,
       false, // crash
       this.app.score,
@@ -66,10 +67,10 @@ export class CaveModel extends AbstractModel {
                 }
                 var maxClock = (this.airSupply-36+1)*(256/4);
                 if (ptrClock > maxClock) {
-                  this.sendEvent(0, {'id': 'gameOver'});
+                  this.sendEvent(1, {'id': 'crash'});
                 }
                 if (event.data.gameData.info[5]) {
-                  this.sendEvent(0, {'id': 'gameOver'});
+                  this.sendEvent(1, {'id': 'crash'});
                 }
                 this.app.airValue = 1-(ptrClock/maxClock);
                 this.gameInfoEntity.airEntity.value = this.app.airValue;
@@ -105,8 +106,8 @@ export class CaveModel extends AbstractModel {
           this.sendEvent(0, {'id': 'playSound', 'channel': event.data.channel, 'sound': event.data.sound, 'options': false});
           break;
 
-        case 'stopChannel':
-          this.sendEvent(0, {'id': 'stopChannel', 'channel': event.data.channel});
+        case 'stopAudioChannel':
+          this.sendEvent(0, {'id': 'stopAudioChannel', 'channel': event.data.channel});
           break;
 
         case 'caveDone':
@@ -127,6 +128,13 @@ export class CaveModel extends AbstractModel {
       }
     }
   } // constructor
+
+  postWorkerMessage(message) {
+    if (this.worker) {
+      this.worker.postMessage(message);
+    }
+  } // postWorkerMessage
+
 
   init() {
     super.init();
@@ -151,8 +159,10 @@ export class CaveModel extends AbstractModel {
 
   shutdown() {
     super.shutdown();
-    this.worker.terminate();
-    this.worker = null;
+    if (this.worker) {
+      this.worker.terminate();
+      this.worker = null;
+    }
   } // shutdown
 
   setData(data) {
@@ -165,7 +175,7 @@ export class CaveModel extends AbstractModel {
       this.gameInfoEntity.liveEntities[l].setGraphicsData(data.willy);
     }
     super.setData(data);
-    this.worker.postMessage({'id': 'init', 'initData': this.initData});
+    this.postWorkerMessage({'id': 'init', 'initData': this.initData});
   } // setData
 
   handleEvent(event) {
@@ -200,14 +210,14 @@ export class CaveModel extends AbstractModel {
             this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 9*8, 5*8, 14*8+1, 14*8+2, this.borderEntity.bkColor));
             return true;
           case 'ArrowRight':
-            this.worker.postMessage({'id': 'controls', 'action': 'right', 'value': true});
+            this.postWorkerMessage({'id': 'controls', 'action': 'right', 'value': true});
             return true;
           case 'ArrowLeft':
-            this.worker.postMessage({'id': 'controls', 'action': 'left', 'value': true});
+            this.postWorkerMessage({'id': 'controls', 'action': 'left', 'value': true});
             return true;
           case 'ArrowUp':
           case ' ':
-            this.worker.postMessage({'id': 'controls', 'action': 'jump', 'value': true});
+            this.postWorkerMessage({'id': 'controls', 'action': 'jump', 'value': true});
             return true;
         }
         break;
@@ -215,14 +225,14 @@ export class CaveModel extends AbstractModel {
       case 'keyRelease':
         switch (event.key) {
           case 'ArrowRight':
-            this.worker.postMessage({'id': 'controls', 'action': 'right', 'value': false});
+            this.postWorkerMessage({'id': 'controls', 'action': 'right', 'value': false});
             return true;
           case 'ArrowLeft':
-            this.worker.postMessage({'id': 'controls', 'action': 'left', 'value': false});
+            this.postWorkerMessage({'id': 'controls', 'action': 'left', 'value': false});
             return true;
           case 'ArrowUp':
           case ' ':
-            this.worker.postMessage({'id': 'controls', 'action': 'jump', 'value': false});
+            this.postWorkerMessage({'id': 'controls', 'action': 'jump', 'value': false});
             return true;
         }
         break;
@@ -252,11 +262,18 @@ export class CaveModel extends AbstractModel {
         }
         return true;
     
-      case 'gameOver':
-        this.app.model.shutdown();
-        this.app.model = this.app.newModel('GameOverModel');
-        this.app.model.init();
-        this.app.resizeApp();
+      case 'crash':
+        if (this.worker) {
+          this.worker.terminate();
+          this.worker = null;
+        }
+        this.gameAreaEntity.spriteEntities.willy[0].hide = true;
+        this.gameAreaEntity.spriteEntities.portal[0].frame = 0;
+        this.sendEvent(0, {'id': 'stopAllAudioChannels'});
+        this.borderEntity.bkColor = this.app.platform.color(0);
+        this.gameAreaEntity.setMonochromeColors(this.app.platform.color(15), this.app.platform.color(0));
+        this.sendEvent(0, {'id': 'playSound', 'channel': 'sounds', 'sound': 'crashSound', 'options': false});
+        this.crashTime = this.timer;
         return true;
 
       case 'changeFlashState':
@@ -271,6 +288,26 @@ export class CaveModel extends AbstractModel {
 
   loopModel(timestamp) {
     super.loopModel(timestamp);
+
+    this.timer = timestamp;
+
+    if (this.crashTime != false) {
+      var animateTime = timestamp-this.crashTime;
+      var monochromeColor = Math.round(15-animateTime/30);
+      if (monochromeColor < 8) {
+        monochromeColor = 0;
+      }
+      this.gameAreaEntity.setMonochromeColors(this.app.platform.color(monochromeColor), this.app.platform.color(0));
+      if (animateTime > 240) {
+        if (this.app.lives > 0) {
+          this.app.lives--;
+          this.app.startCave(false, false, false);
+        } else {
+          this.app.setModel('GameOverModel');
+        }
+      }
+    }
+
     this.drawModel();
   } // loopModel
 

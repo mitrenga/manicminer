@@ -12,7 +12,7 @@ import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
 export class GameAreaEntity extends AbstractEntity {
 
   constructor(parentEntity, x, y, width, height, caveNumber, initData, demo) {
-    super(parentEntity, x, y, width, height);
+    super(parentEntity, x, y, width, height, false, false);
     this.id = 'GameAreaEntity';
 
     this.caveNumber = caveNumber;
@@ -20,6 +20,7 @@ export class GameAreaEntity extends AbstractEntity {
     this.demo = demo;
     this.caveData = null;
     this.bkColorForRestore = false;
+    this.monochromeColor = false;
 
     this.app.layout.newDrawingCache(this, 0); 
     this.graphicCache = {};
@@ -40,8 +41,8 @@ export class GameAreaEntity extends AbstractEntity {
             if (attr != this.caveData.bkColor) {
               if (this.staticKinds.includes(this.caveData.graphicData[attr].kind)) {
                 if (this.graphicCache[attr].needToRefresh(this, 8, 8)) {
-                  var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
-                  var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(attr));
+                  var penColor = this.penColorByAttr(this.app.hexToInt(attr));
+                  var bkColor = this.bkColorByAttr(this.app.hexToInt(attr));
                   if (bkColor == this.app.platform.bkColorByAttr(this.app.hexToInt(this.caveData.bkColor))) {
                     bkColor = false;
                   }
@@ -67,10 +68,16 @@ export class GameAreaEntity extends AbstractEntity {
           for (var row = 0; row < 8; row++) {
             for (var column = 0; column < 32; column++) {
               var attr = this.app.hexToInt(this.caveData.image.attributes[row].substring(column*2, column*2+2));
+              var penColor = this.monochromeColor;
               var bkColor = this.app.platform.bkColorByAttr(attr);
-              var penColor = this.app.platform.penColorByAttr(attr);
+              var bkColor2 = bkColor;
+              if (penColor == false) {
+                penColor = this.app.platform.penColorByAttr(attr);
+              } else {
+                bkColor2 = this.bkColor;
+              }
               if (bkColor != this.bkColor) {
-                this.app.layout.paintRect(this.drawingCache[0].ctx, column*8, (row)*8, 8, 8, bkColor);
+                this.app.layout.paintRect(this.drawingCache[0].ctx, column*8, (row)*8, 8, 8, bkColor2);
               }
               for (var line = 0; line < 8; line++) {
                 var binMask = this.app.hexToBin(this.caveData.image.data[row+line*8].substring(column*2, column*2+2))
@@ -404,12 +411,45 @@ export class GameAreaEntity extends AbstractEntity {
       }
     });
   } // updateData
-    
+
+  cleanCache() {
+    this.drawingCache[0].cleanCache();
+    Object.keys(this.graphicCache).forEach((attr) => {
+      this.graphicCache[attr].cleanCache();
+    });
+  } // cleanCache
+
+  penColorByAttr(attr) {
+    if (this.monochromeColor) {
+      return this.monochromeColor;
+    }
+    return this.app.platform.penColorByAttr(attr);
+  } // penColorByAttr
+
+  bkColorByAttr(attr) {
+    if (this.monochromeColor) {
+      return false;
+    }
+    return this.app.platform.bkColorByAttr(attr);
+  } // bkColorByAttr
+
   restoreBkColor() {
     if (this.restoreBkColor !== false) {
       this.bkColor = this.bkColorForRestore;
     }
   } // restoreBkColor
+
+  setMonochromeColors(monochromeColor, bkColor) {
+    this.monochromeColor = monochromeColor;
+    this.setBkColor(bkColor);
+
+    Object.keys(this.spriteEntities).forEach((objectsType) => {
+      this.spriteEntities[objectsType].forEach((object) => {
+        object.bkColor = false;
+        object.setPenColor(monochromeColor);
+      });
+    });
+  } // setMonochromeColors
 
 } // class GameAreaEntity
 
