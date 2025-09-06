@@ -73,6 +73,7 @@ export class AudioManager extends AbstractAudioManager {
       case 'crashSound': return this.crashSound(sampleRate);
       case 'itemSound': return this.itemSound(sampleRate);
       case 'fallingKongSound': return this.fallingKongSound(sampleRate);
+      case 'escapeSound': return this.escapeSound(sampleRate);
       case 'gameOverSound': return this.gameOverSound(sampleRate);
       case 'tapePilotToneSound': return this.tapePilotToneSound(sampleRate);
       case 'tapeRndDataSound': return this.tapeRndDataSound(sampleRate);
@@ -425,6 +426,38 @@ export class AudioManager extends AbstractAudioManager {
     pulses = this.resizeArray(pulses, pulsesCounter);
     return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
   } // fallingKongSound
+
+  escapeSound(sampleRate) {
+    var fragments = [];
+    var fKeys = {};
+    var pulses = new Uint8Array(50*256);
+    var pulsesCounter = 0;
+    
+    var k = Math.round(sampleRate/2800)/100;
+    
+    var d = 50;
+    do {
+      var c = 256;
+      do {
+        var b = Math.round((c+3*d)%256*k);
+        if (!(b in fKeys)) {
+          fragments.push(b);
+          fKeys[b] = fragments.length-1;
+        }
+        if (pulsesCounter == pulses.length) {
+          pulses = this.extendArray(pulses, 1000);
+        }
+        pulses[pulsesCounter] = fKeys[b];
+        pulsesCounter++;
+        c--;
+      } while (c > 0)
+      c = 256;
+      d--;
+    } while (d > 0)
+
+    pulses = this.resizeArray(pulses, pulsesCounter);
+    return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
+  } // escapeSound
 
   gameOverSound(sampleRate) {
     var fragments = [];

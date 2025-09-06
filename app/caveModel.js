@@ -3,11 +3,13 @@ const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+wind
 const { GameAreaEntity } = await import('./gameAreaEntity.js?ver='+window.srcVersion);
 const { GameInfoEntity } = await import('./gameInfoEntity.js?ver='+window.srcVersion);
 const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcVersion);
+const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import GameAreaEntity from './gameAreaEntity.js';
 import GameInfoEntity from './gameInfoEntity.js';
 import PauseGameEntity from './pauseGameEntity.js';
+import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
 /**/
 // begin code
 
@@ -111,7 +113,16 @@ export class CaveModel extends AbstractModel {
           break;
 
         case 'caveDone':
-          this.sendEvent(0, {'id': 'newCave'});
+          var portal = this.gameAreaEntity.spriteEntities.portal[0];
+          portal.hide = true;
+          var fishEntity = new SpriteEntity(this.gameAreaEntity, portal.x, portal.y, this.app.platform.penColorByAttr(this.app.hexToInt(this.app.globalData.escape.fish.attribute)), false, 0, 0);
+          this.gameAreaEntity.addEntity(fishEntity);
+          fishEntity.setGraphicsData(this.app.globalData.escape.fish);
+          var swordEntity = new SpriteEntity(this.gameAreaEntity, portal.x, portal.y+8, this.app.platform.penColorByAttr(this.app.hexToInt(this.app.globalData.escape.sword.attribute)), false, 0, 0);
+          this.gameAreaEntity.addEntity(swordEntity);
+          swordEntity.setGraphicsData(this.app.globalData.escape.sword);
+          this.sendEvent(0, {'id': 'playSound', 'channel': 'sounds', 'sound': 'escapeSound', 'options': false});
+          //this.sendEvent(0, {'id': 'newCave'});
           break;
       }
     } // onmessage
@@ -140,6 +151,7 @@ export class CaveModel extends AbstractModel {
     super.init();
 
     this.borderEntity.bkColor = this.app.platform.colorByName('black');
+    this.desktopEntity.bkColor = this.app.platform.colorByName('black');
     this.gameAreaEntity = new GameAreaEntity(this.desktopEntity, 0, 0, 32*8, 16*8, this.caveNumber, this.initData, this.demo);
     this.desktopEntity.addEntity(this.gameAreaEntity);
     this.gameInfoEntity = new GameInfoEntity(this.desktopEntity, 0, 16*8, 32*8, 8*8);
