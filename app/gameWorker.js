@@ -28,15 +28,20 @@ function gameLoop() {
   
   if (gameData != null) {
     counter++;
+    gameData.info[0] = counter;
     if (!(counter%2)) {
       counter2++;
     }
+    gameData.info[1] = counter2;
     if (!(counter%4)) {
       counter4++;
     }
+    gameData.info[2] = counter4;
     if (!(counter%6)) {
       counter6++;
     }
+    gameData.info[3] = counter6;
+
     conveyors();
     items();
     if (!gameData.info[4]) { // if not demo
@@ -52,10 +57,6 @@ function gameLoop() {
       checkTouchLightBeam();
       checkTouchSwitches();
     }
-    gameData.info[0] = counter;
-    gameData.info[1] = counter2;
-    gameData.info[2] = counter4;
-    gameData.info[3] = counter6;
 
     if (bonus) {
       if (bonus < 100) {
@@ -564,7 +565,7 @@ function checkTouchPortal() {
     var willy = gameData.willy[0];
     var portal = gameData.portal[0];
     if (!(willy.x+willy.width <= portal.x+8 || willy.y+willy.height <= portal.y+8 || willy.x >= portal.x+portal.width-8 || willy.y >= portal.y+portal.height-8)) {
-      postMessage({'id': 'caveDone'});
+      postMessage({'id': 'caveDone', 'gameData': gameData});
     }
   }
 } // checkTouchPortal
