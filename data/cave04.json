@@ -124,7 +124,16 @@
         "#-#-#-#-#-#-#-#-",
         "#-#-#-#-#-#-#-#-",
         "################"
-     ]
+     ],
+      "actions":[
+         {
+            "type":"setValue",
+            "objectsArray":"guardians",
+            "index":2,
+            "variable":"forceDirection",
+            "value":0
+         }
+      ]
   },
   "items":{
      "data":[
@@ -374,7 +383,8 @@
                  "y":0,
                  "direction":0,
                  "frame":0
-               }
+               },
+               "forceDirection":false
            }
         ],
         "width":16,

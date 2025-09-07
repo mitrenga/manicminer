@@ -270,6 +270,9 @@ export class GameAreaEntity extends AbstractEntity {
             'frames': guardianTypeData.frames,
             'direction': guardian.init.direction
           };
+          if ('forceDirection' in guardian) {
+            guardianInitData.forceDirection = guardian.forceDirection;
+          }
           switch (guardianType) {
             case 'horizontal':
               guardianInitData.limitLeft = guardian.limits.left;
@@ -352,7 +355,19 @@ export class GameAreaEntity extends AbstractEntity {
     entity.setGraphicsData(data.portal);
     entity.cloneSprite(0);
     this.spriteEntities.portal.push(entity);
-    this.initData.portal.push({'x': data.portal.x*8, 'y': data.portal.y*8, 'width': 16, 'height': 16, 'frame': 0, 'direction': 0, 'flashShiftFrames': 0});
+    var portalInitData = {
+      'x': data.portal.x*8,
+      'y': data.portal.y*8,
+      'width': 16,
+      'height': 16,
+      'frame': 0,
+      'direction': 0,
+      'flashShiftFrames': 0
+    };
+    if ('actions' in data.portal) {
+      portalInitData.actions = data.portal.actions;
+    }
+    this.initData.portal.push(portalInitData);
 
     // light beam
     if ('lightBeam' in data) {

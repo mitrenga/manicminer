@@ -288,35 +288,60 @@ function guardians() {
         break;
 
       case 'vertical':
-        switch (guardian.direction) {
-          case 0:
-            if (guardian.y+guardian.speed >= guardian.limitDown) {
-              guardian.direction = 1;
-            }
-            break;
-          case 1:
-            if (guardian.y-guardian.speed <= guardian.limitUp) {
-              guardian.direction = 0;
-            }
-            break;
-        }
-        switch (guardian.direction) {
-          case 0:
-            guardian.y += guardian.speed;
-            if (guardian.frame == guardian.frames-1) {
-              guardian.frame = 0;
-            } else {
-              guardian.frame++;
-            }
-            break;
-          case 1:
-            guardian.y -= guardian.speed;
-            if (guardian.frame == 0) {
-              guardian.frame = guardian.frames-1;
-            } else {
-              guardian.frame--;
-            }
-            break;
+        if ('forceDirection' in guardian && guardian.forceDirection !== false) {
+          switch (guardian.forceDirection) {
+            case 0:
+              if (guardian.y+guardian.speed < guardian.limitDown) {
+                guardian.y += guardian.speed;
+                if (guardian.frame == guardian.frames-1) {
+                  guardian.frame = 0;
+                } else {
+                  guardian.frame++;
+                }
+              }
+              break;
+            case 1:
+              if (guardian.y-guardian.speed > guardian.limitUp) {
+                guardian.y -= guardian.speed;
+                if (guardian.frame == 0) {
+                  guardian.frame = guardian.frames-1;
+                } else {
+                  guardian.frame--;
+                }
+              }
+              break;
+          }
+        } else {
+          switch (guardian.direction) {
+            case 0:
+              if (guardian.y+guardian.speed >= guardian.limitDown) {
+                guardian.direction = 1;
+              }
+              break;
+            case 1:
+              if (guardian.y-guardian.speed <= guardian.limitUp) {
+                guardian.direction = 0;
+              }
+              break;
+          }
+          switch (guardian.direction) {
+            case 0:
+              guardian.y += guardian.speed;
+              if (guardian.frame == guardian.frames-1) {
+                guardian.frame = 0;
+              } else {
+                guardian.frame++;
+              }
+              break;
+            case 1:
+              guardian.y -= guardian.speed;
+              if (guardian.frame == 0) {
+                guardian.frame = guardian.frames-1;
+              } else {
+                guardian.frame--;
+              }
+              break;
+          }
         }
         break;        
 
@@ -547,7 +572,18 @@ function checkTouchItems() {
     completed++;
     gameData.info[6] += 100;
     if (completed == gameData.items.length) {
-      gameData.portal[0].flashShiftFrames = 1;
+      var portal = gameData.portal[0];
+      portal.flashShiftFrames = 1;
+      if ('actions' in portal) {
+        var actions = portal.actions;
+        actions.forEach((action) => {
+          switch(action.type) {
+            case 'setValue':
+              gameData[action.objectsArray][action.index][action.variable] = action.value;
+              break;
+          }
+        });
+      }
     }
     postMessage({'id': 'playSound', 'channel': 'extra', 'sound': 'itemSound'});
   }
