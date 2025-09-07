@@ -79,12 +79,6 @@ export class CaveModel extends AbstractModel {
                 if (this.app.score != event.data.gameData.info[6]) {
                   this.app.score = event.data.gameData.info[6];
                   this.gameInfoEntity.scoreEntity.setText(this.app.score.toString().padStart(6, '0'));
-                  if (this.app.lives < 16 && this.app.lastBonusScore+10000 <= this.app.score) {
-                    this.app.lastBonusScore += 10000;
-                    this.gameInfoEntity.liveEntities[this.app.lives].hide = false;
-                    this.app.lives++;
-                    this.bkAnimation = 7;
-                  }
                 }
                 for (var l = 0; l < this.app.lives; l++) {
                   this.gameInfoEntity.liveEntities[l].x = event.data.gameData.info[3]%4*2+l*16;
@@ -114,15 +108,19 @@ export class CaveModel extends AbstractModel {
 
         case 'caveDone':
           var portal = this.gameAreaEntity.spriteEntities.portal[0];
-          portal.hide = true;
+          /*portal.hide = true;
           var fishEntity = new SpriteEntity(this.gameAreaEntity, portal.x, portal.y, this.app.platform.penColorByAttr(this.app.hexToInt(this.app.globalData.escape.fish.attribute)), false, 0, 0);
           this.gameAreaEntity.addEntity(fishEntity);
           fishEntity.setGraphicsData(this.app.globalData.escape.fish);
           var swordEntity = new SpriteEntity(this.gameAreaEntity, portal.x, portal.y+8, this.app.platform.penColorByAttr(this.app.hexToInt(this.app.globalData.escape.sword.attribute)), false, 0, 0);
           this.gameAreaEntity.addEntity(swordEntity);
-          swordEntity.setGraphicsData(this.app.globalData.escape.sword);
-          this.sendEvent(0, {'id': 'playSound', 'channel': 'sounds', 'sound': 'escapeSound', 'options': false});
-          //this.sendEvent(0, {'id': 'newCave'});
+          swordEntity.setGraphicsData(this.app.globalData.escape.sword);*/
+          var ptrClock = event.data.gameData.info[0]+event.data.gameData.info[7]+this.gameClock;
+          var maxClock = (this.airSupply-36+1)*(256/4);
+          var remainderAirSupply = Math.round(this.airSupply-ptrClock/maxClock*(this.airSupply-36+1)+1);
+          console.log(maxClock-ptrClock+' '+remainderAirSupply);
+          this.app.score += maxClock-ptrClock;
+          this.sendEvent(0, {'id': 'newCave'});
           break;
       }
     } // onmessage
@@ -300,6 +298,13 @@ export class CaveModel extends AbstractModel {
 
   loopModel(timestamp) {
     super.loopModel(timestamp);
+    
+    if (this.app.lives < 16 && this.app.lastBonusScore+10000 <= this.app.score) {
+      this.app.lastBonusScore += 10000;
+      this.gameInfoEntity.liveEntities[this.app.lives].hide = false;
+      this.app.lives++;
+      this.bkAnimation = 7;
+    }
 
     this.timer = timestamp;
 
