@@ -270,9 +270,6 @@ export class GameAreaEntity extends AbstractEntity {
             'frames': guardianTypeData.frames,
             'direction': guardian.init.direction
           };
-          if ('forceDirection' in guardian) {
-            guardianInitData.forceDirection = guardian.forceDirection;
-          }
           switch (guardianType) {
             case 'horizontal':
               guardianInitData.limitLeft = guardian.limits.left;
@@ -423,6 +420,18 @@ export class GameAreaEntity extends AbstractEntity {
       }
       if ('hide' in object) {
         this.spriteEntities[objectsType][o].hide = object.hide;
+      }
+      if ('action' in object) {
+        switch (object.action.id) {
+          case 'setColorsMap':
+            var colorsMap = {};
+            colorsMap[this.spriteEntities[objectsType][o].penChar] = {};
+            object.action.data.forEach((attr, frame) => {
+              colorsMap[this.spriteEntities[objectsType][o].penChar][frame] = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
+            });
+            this.spriteEntities[objectsType][o].setColorsMap(colorsMap);
+            break;
+        }
       }
     });
   } // updateData

@@ -242,6 +242,10 @@ function willy() {
 
 function guardians() {
   gameData.guardians.forEach((guardian) => {
+    if ('action' in guardian) {
+      delete guardian.action;
+    }
+
     switch (guardian.type) {
       case 'horizontal':
         var toMove = false;
@@ -293,21 +297,21 @@ function guardians() {
             case 0:
               if (guardian.y+guardian.speed < guardian.limitDown) {
                 guardian.y += guardian.speed;
-                if (guardian.frame == guardian.frames-1) {
-                  guardian.frame = 0;
-                } else {
-                  guardian.frame++;
-                }
+              }
+              if (guardian.frame == guardian.frames-1) {
+                guardian.frame = 0;
+              } else {
+                guardian.frame++;
               }
               break;
             case 1:
               if (guardian.y-guardian.speed > guardian.limitUp) {
                 guardian.y -= guardian.speed;
-                if (guardian.frame == 0) {
-                  guardian.frame = guardian.frames-1;
-                } else {
-                  guardian.frame--;
-                }
+              }
+              if (guardian.frame == 0) {
+                guardian.frame = guardian.frames-1;
+              } else {
+                guardian.frame--;
               }
               break;
           }
@@ -580,6 +584,9 @@ function checkTouchItems() {
           switch(action.type) {
             case 'setValue':
               gameData[action.objectsArray][action.index][action.variable] = action.value;
+              break;
+            case 'action':
+              gameData[action.objectsArray][action.index].action = action.value
               break;
           }
         });

@@ -277,7 +277,9 @@ export class CaveModel extends AbstractModel {
           this.worker.terminate();
           this.worker = null;
         }
-        this.gameAreaEntity.spriteEntities.willy[0].hide = true;
+        if (!this.demo) {
+          this.gameAreaEntity.spriteEntities.willy[0].hide = true;
+        }
         this.gameAreaEntity.spriteEntities.portal[0].frame = 0;
         this.sendEvent(0, {'id': 'stopAllAudioChannels'});
         this.borderEntity.bkColor = this.app.platform.color(0);
