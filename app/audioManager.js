@@ -74,7 +74,7 @@ export class AudioManager extends AbstractAudioManager {
       case 'itemSound': return this.itemSound(sampleRate);
       case 'fallingKongSound': return this.fallingKongSound(sampleRate);
       case 'escapeSound': return this.escapeSound(sampleRate);
-      case 'airSupplySound': return this.airSupplySound(sampleRate, options.airSupply);
+      case 'airSupplySound': return this.airSupplySound(sampleRate, options.remainingAirSupply);
       case 'gameOverSound': return this.gameOverSound(sampleRate);
       case 'tapePilotToneSound': return this.tapePilotToneSound(sampleRate);
       case 'tapeRndDataSound': return this.tapeRndDataSound(sampleRate);
@@ -456,21 +456,25 @@ export class AudioManager extends AbstractAudioManager {
       d--;
     } while (d > 0)
 
+    var events = {};
+    events[pulsesCounter] = {'id': 'animationCaveDone'};
+
     pulses = this.resizeArray(pulses, pulsesCounter);
-    return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
+    return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds, 'events': events};
   } // escapeSound
 
-  airSupplySound(sampleRate, airSupply) {
+  airSupplySound(sampleRate, remainingAirSupply) {
+    var snapshots = 0;
     var fragments = [];
     var fKeys = {};
-    var pulses = new Uint8Array((airSupply-35)*63*4*2);
+    var pulses = new Uint8Array((remainingAirSupply-35)*63*4*2);
     var pulsesCounter = 0;
     
     var k = sampleRate/282240;
     var frames = 0;
     var prevPtr = 0;
 
-    for (var x = airSupply; x > 35; x--) { // 63 .. 36 air supply
+    for (var x = remainingAirSupply; x > 35; x--) { // 63 .. 36 air supply
       for (var p = 63; p > 0; p--) {
         var d = 0;
         for (var c = 0; c < 4; c++) {
@@ -486,6 +490,7 @@ export class AudioManager extends AbstractAudioManager {
             fKeys[pulse] = fragments.length-1;
           }
           pulses[pulsesCounter] = fKeys[pulse];
+          snapshots += pulse;
           pulsesCounter++;
           if (pulsesCounter == pulses.length) {
             pulses = this.extendArray(pulses, 100);
@@ -507,6 +512,7 @@ export class AudioManager extends AbstractAudioManager {
             fKeys[pulse] = fragments.length-1;
           }
           pulses[pulsesCounter] = fKeys[pulse];
+          snapshots += pulse;
           pulsesCounter++;
           if (pulsesCounter == pulses.length) {
             pulses = this.extendArray(pulses, 100);
@@ -516,7 +522,11 @@ export class AudioManager extends AbstractAudioManager {
     }
 
     pulses = this.resizeArray(pulses, pulsesCounter);
-    return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
+
+    var events = {};
+    events[0] = {'id': 'durationAirSupplySound', 'value': Math.ceil(snapshots/sampleRate*1000)};
+
+    return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds, 'events': events};
   } // airSupplySound
 
   gameOverSound(sampleRate) {

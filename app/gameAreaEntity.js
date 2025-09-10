@@ -26,7 +26,7 @@ export class GameAreaEntity extends AbstractEntity {
     this.graphicCache = {};
     this.staticKinds = ['floor', 'wall', 'nasty', 'extra'];
 
-    this.spriteEntities = {'crumblingFloors': [], 'conveyors': [], 'guardians': [], 'items': [], 'willy': [], "barriers": [], "switches":[], "portal": [], "lightBeam": []};
+    this.spriteEntities = {'crumblingFloors': [], 'conveyors': [], 'guardians': [], 'items': [], 'willy': [], "barriers": [], "switches":[], "portal": [], "lightBeam": [], 'swordFish': []};
   } // constructor
 
   drawEntity() {

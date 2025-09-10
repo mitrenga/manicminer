@@ -28,6 +28,7 @@ export class GameApp extends AbstractApp {
 
     this.caveNumber = false;
     this.caveName = '';
+    this.cavesCompleted = 0;
     this.airValue = 0;
     this.demo = false;
     this.lives = 2;
@@ -73,6 +74,7 @@ export class GameApp extends AbstractApp {
   startCave(demo, newGame, setInitCave) {
     if (newGame) {
       this.score = 0;
+      this.cavesCompleted = 0;
       this.lastBonusScore = 0;
       this.lives = 2;
       if (setInitCave) {

@@ -24,9 +24,12 @@ export class CaveModel extends AbstractModel {
     this.gameInfoEntity = null;
     this.gameClock = 0;
     this.airSupply = 63;
+    this.durationAirSupplySound = false;
+    this.undisplayedScore = 0;
     this.demo = demo;
     this.bkAnimation = false;
-    this.crashTime = false;
+    this.animationTime = false;
+    this.animationType = false;
 
     this.initData = {'info': [
       0, // counter
@@ -107,20 +110,11 @@ export class CaveModel extends AbstractModel {
           break;
 
         case 'caveDone':
-          var portal = this.gameAreaEntity.spriteEntities.portal[0];
-          /*portal.hide = true;
-          var fishEntity = new SpriteEntity(this.gameAreaEntity, portal.x, portal.y, this.app.platform.penColorByAttr(this.app.hexToInt(this.app.globalData.escape.fish.attribute)), false, 0, 0);
-          this.gameAreaEntity.addEntity(fishEntity);
-          fishEntity.setGraphicsData(this.app.globalData.escape.fish);
-          var swordEntity = new SpriteEntity(this.gameAreaEntity, portal.x, portal.y+8, this.app.platform.penColorByAttr(this.app.hexToInt(this.app.globalData.escape.sword.attribute)), false, 0, 0);
-          this.gameAreaEntity.addEntity(swordEntity);
-          swordEntity.setGraphicsData(this.app.globalData.escape.sword);*/
           var ptrClock = event.data.gameData.info[0]+event.data.gameData.info[7]+this.gameClock;
           var maxClock = (this.airSupply-36+1)*(256/4);
-          var remainderAirSupply = Math.round(this.airSupply-ptrClock/maxClock*(this.airSupply-36+1)+1);
-          console.log(maxClock-ptrClock+' '+remainderAirSupply);
-          this.app.score += maxClock-ptrClock;
-          this.sendEvent(0, {'id': 'newCave'});
+          this.undisplayedScore = maxClock-ptrClock;
+          this.app.score += this.undisplayedScore;
+          this.sendEvent(0, {'id': 'caveDone'});
           break;
       }
     } // onmessage
@@ -253,6 +247,76 @@ export class CaveModel extends AbstractModel {
           return true;
         }
         break;
+    
+      case 'crash':
+        if (this.worker) {
+          this.worker.terminate();
+          this.worker = null;
+        }
+        if (!this.demo) {
+          this.gameAreaEntity.spriteEntities.willy[0].hide = true;
+        }
+        this.gameAreaEntity.spriteEntities.portal[0].frame = 0;
+        this.sendEvent(0, {'id': 'stopAllAudioChannels'});
+        this.borderEntity.bkColor = this.app.platform.color(0);
+        this.gameAreaEntity.setMonochromeColors(this.app.platform.color(15), this.app.platform.color(0));
+        this.sendEvent(0, {'id': 'playSound', 'channel': 'sounds', 'sound': 'crashSound', 'options': false});
+        this.animationTime = this.timer;
+        this.animationType = 'crash';
+        return true;
+
+      case 'caveDone':
+        if (this.animationTime == false) {
+          this.sendEvent(0, {'id': 'stopAllAudioChannels'});
+          if (this.worker) {
+            this.worker.terminate();
+            this.worker = null;
+          }
+          if (!this.demo) {
+            this.gameAreaEntity.spriteEntities.willy[0].hide = true;
+          }
+          this.gameAreaEntity.spriteEntities.portal[0].frame = 0;
+          this.app.cavesCompleted++;
+          if (this.app.cavesCompleted < this.app.globalData.cavesCount || this.app.caveNumber < this.app.globalData.cavesCount-1) {
+            this.sendEvent(0, {'id': 'animationCaveDone'});
+          } else {
+            this.sendEvent(0, {'id': 'showSwordFish'});
+          }
+        }
+        break;
+      
+      case 'showSwordFish':
+          this.animationTime = this.timer;
+          this.animationType = 'swordFish';
+          var portal = this.gameAreaEntity.spriteEntities.portal[0];
+          portal.hide = true;
+          var fishEntity = new SpriteEntity(this.gameAreaEntity, portal.x, portal.y, this.app.platform.penColorByAttr(this.app.hexToInt(this.app.globalData.escape.fish.attribute)), false, 0, 0);
+          this.gameAreaEntity.addEntity(fishEntity);
+          fishEntity.setGraphicsData(this.app.globalData.escape.fish);
+          this.gameAreaEntity.spriteEntities.swordFish.push(fishEntity);
+          var swordEntity = new SpriteEntity(this.gameAreaEntity, portal.x, portal.y+8, this.app.platform.penColorByAttr(this.app.hexToInt(this.app.globalData.escape.sword.attribute)), false, 0, 0);
+          this.gameAreaEntity.addEntity(swordEntity);
+          swordEntity.setGraphicsData(this.app.globalData.escape.sword);
+          this.gameAreaEntity.spriteEntities.swordFish.push(swordEntity);
+          this.sendEvent(0, {'id': 'playSound', 'channel': 'sounds', 'sound': 'escapeSound', 'options': false});
+        break;
+
+      case 'animationCaveDone':
+        this.gameAreaEntity.setMonochromeColors(this.app.platform.color(3), this.app.platform.color(7));
+        this.animationTime = this.timer;
+        this.animationType = 'caveDone';
+        break;
+
+      case 'changeRemainingAirSupplyToScore':
+        this.animationTime = this.timer;
+        this.animationType = 'airSupply';
+        var remainingAirSupply = 36+Math.round(this.undisplayedScore/(256/4));
+        this.sendEvent(0, {'id': 'playSound', 'channel': 'sounds', 'sound': 'airSupplySound', 'options': {'remainingAirSupply': remainingAirSupply}});
+        break;
+
+      case 'durationAirSupplySound':
+        this.durationAirSupplySound = event.data.value;
+        break;
 
       case 'newCave':
         if (this.app.caveNumber < this.app.globalData.cavesCount-1) {
@@ -271,22 +335,6 @@ export class CaveModel extends AbstractModel {
           this.app.setModel('MainModel');
         }
         return true;
-    
-      case 'crash':
-        if (this.worker) {
-          this.worker.terminate();
-          this.worker = null;
-        }
-        if (!this.demo) {
-          this.gameAreaEntity.spriteEntities.willy[0].hide = true;
-        }
-        this.gameAreaEntity.spriteEntities.portal[0].frame = 0;
-        this.sendEvent(0, {'id': 'stopAllAudioChannels'});
-        this.borderEntity.bkColor = this.app.platform.color(0);
-        this.gameAreaEntity.setMonochromeColors(this.app.platform.color(15), this.app.platform.color(0));
-        this.sendEvent(0, {'id': 'playSound', 'channel': 'sounds', 'sound': 'crashSound', 'options': false});
-        this.crashTime = this.timer;
-        return true;
 
       case 'changeFlashState':
         this.app.stack.flashState = !this.app.stack.flashState;
@@ -301,7 +349,7 @@ export class CaveModel extends AbstractModel {
   loopModel(timestamp) {
     super.loopModel(timestamp);
     
-    if (this.app.lives < 16 && this.app.lastBonusScore+10000 <= this.app.score) {
+    if (this.animationTime === false && this.app.lives < 16 && this.app.lastBonusScore+10000 <= this.app.score) {
       this.app.lastBonusScore += 10000;
       this.gameInfoEntity.liveEntities[this.app.lives].hide = false;
       this.app.lives++;
@@ -310,20 +358,62 @@ export class CaveModel extends AbstractModel {
 
     this.timer = timestamp;
 
-    if (this.crashTime != false) {
-      var animateTime = timestamp-this.crashTime;
-      var monochromeColor = Math.round(15-animateTime/30);
-      if (monochromeColor < 8) {
-        monochromeColor = 0;
-      }
-      this.gameAreaEntity.setMonochromeColors(this.app.platform.color(monochromeColor), this.app.platform.color(0));
-      if (animateTime > 240) {
-        if (this.app.lives > 0) {
-          this.app.lives--;
-          this.app.startCave(false, false, false);
-        } else {
-          this.app.setModel('GameOverModel');
-        }
+    if (this.animationTime != false) {
+      var animTime = timestamp-this.animationTime;
+      switch (this.animationType) {
+        case 'crash':
+          var monochromeColor = Math.round(15-animTime/30);
+          if (monochromeColor < 8) {
+            monochromeColor = 0;
+          }
+          this.gameAreaEntity.setMonochromeColors(this.app.platform.color(monochromeColor), this.app.platform.colorByName('black'));
+          if (animTime > 240) {
+            this.animationTime = false;
+            this.animationType = false;
+            if (this.app.lives > 0) {
+              this.app.lives--;
+              this.app.startCave(false, false, false);
+            } else {
+              this.app.setModel('GameOverModel');
+            }
+          }
+          break;
+
+        case 'swordFish':
+          break;
+
+        case 'caveDone':
+          var monochromeAttr = Math.round(59-animTime/8.62);
+          if (monochromeAttr < 1) {
+            monochromeAttr = 1;
+          }
+          var penColor = this.app.platform.penColorByAttr(monochromeAttr);
+          var bkColor = this.app.platform.bkColorByAttr(monochromeAttr);
+          this.gameAreaEntity.setMonochromeColors(penColor, bkColor);
+          if (animTime > 500) {
+            this.borderEntity.bkColor = this.app.platform.colorByName('black');
+            this.animationTime = false;
+            this.animationType = false;
+            this.sendEvent(0, {'id': 'changeRemainingAirSupplyToScore'});
+          }
+          break;
+
+        case 'airSupply':
+          var tmpScore = this.app.score-this.undisplayedScore;
+          if (this.durationAirSupplySound) {
+            tmpScore = Math.round(this.app.score-this.undisplayedScore+this.undisplayedScore*animTime/this.durationAirSupplySound);
+            var tmpAirValue = this.app.airValue*(1-animTime/this.durationAirSupplySound);
+            this.gameInfoEntity.airEntity.value = tmpAirValue;
+          }
+          if (tmpScore > this.app.score) {
+            tmpScore = this.app.score;
+          }
+          this.gameInfoEntity.scoreEntity.setText(tmpScore.toString().padStart(6, '0'));
+          if (this.durationAirSupplySound && animTime > this.durationAirSupplySound) {
+            this.sendEvent(0, {'id': 'newCave'});
+          }
+          break;
+
       }
     }
 
