@@ -14,7 +14,7 @@ import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
 export class GameInfoEntity extends AbstractEntity {
   
   constructor(parentEntity, x, y, width, height) {
-    super(parentEntity, x, y, width, height);
+    super(parentEntity, x, y, width, height, false, false);
     this.id = 'GameInfoEntity';
     this.caveNameEntity = null;
     this.airEntity = null;

@@ -237,7 +237,7 @@ export class AudioManager extends AbstractAudioManager {
     }
     pulses = this.resizeArray(pulses, pulsesCounter);
     if (demo) {
-      events[pulsesCounter] = {'id': 'newDemoCave'};
+      events[pulsesCounter] = {'id': 'animationDemoCaveDone'};
     }
     return {'fragments': fragments, 'pulses': pulses, 'volume': this.music, 'events': events};
   } // inGameMelody

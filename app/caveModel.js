@@ -278,9 +278,9 @@ export class CaveModel extends AbstractModel {
           this.gameAreaEntity.spriteEntities.portal[0].frame = 0;
           this.app.cavesCompleted++;
           if (this.app.cavesCompleted < this.app.globalData.cavesCount || this.app.caveNumber < this.app.globalData.cavesCount-1) {
-            this.sendEvent(0, {'id': 'animationCaveDone'});
+            this.sendEvent(1, {'id': 'animationCaveDone'});
           } else {
-            this.sendEvent(0, {'id': 'showSwordFish'});
+            this.sendEvent(1, {'id': 'showSwordFish'});
           }
         }
         break;
@@ -305,6 +305,12 @@ export class CaveModel extends AbstractModel {
         this.gameAreaEntity.setMonochromeColors(this.app.platform.color(3), this.app.platform.color(7));
         this.animationTime = this.timer;
         this.animationType = 'caveDone';
+        break;
+
+      case 'animationDemoCaveDone':
+        this.gameAreaEntity.setMonochromeColors(this.app.platform.color(3), this.app.platform.color(7));
+        this.animationTime = this.timer;
+        this.animationType = 'demoCaveDone';
         break;
 
       case 'changeRemainingAirSupplyToScore':
@@ -338,8 +344,11 @@ export class CaveModel extends AbstractModel {
 
       case 'changeFlashState':
         this.app.stack.flashState = !this.app.stack.flashState;
-        this.sendEvent(330, {'id': 'changeFlashState'});
-        return true;
+        if (this.animationTime === false) {
+          this.sendEvent(330, {'id': 'changeFlashState'});
+        } else {
+          this.app.stack.flashState = false;
+        }
 
     }
 
@@ -383,6 +392,7 @@ export class CaveModel extends AbstractModel {
           break;
 
         case 'caveDone':
+        case 'demoCaveDone':
           var monochromeAttr = Math.round(59-animTime/8.62);
           if (monochromeAttr < 1) {
             monochromeAttr = 1;
@@ -392,9 +402,13 @@ export class CaveModel extends AbstractModel {
           this.gameAreaEntity.setMonochromeColors(penColor, bkColor);
           if (animTime > 500) {
             this.borderEntity.bkColor = this.app.platform.colorByName('black');
+            if (this.animationType == 'caveDone') {
+              this.sendEvent(1, {'id': 'changeRemainingAirSupplyToScore'});
+            } else {
+              this.sendEvent(1, {'id': 'newDemoCave'});
+            }
             this.animationTime = false;
             this.animationType = false;
-            this.sendEvent(0, {'id': 'changeRemainingAirSupplyToScore'});
           }
           break;
 
@@ -410,7 +424,7 @@ export class CaveModel extends AbstractModel {
           }
           this.gameInfoEntity.scoreEntity.setText(tmpScore.toString().padStart(6, '0'));
           if (this.durationAirSupplySound && animTime > this.durationAirSupplySound) {
-            this.sendEvent(0, {'id': 'newCave'});
+            this.sendEvent(1, {'id': 'newCave'});
           }
           break;
 
