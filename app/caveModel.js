@@ -308,6 +308,11 @@ export class CaveModel extends AbstractModel {
         break;
 
       case 'animationDemoCaveDone':
+        this.sendEvent(0, {'id': 'stopAllAudioChannels'});
+        if (this.worker) {
+          this.worker.terminate();
+          this.worker = null;
+        }
         this.gameAreaEntity.setMonochromeColors(this.app.platform.color(3), this.app.platform.color(7));
         this.animationTime = this.timer;
         this.animationType = 'demoCaveDone';
