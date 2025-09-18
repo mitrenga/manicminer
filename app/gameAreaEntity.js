@@ -37,7 +37,7 @@ export class GameAreaEntity extends AbstractEntity {
       this.app.layout.paint(this, 0, 0, this.width, this.height, this.bkColor);
 
       if (this.drawingCache[0].needToRefresh(this, this.width, this.height)) {
-        // layout
+        // layout - bkColor
         this.caveData.layout.forEach((row, r) => {
           for (var column = 0; column < row.length/2; column++) {
             var attr = row.substring(column*2, column*2+2);
@@ -61,7 +61,7 @@ export class GameAreaEntity extends AbstractEntity {
       super.drawSubEntities();
 
       if (this.drawingCache[1].needToRefresh(this, this.width, this.height)) {
-        // layout
+        // layout - penColor
         this.caveData.layout.forEach((row, r) => {
           for (var column = 0; column < row.length/2; column++) {
             var attr = row.substring(column*2, column*2+2);
@@ -115,6 +115,38 @@ export class GameAreaEntity extends AbstractEntity {
       this.app.layout.paintCache(this, 1);
     }
 
+    // draw attribute efects on Willy and guardians due light beam
+    var objectsArray = [];
+    if (!this.demo) {
+      objectsArray.push(this.spriteEntities.willy);
+    }
+    objectsArray.push(this.spriteEntities.guardians);
+    var p = 0;
+    while (p < this.spriteEntities.lightBeam.length && !this.spriteEntities.lightBeam[p].hide) {
+      var part = this.spriteEntities.lightBeam[p];
+      for (var a = 0; a < objectsArray.length; a++) {
+        var objects = objectsArray[a];
+        for (var o = 0; o < objects.length; o++) {
+          var obj = objects[o];
+          if (!(obj.x+obj.width <= part.x || obj.y+obj.height <= part.y || obj.x >= part.x+part.width || obj.y >= part.y+part.height)) {
+            var x = Math.max(obj.x, part.x);
+            var y = Math.max(obj.y, part.y);
+            var w = Math.min(obj.x+obj.width, part.x+part.width)-x;
+            var h = Math.min(obj.y+obj.height, part.y+part.height)-y;
+            var d = obj.direction;
+            if (obj.directions == 1) {
+              d = 0;
+            }
+            obj.spriteData[obj.frame+d*obj.frames].forEach((pixel) => {
+              if (pixel.x >= x-obj.x && pixel.y >= y-obj.y && pixel.x < x-obj.x+w && pixel.y < y-obj.y+h) {
+                this.app.layout.paintRect(this.app.stack.ctx, obj.parentX+obj.x+pixel.x, obj.parentY+obj.y+pixel.y, 1, 1, part.penColor);
+              }
+            });
+          }
+        }
+      }
+      p++;
+    }
   } // drawEntity
 
   setData(data) {
@@ -128,7 +160,7 @@ export class GameAreaEntity extends AbstractEntity {
       this.initData.lightBeam = [];
       var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(data.lightBeam.attribute));
       var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(data.lightBeam.attribute));
-      var entity = new AbstractEntity(this, data.lightBeam.init.x, data.lightBeam.init.y, data.lightBeam.init.width, data.lightBeam.init.height, false, bkColor);
+      var entity = new AbstractEntity(this, data.lightBeam.init.x, data.lightBeam.init.y, data.lightBeam.init.width, data.lightBeam.init.height, penColor, bkColor);
       this.addEntity(entity);
       this.spriteEntities.lightBeam.push(entity);
       this.initData.lightBeam.push({'x': data.lightBeam.init.x, 'y': data.lightBeam.init.y, 'width': data.lightBeam.init.width, 'height': data.lightBeam.init.height});
