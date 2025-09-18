@@ -23,17 +23,44 @@ export class GameAreaEntity extends AbstractEntity {
     this.monochromeColor = false;
 
     this.app.layout.newDrawingCache(this, 0); 
+    this.app.layout.newDrawingCache(this, 1); 
     this.graphicCache = {};
     this.staticKinds = ['floor', 'wall', 'nasty', 'extra'];
+    this.backgroundKinds = ['floor', 'wall', 'nasty', 'conveyor', 'extra'];
 
     this.spriteEntities = {'crumblingFloors': [], 'conveyors': [], 'guardians': [], 'items': [], 'willy': [], "barriers": [], "switches":[], "portal": [], "lightBeam": [], 'swordFish': []};
   } // constructor
 
   drawEntity() {
-    super.drawEntity();
-
     if (this.caveData) {
+
+      this.app.layout.paint(this, 0, 0, this.width, this.height, this.bkColor);
+
       if (this.drawingCache[0].needToRefresh(this, this.width, this.height)) {
+        // layout
+        this.caveData.layout.forEach((row, r) => {
+          for (var column = 0; column < row.length/2; column++) {
+            var attr = row.substring(column*2, column*2+2);
+            if (attr != this.caveData.bkColor) {
+              if (this.backgroundKinds.includes(this.caveData.graphicData[attr].kind)) {
+                var bkColor = this.bkColorByAttr(this.app.hexToInt(attr));
+                if (bkColor == this.app.platform.bkColorByAttr(this.app.hexToInt(this.caveData.bkColor))) {
+                  bkColor = false;
+                }
+                if (bkColor != false) {
+                  this.app.layout.paintRect(this.drawingCache[0].ctx, column*8, r*8, 8, 8, bkColor);
+                }
+              }
+            }
+          }
+        });
+      }
+
+      this.app.layout.paintCache(this, 0);
+
+      super.drawSubEntities();
+
+      if (this.drawingCache[1].needToRefresh(this, this.width, this.height)) {
         // layout
         this.caveData.layout.forEach((row, r) => {
           for (var column = 0; column < row.length/2; column++) {
@@ -42,13 +69,6 @@ export class GameAreaEntity extends AbstractEntity {
               if (this.staticKinds.includes(this.caveData.graphicData[attr].kind)) {
                 if (this.graphicCache[attr].needToRefresh(this, 8, 8)) {
                   var penColor = this.penColorByAttr(this.app.hexToInt(attr));
-                  var bkColor = this.bkColorByAttr(this.app.hexToInt(attr));
-                  if (bkColor == this.app.platform.bkColorByAttr(this.app.hexToInt(this.caveData.bkColor))) {
-                    bkColor = false;
-                  }
-                  if (bkColor != false) {
-                    this.app.layout.paintRect(this.graphicCache[attr].ctx, 0, 0, 8, 8, bkColor);
-                  }
                   for (var y = 0; y < this.caveData.graphicData[attr].sprite.length; y++) {
                     for (var x = 0; x < this.caveData.graphicData[attr].sprite[y].length; x++) {
                       if (this.caveData.graphicData[attr].sprite[y][x] == '#') {
@@ -57,7 +77,7 @@ export class GameAreaEntity extends AbstractEntity {
                     }
                   }
                 }
-                this.drawingCache[0].ctx.drawImage(this.graphicCache[attr].canvas, column*8*this.app.layout.ratio, r*8*this.app.layout.ratio);
+                this.drawingCache[1].ctx.drawImage(this.graphicCache[attr].canvas, column*8*this.app.layout.ratio, r*8*this.app.layout.ratio);
               }
             }
           }
@@ -77,13 +97,13 @@ export class GameAreaEntity extends AbstractEntity {
                 bkColor2 = this.bkColor;
               }
               if (bkColor != this.bkColor) {
-                this.app.layout.paintRect(this.drawingCache[0].ctx, column*8, (row)*8, 8, 8, bkColor2);
+                this.app.layout.paintRect(this.drawingCache[1].ctx, column*8, (row)*8, 8, 8, bkColor2);
               }
               for (var line = 0; line < 8; line++) {
                 var binMask = this.app.hexToBin(this.caveData.image.data[row+line*8].substring(column*2, column*2+2))
                 for (var point = 0; point < 8; point++) {
                   if (binMask[point] == '1') {
-                    this.app.layout.paintRect(this.drawingCache[0].ctx, column*8+point, row*8+line, 1, 1, penColor);
+                    this.app.layout.paintRect(this.drawingCache[1].ctx, column*8+point, row*8+line, 1, 1, penColor);
                   }
                 }
               }
@@ -92,8 +112,9 @@ export class GameAreaEntity extends AbstractEntity {
         }
         
       }
-      this.app.layout.paintCache(this, 0);
+      this.app.layout.paintCache(this, 1);
     }
+
   } // drawEntity
 
   setData(data) {
@@ -101,6 +122,24 @@ export class GameAreaEntity extends AbstractEntity {
     
     this.bkColor = this.app.platform.zxColorByAttr(this.app.hexToInt(this.caveData.bkColor), 56, 8);
     this.bkColorForRestore = this.bkColor;
+
+    // light beam
+    if ('lightBeam' in data) {
+      this.initData.lightBeam = [];
+      var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(data.lightBeam.attribute));
+      var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(data.lightBeam.attribute));
+      var entity = new AbstractEntity(this, data.lightBeam.init.x, data.lightBeam.init.y, data.lightBeam.init.width, data.lightBeam.init.height, false, bkColor);
+      this.addEntity(entity);
+      this.spriteEntities.lightBeam.push(entity);
+      this.initData.lightBeam.push({'x': data.lightBeam.init.x, 'y': data.lightBeam.init.y, 'width': data.lightBeam.init.width, 'height': data.lightBeam.init.height});
+      for (var l = 0; l < 14; l++) {
+        var entity = new AbstractEntity(this, 0, 0, 0, 0, penColor, bkColor);
+        entity.hide = true;
+        this.addEntity(entity);
+        this.spriteEntities.lightBeam.push(entity);
+        this.initData.lightBeam.push({'hide': true, 'x': 0, 'y': 0, 'width': 0, 'height': 0});
+      }
+    }
 
     // Willy
     this.initData.willy = [];
@@ -125,6 +164,7 @@ export class GameAreaEntity extends AbstractEntity {
 
     // prepare drawing caches for layout
     this.drawingCache[0].cleanCache();
+    this.drawingCache[1].cleanCache();
     this.graphicCache = {};
     Object.keys(data.graphicData).forEach((key) => {
       if (this.staticKinds.includes(data.graphicData[key].kind)) {
@@ -184,11 +224,7 @@ export class GameAreaEntity extends AbstractEntity {
     this.initData.conveyors = [];
     if (conveyorData !== false) {
       var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(conveyorData.attr));
-      var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(conveyorData.attr));
-      if (bkColor == this.app.platform.bkColorByAttr(this.app.hexToInt(data.bkColor))) {
-        bkColor = false;
-      }
-      var entity = new SpriteEntity(this, conveyorData.x*8, conveyorData.y*8, penColor, bkColor, 0, 0);
+      var entity = new SpriteEntity(this, conveyorData.x*8, conveyorData.y*8, penColor, false, 0, 0);
       entity.setFixSize(8, 8);
       entity.setRepeatX(conveyorData.length);
       entity.setGraphicsData(data.graphicData[conveyorData.attr]);
@@ -365,25 +401,6 @@ export class GameAreaEntity extends AbstractEntity {
       portalInitData.actions = data.portal.actions;
     }
     this.initData.portal.push(portalInitData);
-
-    // light beam
-    if ('lightBeam' in data) {
-      this.initData.lightBeam = [];
-      var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(data.lightBeam.attribute));
-      var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(data.lightBeam.attribute));
-      var entity = new AbstractEntity(this, data.lightBeam.init.x, data.lightBeam.init.y, data.lightBeam.init.width, data.lightBeam.init.height, false, bkColor);
-      this.addEntity(entity);
-      this.spriteEntities.lightBeam.push(entity);
-      this.initData.lightBeam.push({'x': data.lightBeam.init.x, 'y': data.lightBeam.init.y, 'width': data.lightBeam.init.width, 'height': data.lightBeam.init.height});
-      for (var l = 0; l < 14; l++) {
-        var entity = new AbstractEntity(this, 0, 0, 0, 0, penColor, bkColor);
-        entity.hide = true;
-        this.addEntity(entity);
-        this.spriteEntities.lightBeam.push(entity);
-        this.initData.lightBeam.push({'hide': true, 'x': 0, 'y': 0, 'width': 0, 'height': 0});
-      }
-    }
-
   } // setData
 
   updateData(data, objectsType) {
@@ -438,6 +455,7 @@ export class GameAreaEntity extends AbstractEntity {
 
   cleanCache() {
     this.drawingCache[0].cleanCache();
+    this.drawingCache[1].cleanCache();
     Object.keys(this.graphicCache).forEach((attr) => {
       this.graphicCache[attr].cleanCache();
     });
