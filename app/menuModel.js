@@ -105,6 +105,8 @@ export class MenuModel extends AbstractModel {
       this.objectsEntities[o] = new SpriteEntity(this.desktopEntity, 0, 0, this.bwColor, false, 0, 0);
       this.desktopEntity.addEntity(this.objectsEntities[o]);
     });
+
+    this.sendEvent(330, {'id': 'changeFlashState'});
   } // init
 
   menuParamValue(event) {
