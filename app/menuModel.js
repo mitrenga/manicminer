@@ -167,8 +167,12 @@ export class MenuModel extends AbstractModel {
         this.refreshMenu();
         return true;
       
-      case 'startGame': 
-        this.app.setModel('MainModel');
+      case 'startGame':
+        if (!this.app.playerName.length) {
+          this.desktopEntity.addModalEntity(new PlayerNameEntity(this.desktopEntity, 27, 24, 202, 134, true));
+        } else {
+          this.app.setModel('MainModel');
+        }
         return true;
       
       case 'startTapeLoading': 
@@ -196,7 +200,7 @@ export class MenuModel extends AbstractModel {
         return true;
 
       case 'setPlayerName':
-        this.desktopEntity.addModalEntity(new PlayerNameEntity(this.desktopEntity, 27, 24, 202, 134));
+        this.desktopEntity.addModalEntity(new PlayerNameEntity(this.desktopEntity, 27, 24, 202, 134, false));
       return true;
 
       case 'showHallOfFame':
