@@ -112,7 +112,7 @@ export class MenuModel extends AbstractModel {
   menuParamValue(event) {
     switch (event) {
       case 'setPlayerName':
-        return 'libmit';
+        return this.app.playerName;
       case 'setSounds':
         if (this.app.audioManager.sounds == 0) {
           return 'OFF';
@@ -163,6 +163,10 @@ export class MenuModel extends AbstractModel {
 
     switch (event.id) {
 
+      case 'refreshMenu': 
+        this.refreshMenu();
+        return true;
+      
       case 'startGame': 
         this.app.setModel('MainModel');
         return true;
@@ -192,11 +196,11 @@ export class MenuModel extends AbstractModel {
         return true;
 
       case 'setPlayerName':
-        this.desktopEntity.addModalEntity(new PlayerNameEntity(this.desktopEntity, 28, 42, 200, 100));
+        this.desktopEntity.addModalEntity(new PlayerNameEntity(this.desktopEntity, 27, 24, 202, 134));
       return true;
 
       case 'showHallOfFame':
-        this.desktopEntity.addModalEntity(new HallOfFameEntity(this.desktopEntity, 28, 26, 200, 132));
+        this.desktopEntity.addModalEntity(new HallOfFameEntity(this.desktopEntity, 27, 24, 202, 134));
       return true;
 
       case 'showAbout':
@@ -242,6 +246,11 @@ export class MenuModel extends AbstractModel {
           }
         );
         this.setData(Object.assign(event.data, {'willy': willy}));
+        return true;
+
+      case 'changeFlashState':
+        this.app.stack.flashState = !this.app.stack.flashState;
+        this.sendEvent(330, {'id': 'changeFlashState'});
         return true;
     }
     

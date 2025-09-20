@@ -35,6 +35,7 @@ export class GameApp extends AbstractApp {
     this.score = 0;
     this.hiScore = 0;
     this.lastBonusScore = 0;
+    this.playerName = this.getCookie('playerName', '');
     this.globalData = false;
     this.setModel('ResetModel');
   } // constructor
