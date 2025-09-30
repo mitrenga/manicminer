@@ -26,7 +26,7 @@ export class GameInfoEntity extends AbstractEntity {
   init() {
     super.init();
 
-    this.caveNameEntity = new TextEntity(this, this.app.fonts.zxFonts8x8, 0, 0, 32*8, 8, '', this.app.platform.colorByName('black'), this.app.platform.colorByName('yellow'), {justify: 'center'});
+    this.caveNameEntity = new TextEntity(this, this.app.fonts.zxFonts8x8, 0, 0, 32*8, 8, '', this.app.platform.colorByName('black'), this.app.platform.colorByName('yellow'), {align: 'center'});
     this.addEntity(this.caveNameEntity);
     this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 0, 8, 4*8, 8, 'AIR', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightRed'), {}));
     this.airEntity = new AirEntity(this, 4*8, 8, 28*8, 8, 1.0);

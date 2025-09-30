@@ -22,7 +22,7 @@ export class AboutEntity extends AbstractEntity {
     this.addEntity(new AbstractEntity(this, 0, 6, 1, this.height-6, false, this.app.platform.colorByName('brightBlack')));
     this.addEntity(new AbstractEntity(this, 0, this.height-1, this.width, 1, false, this.app.platform.colorByName('brightBlack')));
     this.addEntity(new AbstractEntity(this, this.width-1, 6, 1, this.height-6, false, this.app.platform.colorByName('brightBlack')));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 0, 0, this.width, 9, 'ABOUT GAME', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlack'), {justify: 'center', margin: 2}));
+    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 0, 0, this.width, 9, 'ABOUT GAME', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlack'), {align: 'center', margin: 2}));
     this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 11, this.width-4, 5, 'MANIC`` MINER`` IS`` A` REMAKE`` OF`` THE` ORIGINAL', this.app.platform.colorByName('black'), false, {}));
     this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 19, this.width-4, 5, '1983` GAME` FOR` THE` SINCLAIR`` ZX` SPECTRUM', this.app.platform.colorByName('black'), false, {}));
     this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 27, this.width-4, 5, 'BY MATTHEW SMITH.', this.app.platform.colorByName('black'), false, {}));
@@ -36,7 +36,7 @@ export class AboutEntity extends AbstractEntity {
     this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 99, this.width-4, 5, 'LEFT```` OFF```` IN``` YOUR```` PREVIOUS```` GAME.``` THIS', this.app.platform.colorByName('black'), false, {}));
     this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 107, this.width-4, 5, 'GIVES` YOU` THE CHANCE` TO TRY COMPLETING', this.app.platform.colorByName('black'), false, {}));
     this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 115, this.width-4, 5, 'ALL THE CAVES.', this.app.platform.colorByName('black'), false, {}));
-    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-38, this.height-15, 36, 13, 'CLOSE', 'closeAbout', ['Enter', 'Escape', ' '], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {justify: 'center', margin: 4}));
+    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-38, this.height-15, 36, 13, 'CLOSE', 'closeAbout', ['Enter', 'Escape', ' '], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {align: 'center', margin: 4}));
   } // init
 
   handleEvent(event) {

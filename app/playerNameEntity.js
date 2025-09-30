@@ -67,13 +67,13 @@ export class PlayerNameEntity extends AbstractEntity {
     this.addEntity(new AbstractEntity(this, 0, 6, 1, this.height-6, false, this.app.platform.colorByName('brightBlack')));
     this.addEntity(new AbstractEntity(this, 0, this.height-1, this.width, 1, false, this.app.platform.colorByName('brightBlack')));
     this.addEntity(new AbstractEntity(this, this.width-1, 6, 1, this.height-6, false, this.app.platform.colorByName('brightBlack')));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 0, 0, this.width, 9, 'PLAYER NAME', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlack'), {justify: 'center', margin: 2}));
+    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 0, 0, this.width, 9, 'PLAYER NAME', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlack'), {align: 'center', margin: 2}));
     this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 8, 18, this.width-16, 8, 'Enter your player name:', this.app.platform.colorByName('black'), false, {}));
     this.inputEntity = new InputEntity(this.app, this.app.fonts.zxFonts8x8, 8, 28, this.width-16, 8, this.app.playerName, this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), 15, {});
     this.addEntity(this.inputEntity);
     this.addEntity(new KeyboardEntity(this, this.app.fonts.zxFonts8x8, 8, 45, 186, 67, this.keyboardLayout, false));
-    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-105, this.height-18, 46, 13, 'CANCEL', 'cancel', ['Escape'], this.app.platform.colorByName('white'), this.app.platform.colorByName('red'), {justify: 'center', margin: 4}));
-    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-54, this.height-18, 46, 13, 'OK', 'ok', ['Enter'], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('green'), {justify: 'center', margin: 4}));
+    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-105, this.height-18, 46, 13, 'CANCEL', 'cancel', ['Escape'], this.app.platform.colorByName('white'), this.app.platform.colorByName('red'), {align: 'center', margin: 4}));
+    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-54, this.height-18, 46, 13, 'OK', 'ok', ['Enter'], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('green'), {align: 'center', margin: 4}));
   } // init
 
   handleEvent(event) {

@@ -59,17 +59,17 @@ export class TapeLoadingModel extends AbstractModel {
   init() {
     super.init();
 
-    this.inputLineEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 23*8, 32*8, 8, '© 2025 GNU General Public Licence', this.app.platform.colorByName('black'), false, {justify: 'center'});
+    this.inputLineEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 23*8, 32*8, 8, '© 2025 GNU General Public Licence', this.app.platform.colorByName('black'), false, {align: 'center'});
     this.desktopEntity.addEntity(this.inputLineEntity);
 
     this.programNameEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 1*8, 32*8, 8, 'Program: MANICMINER', this.app.platform.colorByName('black'), false, {});
     this.programNameEntity.hide = true;
     this.desktopEntity.addEntity(this.programNameEntity);
 
-    this.copyrightLine1 = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8Mono, 6*8, 18*8, 20*8, 8, ' ©SOFTWARE PROJECTS ', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {justify: 'center'});
+    this.copyrightLine1 = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8Mono, 6*8, 18*8, 20*8, 8, ' ©SOFTWARE PROJECTS ', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {align: 'center'});
     this.copyrightLine1.hide = true;
     this.desktopEntity.addEntity(this.copyrightLine1);
-    this.copyrightLine2 = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8Mono, 6*8, 19*8, 20*8, 8, '  by Matthew Smith  ', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {justify: 'center'});
+    this.copyrightLine2 = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8Mono, 6*8, 19*8, 20*8, 8, '  by Matthew Smith  ', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {align: 'center'});
     this.copyrightLine2.hide = true;
     this.desktopEntity.addEntity(this.copyrightLine2);
 
@@ -96,7 +96,7 @@ export class TapeLoadingModel extends AbstractModel {
         return true;
 
       case 'updateCommand':
-        this.inputLineEntity.options.justify = 'left';
+        this.inputLineEntity.options.align = 'left';
         this.inputLineEntity.fonts = this.app.fonts.zxFonts8x8Mono;
         this.inputLineEntity.options.animationMode = 'flashReverseColors';
         this.inputLineEntity.setText(this.command[this.phase]);
