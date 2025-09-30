@@ -1,13 +1,13 @@
 /**/
 const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+window.srcVersion);
 const { BorderEntity } = await import('./borderEntity.js?ver='+window.srcVersion);
-const { ZXTextEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxTextEntity.js?ver='+window.srcVersion);
-const { LogoEntity } = await import('./logoEntity.js?ver='+window.srcVersion);
+const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
+const { SignboardEntity } = await import('./signboardEntity.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import BorderEntity from './borderEntity.js';
-import ZXTextEntity from './svision/js/platform/canvas2D/zxSpectrum/zxTextEntity.js';
-import LogoEntity from './logoEntity.js';
+import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
+import SignboardEntity from './signboardEntity.js';
 /**/
 // begin code
 
@@ -23,7 +23,7 @@ export class TapeLoadingModel extends AbstractModel {
     this.programNameEntity = null;
     this.copyrightLine1 = null;
     this.copyrightLine2 = null;
-    this.logoEntity = null;
+    this.signboardEntity = null;
     this.app.stack.flashState = false;
     this.tape = [
       {'id': 'pause', 'duration': 1000},
@@ -40,7 +40,7 @@ export class TapeLoadingModel extends AbstractModel {
       {'id': 'data', 'duration': 100},
       {'id': 'pause', 'duration': 800},
       {'id': 'pilot', 'duration': 1500},
-      {'id': 'data', 'duration': 1380, 'event': 'showLogo'},
+      {'id': 'data', 'duration': 1380, 'event': 'showSignboard'},
 
       {'id': 'pause', 'duration': 1000},
       
@@ -59,26 +59,23 @@ export class TapeLoadingModel extends AbstractModel {
   init() {
     super.init();
 
-    this.inputLineEntity = new ZXTextEntity(this.desktopEntity, 0, 23*8, 32*8, 8, '© 2025 GNU General Public Licence', this.app.platform.colorByName('black'), false, 0, true);
-    this.inputLineEntity.justify = 2;
+    this.inputLineEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 23*8, 32*8, 8, '© 2025 GNU General Public Licence', this.app.platform.colorByName('black'), false, {justify: 'center'});
     this.desktopEntity.addEntity(this.inputLineEntity);
 
-    this.programNameEntity = new ZXTextEntity(this.desktopEntity, 0, 1*8, 32*8, 8, 'Program: MANICMINER', this.app.platform.colorByName('black'), false, 0, true);
+    this.programNameEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 1*8, 32*8, 8, 'Program: MANICMINER', this.app.platform.colorByName('black'), false, {});
     this.programNameEntity.hide = true;
     this.desktopEntity.addEntity(this.programNameEntity);
 
-    this.copyrightLine1 = new ZXTextEntity(this.desktopEntity, 6*8, 18*8, 20*8, 8, ' ©SOFTWARE PROJECTS ', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), 0, false);
+    this.copyrightLine1 = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8Mono, 6*8, 18*8, 20*8, 8, ' ©SOFTWARE PROJECTS ', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {justify: 'center'});
     this.copyrightLine1.hide = true;
-    this.copyrightLine1.justify = 2;
     this.desktopEntity.addEntity(this.copyrightLine1);
-    this.copyrightLine2 = new ZXTextEntity(this.desktopEntity, 6*8, 19*8, 20*8, 8, '  by Matthew Smith  ', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), 0, false);
+    this.copyrightLine2 = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8Mono, 6*8, 19*8, 20*8, 8, '  by Matthew Smith  ', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {justify: 'center'});
     this.copyrightLine2.hide = true;
-    this.copyrightLine2.justify = 2;
     this.desktopEntity.addEntity(this.copyrightLine2);
 
-    this.logoEntity = new LogoEntity(this.desktopEntity, 2*8-1, 9*8, 32*8, 7*8, 1);
-    this.logoEntity.hide = true;
-    this.desktopEntity.addEntity(this.logoEntity);
+    this.signboardEntity = new SignboardEntity(this.desktopEntity, 2*8+4, 9*8, 27*8, 7*8, 'splashScreen');
+    this.signboardEntity.hide = true;
+    this.desktopEntity.addEntity(this.signboardEntity);
 
     this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'sounds'});
 
@@ -99,12 +96,13 @@ export class TapeLoadingModel extends AbstractModel {
         return true;
 
       case 'updateCommand':
-        this.inputLineEntity.justify = 0;
-        this.inputLineEntity.proportional = false;
+        this.inputLineEntity.options.justify = 'left';
+        this.inputLineEntity.fonts = this.app.fonts.zxFonts8x8Mono;
+        this.inputLineEntity.options.animationMode = 'flashReverseColors';
         this.inputLineEntity.setText(this.command[this.phase]);
-        this.inputLineEntity.flashMask = '';
+        this.inputLineEntity.options.flashMask = '';
         if (this.command[this.phase].length > 0) {
-          this.inputLineEntity.flashMask = this.inputLineEntity.flashMask.padStart (this.command[this.phase].length-1, ' ')+'#';
+          this.inputLineEntity.options.flashMask = this.inputLineEntity.options.flashMask.padStart (this.command[this.phase].length-1, ' ')+'#';
         }
         this.phase++;
         this.sendEvent(0, {'id': 'playSound', 'channel': 'sounds', 'sound': 'keyboardSound', 'options': false});
@@ -125,7 +123,7 @@ export class TapeLoadingModel extends AbstractModel {
             this.sendEvent(0, {'id': 'setBorderAnimation', 'value': 'pilotTone'});
             break;
           case 'data':
-            if ('event' in this.tape[this.phase] && this.tape[this.phase].event == 'showLogo') {
+            if ('event' in this.tape[this.phase] && this.tape[this.phase].event == 'showSignboard') {
               this.sendEvent(0, {'id': 'playSound', 'channel': 'sounds', 'sound': 'tapeScreenAttrSound', 'options': false});
             } else {
               this.sendEvent(0, {'id': 'playSound', 'channel': 'sounds', 'sound': 'tapeRndDataSound', 'options': false});
@@ -161,15 +159,15 @@ export class TapeLoadingModel extends AbstractModel {
         this.borderEntity.bkColor = this.app.platform.colorByName('white');
         return true;
 
-      case 'showLogo':
-        this.logoEntity.hide = false;
-        this.logoEntity.loadTimer = this.app.now;
+      case 'showSignboard':
+        this.signboardEntity.hide = false;
+        this.signboardEntity.loadTimer = this.app.now;
         return true;
 
       case 'scrollScreen':
         this.copyrightLine1.y -= 8;
         this.copyrightLine2.y -= 8;
-        this.logoEntity.y -= 8;
+        this.signboardEntity.y -= 8;
         return true;
 
       case 'setMenuModel':

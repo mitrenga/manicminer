@@ -57,7 +57,7 @@ export class MainModel extends AbstractModel {
     
     this.blackBox = new AbstractEntity(this.desktopEntity, 0, 18*8, 32*8, 6*8, false, this.app.platform.colorByName('black'));
     this.desktopEntity.addEntity(this.blackBox);
-    this.bannerEntity = new BannerTextEntity(this.blackBox, 0, 8, 32*8, 8, this.bannerTxt, this.app.platform.colorByName('yellow'), false, this.bannerLength);
+    this.bannerEntity = new BannerTextEntity(this.blackBox, this.app.fonts.zxFonts8x8, 0, 8, 32*8, 8, this.bannerTxt, this.app.platform.colorByName('yellow'), false, this.bannerLength);
     this.blackBox.addEntity(this.bannerEntity);
 
     this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'music'});

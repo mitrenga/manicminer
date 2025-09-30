@@ -1,8 +1,8 @@
 /**/
 const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+window.srcVersion);
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
-const { ZXTextEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxTextEntity.js?ver='+window.srcVersion);
-const { LogoEntity } = await import('./logoEntity.js?ver='+window.srcVersion);
+const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
+const { SignboardEntity } = await import('./signboardEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 const { PlayerNameEntity } = await import('./playerNameEntity.js?ver='+window.srcVersion);
 const { HallOfFameEntity } = await import('./hallOfFameEntity.js?ver='+window.srcVersion);
@@ -10,8 +10,8 @@ const { AboutEntity } = await import('./aboutEntity.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import AbstractEntity from './svision/js/abstractEntity.js';
-import ZXTextEntity from './svision/js/platform/canvas2D/zxSpectrum/zxTextEntity.js';
-import LogoEntity from './logoEntity.js';
+import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
+import SignboardEntity from './signboardEntity.js';
 import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
 import PlayerNameEntity from './playerNameEntity.js';
 import HallOfFameEntity from './hallOfFameEntity.js';
@@ -42,7 +42,7 @@ export class MenuModel extends AbstractModel {
       {'label': 'SHOW TAPE LOADING', 'event': 'startTapeLoading'},
       {'label': 'ABOUT GAME', 'event': 'showAbout'}
     ];
-    this.logoEntity = null;
+    this.signboardEntity = null;
     this.objects = [
       {'id': 'willy', 'x': 61, 'y': 160},
       {'id': 'guardian', 'x': 21, 'y': 160},
@@ -85,20 +85,16 @@ export class MenuModel extends AbstractModel {
         penColor = this.penSelectedMenuItemColor;
       }
       this.menuEntities[y] = [];
-      this.menuEntities[y][1] = new ZXTextEntity(this.desktopEntity, 133, 22+y*16, 100, 12, this.menuParamValue(this.menuItems[y].event), penColor, false, 0, true);
-      this.menuEntities[y][1].margin = 2;
-      this.menuEntities[y][1].justify = 1;
+      this.menuEntities[y][1] = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 133, 22+y*16, 100, 12, this.menuParamValue(this.menuItems[y].event), penColor, false, {margin: 2, justify: 'right'});
       this.desktopEntity.addEntity(this.menuEntities[y][1]);
-      this.menuEntities[y][0] = new ZXTextEntity(this.desktopEntity, 23, 22+y*16, 140, 12, this.menuItems[y].label, penColor, false, 0, true);
-      this.menuEntities[y][0].margin = 2;
+      this.menuEntities[y][0] = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 23, 22+y*16, 140, 12, this.menuItems[y].label, penColor, false, {margin: 2});
       this.desktopEntity.addEntity(this.menuEntities[y][0]);
     }
 
-    this.logoEntity = new LogoEntity(this.desktopEntity, 97, 4, 61, 7, 0);
-    this.desktopEntity.addEntity(this.logoEntity);
+    this.signboardEntity = new SignboardEntity(this.desktopEntity, 97, 4, 61, 7, 'menuLabel');
+    this.desktopEntity.addEntity(this.signboardEntity);
 
-    this.copyrightEntity = new ZXTextEntity(this.desktopEntity, 0, 23*8, 32*8, 8, '© 2025 GNU General Public Licence', this.app.platform.colorByName('black'), false, 0, true);
-    this.copyrightEntity.justify = 2;
+    this.copyrightEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 23*8, 32*8, 8, '© 2025 GNU General Public Licence', this.app.platform.colorByName('black'), false, {justify: 'center'});
     this.desktopEntity.addEntity(this.copyrightEntity);
 
     this.objects.forEach((object, o) => {
@@ -269,7 +265,7 @@ export class MenuModel extends AbstractModel {
     } else {
       if (this.dataLoaded) {
         var counter = Math.round((timestamp-this.timer)/250);
-        this.logoEntity.setAnimateState(counter%4);
+        this.signboardEntity.animateState = counter%4;
 
         counter = Math.round((timestamp-this.timer)/80);
         this.objectsEntities.forEach((entity) => {
