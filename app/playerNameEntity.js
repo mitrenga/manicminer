@@ -24,7 +24,7 @@ export class PlayerNameEntity extends AbstractEntity {
 
     this.keyboardLayout = {
       options: {
-        specialKeys: {blank: '∅', enter: '⏎', backspace: '⌫'},
+        specialKeys: {blank: '∅', enter: '⏎', backspace: '⌫', left: '←', down: '↓', up: '↑', right: '➔'},
         buttons: {
           default: {
             width: 16, height: 16, keySpacing: 1, align: 'center', topMargin: 4,
@@ -33,13 +33,17 @@ export class PlayerNameEntity extends AbstractEntity {
             bkColor: this.app.platform.colorByName('brightWhite')
           },
 
-          '⌫': {label: 'DEL', fonts: this.app.fonts.fonts3x3, topMargin: 7},
-          '⏎': {label: 'ENTER', width: 21, fonts: this.app.fonts.fonts3x3, topMargin: 7},
-          '⇧': {label: 'CAPS\nSHIFT', width: 19, fonts: this.app.fonts.fonts3x3},
+          '←': {fonts: this.app.fonts.fonts5x5, topMargin: 6},
+          '↓': {fonts: this.app.fonts.fonts5x5, topMargin: 6},
+          '↑': {fonts: this.app.fonts.fonts5x5, topMargin: 6},
+          '➔': {fonts: this.app.fonts.fonts5x5, topMargin: 6},
+          '⌫': {label: 'DELETE', width: 25, fonts: this.app.fonts.fonts3x3, topMargin: 7},
+          '⏎': {label: 'ENTER', width: 23, fonts: this.app.fonts.fonts3x3, topMargin: 7},
+          '⇧': {label: 'CAPS\nSHIFT', width: 23, fonts: this.app.fonts.fonts3x3},
           '⌥': {label: 'SYMBOL\nSHIFT', width: 25, penColor: this.app.platform.colorByName('brightRed'), fonts: this.app.fonts.fonts3x3},
-          ' ': {width: 25},
+          ' ': {label: 'SPACE', width: 25, fonts: this.app.fonts.fonts3x3, topMargin: 7},
         },
-        rows: [{shift: 0}, {shift: 8}, {shift: 16}, {shift: 0}]
+        rows: [{shift: 0}, {shift: 9}, {shift: 18}, {shift: 0}]
       },
       keys: {
         ' ': [
@@ -71,14 +75,14 @@ export class PlayerNameEntity extends AbstractEntity {
     this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 0, 0, this.width, 9, 'PLAYER NAME', this.app.platform.colorByName('brightWhite'), false, {align: 'center', topMargin: 2}));
     this.addEntity(new AbstractEntity(this, 1, 9, this.width-2, this.height-10, false, this.app.platform.colorByName('yellow')));
 
-    this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 6, 18, this.width-12, 8, 'Enter your player name:', this.app.platform.colorByName('black'), false, {}));
-    this.inputEntity = new InputEntity(this.app, this.app.fonts.zxFonts8x8, 6, 28, this.width-12, 8, this.app.playerName, this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), 15, {leftMargin: 1});
+    this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 4, 18, this.width-8, 8, 'Enter your player name:', this.app.platform.colorByName('black'), false, {}));
+    this.inputEntity = new InputEntity(this.app, this.app.fonts.zxFonts8x8, 4, 28, this.width-8, 8, this.app.playerName, this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), 15, {leftMargin: 1});
     this.addEntity(this.inputEntity);
 
-    this.addEntity(new KeyboardEntity(this, 6, 42, 190, 67, this.keyboardLayout, false));
+    this.addEntity(new KeyboardEntity(this, 4, 42, 194, 67, this.keyboardLayout, false));
 
-    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-100, this.height-18, 46, 13, 'CANCEL', 'cancel', ['Escape'], this.app.platform.colorByName('white'), this.app.platform.colorByName('red'), {align: 'center', margin: 4}));
-    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-52, this.height-18, 46, 13, 'OK', 'ok', ['Enter'], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('green'), {align: 'center', margin: 4}));
+    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-98, this.height-16, 46, 13, 'CANCEL', 'cancel', ['Escape'], this.app.platform.colorByName('white'), this.app.platform.colorByName('red'), {align: 'center', margin: 4}));
+    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-50, this.height-16, 46, 13, 'OK', 'ok', ['Enter'], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('green'), {align: 'center', margin: 4}));
   } // init
 
   handleEvent(event) {
