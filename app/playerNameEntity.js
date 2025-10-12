@@ -30,11 +30,13 @@ export class PlayerNameEntity extends AbstractEntity {
             width: 16, height: 16, keySpacing: 1, align: 'center', topMargin: 4,
             fonts: this.app.fonts.zxFonts8x8Keys,
             penColor: this.app.platform.colorByName('brightBlack'),
-            bkColor: this.app.platform.colorByName('brightWhite')},
+            bkColor: this.app.platform.colorByName('brightWhite')
+          },
 
-          'ENTER': {width: 21, fonts: this.app.fonts.fonts3x3, topMargin: 7},
-          'CAPS\nSHIFT': {width: 19, fonts: this.app.fonts.fonts3x3},
-          'SYMBOL\nSHIFT': {width: 25, penColor: this.app.platform.colorByName('brightRed'), fonts: this.app.fonts.fonts3x3},
+          '⌫': {label: 'DEL', fonts: this.app.fonts.fonts3x3, topMargin: 7},
+          '⏎': {label: 'ENTER', width: 21, fonts: this.app.fonts.fonts3x3, topMargin: 7},
+          '⇧': {label: 'CAPS\nSHIFT', width: 19, fonts: this.app.fonts.fonts3x3},
+          '⌥': {label: 'SYMBOL\nSHIFT', width: 25, penColor: this.app.platform.colorByName('brightRed'), fonts: this.app.fonts.fonts3x3},
           ' ': {width: 25},
         },
         rows: [{shift: 0}, {shift: 8}, {shift: 16}, {shift: 0}]
@@ -43,8 +45,8 @@ export class PlayerNameEntity extends AbstractEntity {
         ' ': [
           ['1','2','3','4','5','6','7','8','9','0'],
           ['q','w','e','r','t','y','u','i','o','p'],
-          ['a','s','d','f','g','h','j','k','l', 'ENTER'],
-          ['CAPS\nSHIFT', 'z','x','c','v','b','n','m', 'SYMBOL\nSHIFT', ' ']
+          ['a','s','d','f','g','h','j','k','l', '⏎'],
+          ['⇧', 'z','x','c','v','b','n','m', '⌥', ' ']
         ],
         '⇧': [
           ['∅','∅','∅','∅','←','↓','↑','➔','∅','⌫'],
