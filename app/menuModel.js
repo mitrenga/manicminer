@@ -69,12 +69,11 @@ export class MenuModel extends AbstractModel {
     super.init();
 
     this.borderEntity.bkColor = this.app.platform.colorByName('white');
+    this.borderEntity.addEntity(new WatermarkEntity(this.borderEntity, this.app));
     this.desktopEntity.bkColor = this.app.platform.colorByName('white');
 
-    this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 13, 0, 230, 14, false, this.app.platform.colorByName('blue')));
-    this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 13, 14, 1, 136, false, this.app.platform.colorByName('blue')));
-    this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 13, 150, 230, 1, false, this.app.platform.colorByName('blue')));
-    this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 242, 14, 1, 136, false, this.app.platform.colorByName('blue')));
+    this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 13, 0, 230, 154, false, this.app.platform.colorByName('blue')));
+    this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 14, 14, 228, 139, false, this.desktopEntity.bkColor));
 
     this.menuSelectedRow = new AbstractEntity(this.desktopEntity, 23, 22+this.selectedItem*16, 210, 12, false, this.app.platform.colorByName('brightBlue'));
     this.desktopEntity.addEntity(this.menuSelectedRow);
@@ -85,13 +84,13 @@ export class MenuModel extends AbstractModel {
         penColor = this.penSelectedMenuItemColor;
       }
       this.menuEntities[y] = [];
-      this.menuEntities[y][1] = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 133, 22+y*16, 100, 12, this.menuParamValue(this.menuItems[y].event), penColor, false, {margin: 2, align: 'right'});
+      this.menuEntities[y][1] = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 133, 22+y*16, 100, 12, this.menuParamValue(this.menuItems[y].event), penColor, false, {topMargin: 2, rightMargin: 3, align: 'right'});
       this.desktopEntity.addEntity(this.menuEntities[y][1]);
-      this.menuEntities[y][0] = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 23, 22+y*16, 140, 12, this.menuItems[y].label, penColor, false, {margin: 2});
+      this.menuEntities[y][0] = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 23, 22+y*16, 140, 12, this.menuItems[y].label, penColor, false, {topMargin: 2, leftMargin: 3});
       this.desktopEntity.addEntity(this.menuEntities[y][0]);
     }
 
-    this.signboardEntity = new SignboardEntity(this.desktopEntity, 97, 4, 61, 7, 'menuLabel');
+    this.signboardEntity = new SignboardEntity(this.desktopEntity, 98, 4, 61, 7, 'menuLabel');
     this.desktopEntity.addEntity(this.signboardEntity);
 
     this.copyrightEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 23*8, 32*8, 8, '© 2025 GNU General Public Licence', this.app.platform.colorByName('black'), false, {align: 'center'});

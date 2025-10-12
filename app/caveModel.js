@@ -30,6 +30,7 @@ export class CaveModel extends AbstractModel {
     this.bkAnimation = false;
     this.animationTime = false;
     this.animationType = false;
+    this.autorepeatKeys = false;
 
     this.initData = {'info': [
       0, // counter
@@ -180,6 +181,7 @@ export class CaveModel extends AbstractModel {
     }
     super.setData(data);
     this.postWorkerMessage({'id': 'init', 'initData': this.initData});
+    this.app.inputEventsManager.sendEventsActiveKeys('press');
   } // setData
 
   handleEvent(event) {
@@ -204,6 +206,10 @@ export class CaveModel extends AbstractModel {
         this.setData(Object.assign(event.data, {'willy': willy}));
         return true;
 
+      case 'blurWindow':
+        this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 9*8, 5*8, 14*8+1, 14*8+2, this.borderEntity.bkColor));
+        return true;
+
       case 'keyPress':
         if (this.demo) {
           this.app.setModel('MainModel');
@@ -213,14 +219,24 @@ export class CaveModel extends AbstractModel {
           case 'Escape':
             this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 9*8, 5*8, 14*8+1, 14*8+2, this.borderEntity.bkColor));
             return true;
+
           case 'ArrowRight':
+          case 'p':
+          case 'P':
+          case 'MouseButton2':
             this.postWorkerMessage({'id': 'controls', 'action': 'right', 'value': true});
             return true;
+
           case 'ArrowLeft':
+          case 'o':
+          case 'O':
+          case 'MouseButton1':
             this.postWorkerMessage({'id': 'controls', 'action': 'left', 'value': true});
             return true;
+
           case 'ArrowUp':
           case ' ':
+          case 'MouseButton4':
             this.postWorkerMessage({'id': 'controls', 'action': 'jump', 'value': true});
             return true;
         }
@@ -229,13 +245,22 @@ export class CaveModel extends AbstractModel {
       case 'keyRelease':
         switch (event.key) {
           case 'ArrowRight':
+          case 'p':
+          case 'P':
+          case 'MouseButton2':
             this.postWorkerMessage({'id': 'controls', 'action': 'right', 'value': false});
             return true;
+
           case 'ArrowLeft':
+          case 'o':
+          case 'O':
+          case 'MouseButton1':
             this.postWorkerMessage({'id': 'controls', 'action': 'left', 'value': false});
             return true;
+
           case 'ArrowUp':
           case ' ':
+          case 'MouseButton4':
             this.postWorkerMessage({'id': 'controls', 'action': 'jump', 'value': false});
             return true;
         }

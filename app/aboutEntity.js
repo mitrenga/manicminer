@@ -18,25 +18,19 @@ export class AboutEntity extends AbstractEntity {
 
   init() {
     super.init();
-    this.addEntity(new AbstractEntity(this, 1, 7, this.width-2, this.height-8, false, this.app.platform.colorByName('yellow')));
-    this.addEntity(new AbstractEntity(this, 0, 6, 1, this.height-6, false, this.app.platform.colorByName('brightBlack')));
-    this.addEntity(new AbstractEntity(this, 0, this.height-1, this.width, 1, false, this.app.platform.colorByName('brightBlack')));
-    this.addEntity(new AbstractEntity(this, this.width-1, 6, 1, this.height-6, false, this.app.platform.colorByName('brightBlack')));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 0, 0, this.width, 9, 'ABOUT GAME', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlack'), {align: 'center', margin: 2}));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 11, this.width-4, 5, 'MANIC`` MINER`` IS`` A` REMAKE`` OF`` THE` ORIGINAL', this.app.platform.colorByName('black'), false, {}));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 19, this.width-4, 5, '1983` GAME` FOR` THE` SINCLAIR`` ZX` SPECTRUM', this.app.platform.colorByName('black'), false, {}));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 27, this.width-4, 5, 'BY MATTHEW SMITH.', this.app.platform.colorByName('black'), false, {}));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 39, this.width-4, 5, 'THIS` GAME`` HAS` FASCINATED`` ME` EVER` SINCE', this.app.platform.colorByName('black'), false, {}));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 47, this.width-4, 5, 'I SAW IT FOR THE FIRST` TIME.` I BELIEVE THAT', this.app.platform.colorByName('black'), false, {}));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 55, this.width-4, 5, 'MANY``````` PLAYERS`````` WILL`````` ENJOY````` REMINISCING', this.app.platform.colorByName('black'), false, {}));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 63, this.width-4, 5, 'ABOUT```` THIS```` LEGENDARY```` GAME,```` AND```` NOT', this.app.platform.colorByName('black'), false, {}));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 71, this.width-4, 5, 'JUST OUT OF NOSTALGIA.', this.app.platform.colorByName('black'), false, {}));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 83, this.width-4, 5, 'IN THIS REMAKE, YOU ALSO HAVE THE OPTION', this.app.platform.colorByName('black'), false, {}));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 91, this.width-4, 5, 'TO` CONTINUE` IN THE` CAVE` FROM` WHERE` YOU', this.app.platform.colorByName('black'), false, {}));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 99, this.width-4, 5, 'LEFT```` OFF```` IN``` YOUR```` PREVIOUS```` GAME.``` THIS', this.app.platform.colorByName('black'), false, {}));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 107, this.width-4, 5, 'GIVES` YOU` THE CHANCE` TO TRY COMPLETING', this.app.platform.colorByName('black'), false, {}));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 2, 115, this.width-4, 5, 'ALL THE CAVES.', this.app.platform.colorByName('black'), false, {}));
-    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-38, this.height-15, 36, 13, 'CLOSE', 'closeAbout', ['Enter', 'Escape', ' '], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {align: 'center', margin: 4}));
+    
+    this.addEntity(new AbstractEntity(this, 0, 0, this.width, this.height, false, this.app.platform.colorByName('black')));
+    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 0, 0, this.width, 9, 'ABOUT GAME', this.app.platform.colorByName('brightWhite'), false, {align: 'center', topMargin: 2}));
+    this.addEntity(new AbstractEntity(this, 1, 9, this.width-2, this.height-10, false, this.app.platform.colorByName('yellow')));
+
+    var aboutText = 'MANIC MINER IS A REMAKE OF THE ORIGINAL 1983 GAME FOR THE SINCLAIR ZX SPECTRUM BY MATTHEW SMITH.\n' +
+                    'THIS GAME HAS FASCINATED ME EVER SINCE I SAW IT FOR THE FIRST TIME. ' +
+                    'I BELIEVE THAT MANY PLAYERS WILL ENJOY REMINISCING ABOUT THIS LEGENDARY GAME, AND NOT JUST OUT OF NOSTALGIA.\n' +
+                    'IN THIS REMAKE, YOU ALSO HAVE THE OPTION TO CONTINUE IN THE CAVE FROM WHERE YOU LEFT OFF IN YOUR PREVIOUS GAME. ' +
+                    'THIS GIVES YOU THE CHANCE TO TRY COMPLETING ALL THE CAVES.';
+    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 1, 9, this.width-2, this.height-25, aboutText, this.app.platform.colorByName('black'), false, {align: 'justify', textWrap: true, margin: 2}));
+    
+    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-39, this.height-16, 36, 13, 'CLOSE', 'closeAbout', ['Enter', 'Escape', ' '], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {align: 'center', margin: 4}));
   } // init
 
   handleEvent(event) {
