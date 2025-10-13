@@ -26,7 +26,15 @@ export class PlayerNameEntity extends AbstractEntity {
 
     this.keyboardLayout = {
       options: {
-        specialKeys: {blank: '∅', enter: '⏎', backspace: '⌫', left: '←', down: '↓', up: '↑', right: '➔'},
+        fnKeys: {
+          '∅': false,
+          '⏎': 'Enter',
+          '⌫': 'Backspace',
+          '←': 'ArrowLeft',
+          '↓': 'ArrowDown',
+          '↑': 'ArrowUp',
+          '➔': 'ArrowRight'
+        },
         shiftKeys: {
           '⇧': {activeBkColor: this.app.platform.colorByName('white')},
           '⌥': {activeBkColor: this.app.platform.colorByName('white')}
@@ -51,7 +59,7 @@ export class PlayerNameEntity extends AbstractEntity {
         },
         rows: [{shiftX: 0}, {shiftX: 9}, {shiftX: 18}, {shiftX: 0}]
       },
-      keys: {
+      keymap: {
         ' ': [
           ['1','2','3','4','5','6','7','8','9','0'],
           ['q','w','e','r','t','y','u','i','o','p'],
