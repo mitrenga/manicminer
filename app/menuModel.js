@@ -6,7 +6,10 @@ const { SignboardEntity } = await import('./signboardEntity.js?ver='+window.srcV
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 const { PlayerNameEntity } = await import('./playerNameEntity.js?ver='+window.srcVersion);
 const { HallOfFameEntity } = await import('./hallOfFameEntity.js?ver='+window.srcVersion);
+const { VolumeEntity } = await import('./volumeEntity.js?ver='+window.srcVersion);
+const { ControlsEntity } = await import('./controlsEntity.js?ver='+window.srcVersion);
 const { AboutEntity } = await import('./aboutEntity.js?ver='+window.srcVersion);
+const { WatermarkEntity } = await import('./watermarkEntity.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import AbstractEntity from './svision/js/abstractEntity.js';
@@ -15,7 +18,10 @@ import SignboardEntity from './signboardEntity.js';
 import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
 import PlayerNameEntity from './playerNameEntity.js';
 import HallOfFameEntity from './hallOfFameEntity.js';
+import VolumeEntity from './volumeEntityEntity.js';
+import ControlsEntity from './controlsEntity.js';
 import AboutEntity from './aboutEntity.js';
+import WatermarkEntity from './watermarkEntity.js';
 /**/
 // begin code
 
@@ -33,20 +39,20 @@ export class MenuModel extends AbstractModel {
     this.penSelectedMenuItemColor = this.app.platform.colorByName('brightWhite');
     this.menuEntities = [];
     this.menuItems = [
-      {'label': 'START GAME', 'event': 'startGame'},
-      {'label': 'PLAYER NAME', 'event': 'setPlayerName'},
-      {'label': 'HALL OF FAME', 'event': 'showHallOfFame'},
-      {'label': 'SOUNDS', 'event': 'setSounds'},
-      {'label': 'MUSIC', 'event': 'setMusic'},
-      {'label': 'CONTROLS', 'event': 'showControls'},
-      {'label': 'SHOW TAPE LOADING', 'event': 'startTapeLoading'},
-      {'label': 'ABOUT GAME', 'event': 'showAbout'}
+      {label: 'START GAME', event: 'startGame'},
+      {label: 'PLAYER NAME', event: 'setPlayerName'},
+      {label: 'HALL OF FAME', event: 'showHallOfFame'},
+      {label: 'SOUNDS', event: 'setSounds'},
+      {label: 'MUSIC', event: 'setMusic'},
+      {label: 'CONTROLS', event: 'setControls'},
+      {label: 'SHOW TAPE LOADING', event: 'startTapeLoading'},
+      {label: 'ABOUT GAME', event: 'showAbout'}
     ];
     this.signboardEntity = null;
     this.objects = [
-      {'id': 'willy', 'x': 61, 'y': 160},
-      {'id': 'guardian', 'x': 21, 'y': 160},
-      {'id': 'floor', 'x': 13, 'y': 176}
+      {id: 'willy', x: 61, y: 160},
+      {id: 'guardian', x: 21, y: 160},
+      {id: 'floor', x: 13, y: 176}
     ];
     this.dataLoaded = false;
     this.objectsEntities = [];
@@ -60,7 +66,7 @@ export class MenuModel extends AbstractModel {
     http.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         var data = JSON.parse(http.responseText);
-        this.responser.sendEvent(1, {'id': 'setMenuData', 'data': data});
+        this.responser.sendEvent(1, {id: 'setMenuData', data: data});
       }
     }
   } // constructor
@@ -84,7 +90,7 @@ export class MenuModel extends AbstractModel {
         penColor = this.penSelectedMenuItemColor;
       }
       this.menuEntities[y] = [];
-      this.menuEntities[y][1] = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 133, 22+y*16, 100, 12, this.menuParamValue(this.menuItems[y].event), penColor, false, {topMargin: 2, rightMargin: 3, align: 'right'});
+      this.menuEntities[y][1] = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 119, 22+y*16, 114, 12, this.menuParamValue(this.menuItems[y].event), penColor, false, {topMargin: 2, rightMargin: 3, align: 'right'});
       this.desktopEntity.addEntity(this.menuEntities[y][1]);
       this.menuEntities[y][0] = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 23, 22+y*16, 140, 12, this.menuItems[y].label, penColor, false, {topMargin: 2, leftMargin: 3});
       this.desktopEntity.addEntity(this.menuEntities[y][0]);
@@ -101,7 +107,8 @@ export class MenuModel extends AbstractModel {
       this.desktopEntity.addEntity(this.objectsEntities[o]);
     });
 
-    this.sendEvent(330, {'id': 'changeFlashState'});
+    this.app.stack.flashState = false;
+    this.sendEvent(330, {id: 'changeFlashState'});
   } // init
 
   menuParamValue(event) {
@@ -174,32 +181,24 @@ export class MenuModel extends AbstractModel {
         this.app.setModel('TapeLoadingModel');
         return true;
 
-      case 'setSounds':
-        if (this.app.audioManager.sounds == 0) {
-          this.app.audioManager.sounds = 0.2;
-        } else {
-          this.app.audioManager.sounds = 0;
-        }
-        this.app.setCookie('audioChannelSounds', this.app.audioManager.sounds);
-        this.refreshMenu();
-        return true;
-
-      case 'setMusic':
-        if (this.app.audioManager.music == 0) {
-          this.app.audioManager.music = 0.1;
-        } else {
-          this.app.audioManager.music = 0;
-        }
-        this.app.setCookie('audioChannelMusic', this.app.audioManager.music);
-        this.refreshMenu();
-        return true;
-
       case 'setPlayerName':
         this.desktopEntity.addModalEntity(new PlayerNameEntity(this.desktopEntity, 27, 24, 202, 134, false));
       return true;
 
       case 'showHallOfFame':
         this.desktopEntity.addModalEntity(new HallOfFameEntity(this.desktopEntity, 27, 24, 202, 134));
+      return true;
+
+      case 'setSounds':
+        this.desktopEntity.addModalEntity(new VolumeEntity(this.desktopEntity, 27, 24, 202, 134, 'SOUNDS'));
+        return true;
+
+      case 'setMusic':
+        this.desktopEntity.addModalEntity(new VolumeEntity(this.desktopEntity, 27, 24, 202, 134, 'MUSIC'));
+        return true;
+
+        case 'setControls':
+        this.desktopEntity.addModalEntity(new ControlsEntity(this.desktopEntity, 27, 24, 202, 134));
       return true;
 
       case 'showAbout':
@@ -209,7 +208,7 @@ export class MenuModel extends AbstractModel {
       case 'keyPress':
         switch (event.key) {
           case 'Enter':
-            this.sendEvent(0, {'id': this.menuItems[this.selectedItem].event});
+            this.sendEvent(0, {id: this.menuItems[this.selectedItem].event});
             return true;
           case 'ArrowDown':
             this.changeMenuItem(this.selectedItem+1);
@@ -225,7 +224,7 @@ export class MenuModel extends AbstractModel {
           for (var i = 0; i < this.menuItems.length; i++) {
             if ((this.menuEntities[i][0].pointOnEntity(event)) || (this.menuEntities[i][1].pointOnEntity(event))) {
               this.changeMenuItem(i);
-              this.sendEvent(0, {'id': this.menuItems[this.selectedItem].event});
+              this.sendEvent(0, {id: this.menuItems[this.selectedItem].event});
               return true;
             }
           }
@@ -236,20 +235,20 @@ export class MenuModel extends AbstractModel {
         var willy = Object.assign(
           event.data.willy,
           {
-            'sprite': this.app.globalData.willy.sprite,
-            'paintCorrections': this.app.globalData.willy.paintCorrections,
-            'width': this.app.globalData.willy.width,
-            'height': this.app.globalData.willy.height,
-            'frames': this.app.globalData.willy.frames,
-            'directions': this.app.globalData.willy.directions
+            sprite: this.app.globalData.willy.sprite,
+            paintCorrections: this.app.globalData.willy.paintCorrections,
+            width: this.app.globalData.willy.width,
+            height: this.app.globalData.willy.height,
+            frames: this.app.globalData.willy.frames,
+            directions: this.app.globalData.willy.directions
           }
         );
-        this.setData(Object.assign(event.data, {'willy': willy}));
+        this.setData(Object.assign(event.data, {willy: willy}));
         return true;
 
       case 'changeFlashState':
         this.app.stack.flashState = !this.app.stack.flashState;
-        this.sendEvent(330, {'id': 'changeFlashState'});
+        this.sendEvent(330, {id: 'changeFlashState'});
         return true;
     }
     
@@ -273,9 +272,13 @@ export class MenuModel extends AbstractModel {
       }
     }
 
+    if (this.desktopEntity.modalEntity) {
+      this.desktopEntity.modalEntity.loopEntity(timestamp);
+    }
+
     this.drawModel();
   } // loopModel
 
-} // class MenuModel
+} // MenuModel
 
 export default MenuModel;

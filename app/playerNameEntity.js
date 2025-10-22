@@ -102,6 +102,10 @@ export class PlayerNameEntity extends AbstractEntity {
   } // init
 
   handleEvent(event) {
+    if (super.handleEvent(event)) {
+      return true;
+    }
+
     switch (event.id) { 
       case 'cancel':
         this.destroy();
@@ -121,16 +125,16 @@ export class PlayerNameEntity extends AbstractEntity {
           if (this.autoStartGame) {
             this.app.setModel('MainModel');
           } else {
-            this.sendEvent(0, 0, {'id': 'refreshMenu'});
+            this.sendEvent(0, 0, {id: 'refreshMenu'});
             this.destroy();
           }
         }
         return true;
     }
 
-    return super.handleEvent(event);
+    return false;
   } // handleEvent
 
-} // class PlayerNameEntity
+} // PlayerNameEntity
 
 export default PlayerNameEntity;

@@ -32,22 +32,24 @@ export class CaveModel extends AbstractModel {
     this.animationType = false;
     this.autorepeatKeys = false;
 
-    this.initData = {'info': [
-      0, // counter
-      0, // counter2
-      0, // counter4
-      0, // counter6
-      demo,
-      false, // crash
-      this.app.score,
-      0 // light beam touches
-    ]};
+    this.initData = {
+      info: [
+        0, // counter
+        0, // counter2
+        0, // counter4
+        0, // counter6
+        demo,
+        false, // crash
+        this.app.score,
+        0 // light beam touches
+      ]
+    };
 
     this.worker = new Worker(this.app.importPath+'/gameWorker.js?ver='+window.srcVersion);
     this.worker.onmessage = (event) => {
 
       if (this.demo && this.app.audioManager.music == 0 && event.data.gameData.info[0] == 80) {
-        this.sendEvent(1, {'id': 'newDemoCave'});
+        this.sendEvent(1, {id: 'newDemoCave'});
       }
 
       switch (event.data.id) {
@@ -73,10 +75,10 @@ export class CaveModel extends AbstractModel {
                 }
                 var maxClock = (this.airSupply-36+1)*(256/4);
                 if (ptrClock > maxClock) {
-                  this.sendEvent(1, {'id': 'crash'});
+                  this.sendEvent(1, {id: 'crash'});
                 }
                 if (event.data.gameData.info[5]) {
-                  this.sendEvent(1, {'id': 'crash'});
+                  this.sendEvent(1, {id: 'crash'});
                 }
                 this.app.airValue = 1-(ptrClock/maxClock);
                 this.gameInfoEntity.airEntity.value = this.app.airValue;
@@ -103,11 +105,11 @@ export class CaveModel extends AbstractModel {
           break;
 
         case 'playSound':
-          this.sendEvent(0, {'id': 'playSound', 'channel': event.data.channel, 'sound': event.data.sound, 'options': false});
+          this.sendEvent(0, {id: 'playSound', channel: event.data.channel, sound: event.data.sound, options: false});
           break;
 
         case 'stopAudioChannel':
-          this.sendEvent(0, {'id': 'stopAudioChannel', 'channel': event.data.channel});
+          this.sendEvent(0, {id: 'stopAudioChannel', channel: event.data.channel});
           break;
 
         case 'caveDone':
@@ -115,7 +117,7 @@ export class CaveModel extends AbstractModel {
           var maxClock = (this.airSupply-36+1)*(256/4);
           this.undisplayedScore = maxClock-ptrClock;
           this.app.score += this.undisplayedScore;
-          this.sendEvent(0, {'id': 'caveDone'});
+          this.sendEvent(0, {id: 'caveDone'});
           break;
       }
     } // onmessage
@@ -128,7 +130,7 @@ export class CaveModel extends AbstractModel {
     http.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         var data = JSON.parse(http.responseText);
-        this.responser.sendEvent(1, {'id': 'setCaveData', 'data': data});
+        this.responser.sendEvent(1, {id: 'setCaveData', data: data});
       }
     }
   } // constructor
@@ -150,16 +152,17 @@ export class CaveModel extends AbstractModel {
     this.gameInfoEntity = new GameInfoEntity(this.desktopEntity, 0, 16*8, 32*8, 8*8);
     this.desktopEntity.addEntity(this.gameInfoEntity);
 
-    this.sendEvent(330, {'id': 'changeFlashState'});
+    this.app.stack.flashState = false;
+    this.sendEvent(330, {id: 'changeFlashState'});
 
-    this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'music'});
+    this.sendEvent(250, {id: 'openAudioChannel', channel: 'music'});
     if (this.demo) {
-      this.sendEvent(500, {'id': 'playSound', 'channel': 'music', 'sound': 'inGameMelody', 'options': {'caveNumber': this.caveNumber, 'demo': true}});
+      this.sendEvent(500, {id: 'playSound', channel: 'music', sound: 'inGameMelody', options: {caveNumber: this.caveNumber, demo: true}});
     } else {
-      this.sendEvent(500, {'id': 'playSound', 'channel': 'music', 'sound': 'inGameMelody', 'options': {'repeat': true, 'caveNumber': this.caveNumber, 'demo': false}});
+      this.sendEvent(500, {id: 'playSound', channel: 'music', sound: 'inGameMelody', options: {repeat: true, caveNumber: this.caveNumber, demo: false}});
     }
-    this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'sounds'});
-    this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'extra'});
+    this.sendEvent(250, {id: 'openAudioChannel', channel: 'sounds'});
+    this.sendEvent(250, {id: 'openAudioChannel', channel: 'extra'});
   } // init
 
   shutdown() {
@@ -180,7 +183,7 @@ export class CaveModel extends AbstractModel {
       this.gameInfoEntity.liveEntities[l].setGraphicsData(data.willy);
     }
     super.setData(data);
-    this.postWorkerMessage({'id': 'init', 'initData': this.initData});
+    this.postWorkerMessage({id: 'init', initData: this.initData});
     this.app.inputEventsManager.sendEventsActiveKeys('press');
   } // setData
 
@@ -194,16 +197,16 @@ export class CaveModel extends AbstractModel {
         var willy = Object.assign(
           event.data.willy,
           {
-            'sprite': this.app.globalData.willy.sprite,
-            'paintCorrections': this.app.globalData.willy.paintCorrections,
-            'width': this.app.globalData.willy.width,
-            'height': this.app.globalData.willy.height,
-            'frames': this.app.globalData.willy.frames,
-            'directions': this.app.globalData.willy.directions,
-            'attribute': this.app.globalData.willy.attribute
+            sprite: this.app.globalData.willy.sprite,
+            paintCorrections: this.app.globalData.willy.paintCorrections,
+            width: this.app.globalData.willy.width,
+            height: this.app.globalData.willy.height,
+            frames: this.app.globalData.willy.frames,
+            directions: this.app.globalData.willy.directions,
+            attribute: this.app.globalData.willy.attribute
           }
         );
-        this.setData(Object.assign(event.data, {'willy': willy}));
+        this.setData(Object.assign(event.data, {willy: willy}));
         return true;
 
       case 'blurWindow':
@@ -223,21 +226,24 @@ export class CaveModel extends AbstractModel {
           case 'ArrowRight':
           case 'p':
           case 'P':
+          case '7':
           case 'MouseButton2':
-            this.postWorkerMessage({'id': 'controls', 'action': 'right', 'value': true});
+            this.postWorkerMessage({id: 'controls', action: 'right', value: true});
             return true;
 
           case 'ArrowLeft':
           case 'o':
           case 'O':
+          case '4':
           case 'MouseButton1':
-            this.postWorkerMessage({'id': 'controls', 'action': 'left', 'value': true});
+            this.postWorkerMessage({id: 'controls', action: 'left', value: true});
             return true;
 
           case 'ArrowUp':
           case ' ':
+          case '0':
           case 'MouseButton4':
-            this.postWorkerMessage({'id': 'controls', 'action': 'jump', 'value': true});
+            this.postWorkerMessage({id: 'controls', action: 'jump', value: true});
             return true;
         }
         break;
@@ -247,21 +253,24 @@ export class CaveModel extends AbstractModel {
           case 'ArrowRight':
           case 'p':
           case 'P':
+          case '7':
           case 'MouseButton2':
-            this.postWorkerMessage({'id': 'controls', 'action': 'right', 'value': false});
+            this.postWorkerMessage({id: 'controls', action: 'right', value: false});
             return true;
 
           case 'ArrowLeft':
           case 'o':
           case 'O':
+          case '4':
           case 'MouseButton1':
-            this.postWorkerMessage({'id': 'controls', 'action': 'left', 'value': false});
+            this.postWorkerMessage({id: 'controls', action: 'left', value: false});
             return true;
 
           case 'ArrowUp':
           case ' ':
+          case '0':
           case 'MouseButton4':
-            this.postWorkerMessage({'id': 'controls', 'action': 'jump', 'value': false});
+            this.postWorkerMessage({id: 'controls', action: 'jump', value: false});
             return true;
         }
         break;
@@ -282,17 +291,17 @@ export class CaveModel extends AbstractModel {
           this.gameAreaEntity.spriteEntities.willy[0].hide = true;
         }
         this.gameAreaEntity.spriteEntities.portal[0].frame = 0;
-        this.sendEvent(0, {'id': 'stopAllAudioChannels'});
+        this.sendEvent(0, {id: 'stopAllAudioChannels'});
         this.borderEntity.bkColor = this.app.platform.color(0);
         this.gameAreaEntity.setMonochromeColors(this.app.platform.color(15), this.app.platform.color(0));
-        this.sendEvent(0, {'id': 'playSound', 'channel': 'sounds', 'sound': 'crashSound', 'options': false});
+        this.sendEvent(0, {id: 'playSound', channel: 'sounds', sound: 'crashSound', options: false});
         this.animationTime = this.timer;
         this.animationType = 'crash';
         return true;
 
       case 'caveDone':
         if (this.animationTime == false) {
-          this.sendEvent(0, {'id': 'stopAllAudioChannels'});
+          this.sendEvent(0, {id: 'stopAllAudioChannels'});
           if (this.worker) {
             this.worker.terminate();
             this.worker = null;
@@ -303,9 +312,9 @@ export class CaveModel extends AbstractModel {
           this.gameAreaEntity.spriteEntities.portal[0].frame = 0;
           this.app.cavesCompleted++;
           if (this.app.cavesCompleted < this.app.globalData.cavesCount || this.app.caveNumber < this.app.globalData.cavesCount-1) {
-            this.sendEvent(1, {'id': 'animationCaveDone'});
+            this.sendEvent(1, {id: 'animationCaveDone'});
           } else {
-            this.sendEvent(1, {'id': 'showSwordFish'});
+            this.sendEvent(1, {id: 'showSwordFish'});
           }
         }
         break;
@@ -323,7 +332,7 @@ export class CaveModel extends AbstractModel {
           this.gameAreaEntity.addEntity(swordEntity);
           swordEntity.setGraphicsData(this.app.globalData.escape.sword);
           this.gameAreaEntity.spriteEntities.swordFish.push(swordEntity);
-          this.sendEvent(0, {'id': 'playSound', 'channel': 'sounds', 'sound': 'escapeSound', 'options': false});
+          this.sendEvent(0, {id: 'playSound', channel: 'sounds', sound: 'escapeSound', options: false});
         break;
 
       case 'animationCaveDone':
@@ -333,7 +342,7 @@ export class CaveModel extends AbstractModel {
         break;
 
       case 'animationDemoCaveDone':
-        this.sendEvent(0, {'id': 'stopAllAudioChannels'});
+        this.sendEvent(0, {id: 'stopAllAudioChannels'});
         if (this.worker) {
           this.worker.terminate();
           this.worker = null;
@@ -347,7 +356,7 @@ export class CaveModel extends AbstractModel {
         this.animationTime = this.timer;
         this.animationType = 'airSupply';
         var remainingAirSupply = 36+Math.round(this.undisplayedScore/(256/4));
-        this.sendEvent(0, {'id': 'playSound', 'channel': 'sounds', 'sound': 'airSupplySound', 'options': {'remainingAirSupply': remainingAirSupply}});
+        this.sendEvent(0, {id: 'playSound', channel: 'sounds', sound: 'airSupplySound', options: {remainingAirSupply: remainingAirSupply}});
         break;
 
       case 'durationAirSupplySound':
@@ -375,7 +384,7 @@ export class CaveModel extends AbstractModel {
       case 'changeFlashState':
         this.app.stack.flashState = !this.app.stack.flashState;
         if (this.animationTime === false) {
-          this.sendEvent(330, {'id': 'changeFlashState'});
+          this.sendEvent(330, {id: 'changeFlashState'});
         } else {
           this.app.stack.flashState = false;
         }
@@ -433,9 +442,9 @@ export class CaveModel extends AbstractModel {
           if (animTime > 500) {
             this.borderEntity.bkColor = this.app.platform.colorByName('black');
             if (this.animationType == 'caveDone') {
-              this.sendEvent(1, {'id': 'changeRemainingAirSupplyToScore'});
+              this.sendEvent(1, {id: 'changeRemainingAirSupplyToScore'});
             } else {
-              this.sendEvent(1, {'id': 'newDemoCave'});
+              this.sendEvent(1, {id: 'newDemoCave'});
             }
             this.animationTime = false;
             this.animationType = false;
@@ -454,7 +463,7 @@ export class CaveModel extends AbstractModel {
           }
           this.gameInfoEntity.scoreEntity.setText(tmpScore.toString().padStart(6, '0'));
           if (this.durationAirSupplySound && animTime > this.durationAirSupplySound) {
-            this.sendEvent(1, {'id': 'newCave'});
+            this.sendEvent(1, {id: 'newCave'});
           }
           break;
 
@@ -464,6 +473,6 @@ export class CaveModel extends AbstractModel {
     this.drawModel();
   } // loopModel
 
-} // class CaveModel
+} // CaveModel
 
 export default CaveModel;

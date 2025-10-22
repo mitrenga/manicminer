@@ -28,7 +28,7 @@ export class GameAreaEntity extends AbstractEntity {
     this.staticKinds = ['floor', 'wall', 'nasty', 'extra'];
     this.backgroundKinds = ['floor', 'wall', 'nasty', 'conveyor', 'extra'];
 
-    this.spriteEntities = {'crumblingFloors': [], 'conveyors': [], 'guardians': [], 'items': [], 'willy': [], "barriers": [], "switches":[], "portal": [], "lightBeam": [], 'swordFish': []};
+    this.spriteEntities = {crumblingFloors: [], conveyors: [], guardians: [], items: [], willy: [], barriers: [], switches:[], portal: [], lightBeam: [], swordFish: []};
   } // constructor
 
   drawEntity() {
@@ -163,13 +163,13 @@ export class GameAreaEntity extends AbstractEntity {
       var entity = new AbstractEntity(this, data.lightBeam.init.x, data.lightBeam.init.y, data.lightBeam.init.width, data.lightBeam.init.height, penColor, bkColor);
       this.addEntity(entity);
       this.spriteEntities.lightBeam.push(entity);
-      this.initData.lightBeam.push({'x': data.lightBeam.init.x, 'y': data.lightBeam.init.y, 'width': data.lightBeam.init.width, 'height': data.lightBeam.init.height});
+      this.initData.lightBeam.push({x: data.lightBeam.init.x, y: data.lightBeam.init.y, width: data.lightBeam.init.width, height: data.lightBeam.init.height});
       for (var l = 0; l < 14; l++) {
         var entity = new AbstractEntity(this, 0, 0, 0, 0, penColor, bkColor);
         entity.hide = true;
         this.addEntity(entity);
         this.spriteEntities.lightBeam.push(entity);
-        this.initData.lightBeam.push({'hide': true, 'x': 0, 'y': 0, 'width': 0, 'height': 0});
+        this.initData.lightBeam.push({hide: true, x: 0, y: 0, width: 0, height: 0});
       }
     }
 
@@ -182,15 +182,15 @@ export class GameAreaEntity extends AbstractEntity {
       entity.setGraphicsData(data.willy);
       this.spriteEntities.willy.push(entity);
       this.initData.willy.push({
-        'x': data.willy.init.x,
-        'y': data.willy.init.y,
-        'width': data.willy.width,
-        'height': data.willy.height,
-        'paintCorrectionsX': data.willy.paintCorrections.x,
-        'paintCorrectionsY': data.willy.paintCorrections.y,
-        'frame': data.willy.init.frame,
-        'frames': data.willy.init.frames,
-        'direction': data.willy.init.direction
+        x: data.willy.init.x,
+        y: data.willy.init.y,
+        width: data.willy.width,
+        height: data.willy.height,
+        paintCorrectionsX: data.willy.paintCorrections.x,
+        paintCorrectionsY: data.willy.paintCorrections.y,
+        frame: data.willy.init.frame,
+        frames: data.willy.init.frames,
+        direction: data.willy.init.direction
       });
     }
 
@@ -218,7 +218,7 @@ export class GameAreaEntity extends AbstractEntity {
           var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
           switch (data.graphicData[attr].kind) {
             case 'floor':
-              this.initData.floors.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
+              this.initData.floors.push({x: column*8, y: r*8, width: 8, height: 8});
               break;
             case 'crumblingFloor':
               var entity = new SpriteEntity(this, column*8, r*8, penColor, false, 0, 0);
@@ -229,23 +229,23 @@ export class GameAreaEntity extends AbstractEntity {
               }
               this.addEntity(entity);
               this.spriteEntities.crumblingFloors.push(entity);
-              this.initData.crumblingFloors.push({'crumbling': true, 'hide': false, 'x': column*8, 'y': r*8, 'width': 8, 'height': 8, 'frame': 0, 'direction': 0});
+              this.initData.crumblingFloors.push({crumbling: true, hide: false, x: column*8, y: r*8, width: 8, height: 8, frame: 0, direction: 0});
               break;
             case 'wall':
-              this.initData.walls.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
+              this.initData.walls.push({x: column*8, y: r*8, width: 8, height: 8});
               break;
             case 'conveyor':
               if (conveyorData === false) {
-                conveyorData = {'attr': attr, 'x': column, 'y': r, 'length': 1};
+                conveyorData = {attr: attr, x: column, y: r, length: 1};
               } else {
                 conveyorData.length++;
               }
               break;
             case 'nasty':
-              this.initData.nasties.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
+              this.initData.nasties.push({x: column*8, y: r*8, width: 8, height: 8});
               break;
             case 'extra':
-              this.initData.extra.push({'x': column*8, 'y': r*8, 'width': 8, 'height': 8});
+              this.initData.extra.push({x: column*8, y: r*8, width: 8, height: 8});
               break;
           }
         }
@@ -276,13 +276,13 @@ export class GameAreaEntity extends AbstractEntity {
       this.addEntity(entity);
       this.spriteEntities.conveyors.push(entity);
       this.initData.conveyors.push({
-        'x': conveyorData.x*8,
-        'y': conveyorData.y*8,
-        'width': conveyorData.length*8,
-        'height': 8,
-        'frame': 0,
-        'direction': 0,
-        'moving': data.graphicData[conveyorData.attr].moving
+        x: conveyorData.x*8,
+        y: conveyorData.y*8,
+        width: conveyorData.length*8,
+        height: 8,
+        frame: 0,
+        direction: 0,
+        moving: data.graphicData[conveyorData.attr].moving
       });
     }
 
@@ -310,7 +310,7 @@ export class GameAreaEntity extends AbstractEntity {
       entity.cloneSprite(0);
       entity.cloneSprite(0);
       this.spriteEntities.items.push(entity);
-      this.initData.items.push({'hide': false, 'x': item.x*8, 'y': item.y*8, 'width': 8, 'height': 8, 'frame': 0, 'direction': 0});
+      this.initData.items.push({hide: false, x: item.x*8, y: item.y*8, width: 8, height: 8, frame: 0, direction: 0});
       itemColor = this.app.rotateInc(itemColor, 3, 6);
     });
 
@@ -326,17 +326,17 @@ export class GameAreaEntity extends AbstractEntity {
           this.addEntity(entity);
           this.spriteEntities.guardians.push(entity);
           var guardianInitData = {
-            'type': guardianType,
-            'speed': guardian.speed,
-            'x': guardian.init.x,
-            'y': guardian.init.y,
-            'width': guardianTypeData.width,
-            'height': guardianTypeData.height,
-            'paintCorrectionsX': guardianTypeData.paintCorrections.x,
-            'paintCorrectionsY': guardianTypeData.paintCorrections.y,
-            'frame': guardian.init.frame,
-            'frames': guardianTypeData.frames,
-            'direction': guardian.init.direction
+            type: guardianType,
+            speed: guardian.speed,
+            x: guardian.init.x,
+            y: guardian.init.y,
+            width: guardianTypeData.width,
+            height: guardianTypeData.height,
+            paintCorrectionsX: guardianTypeData.paintCorrections.x,
+            paintCorrectionsY: guardianTypeData.paintCorrections.y,
+            frame: guardian.init.frame,
+            frames: guardianTypeData.frames,
+            direction: guardian.init.direction
           };
           switch (guardianType) {
             case 'horizontal':
@@ -373,15 +373,15 @@ export class GameAreaEntity extends AbstractEntity {
         entity.setGraphicsData(barrier);
         this.spriteEntities.barriers.push(entity);
         this.initData.barriers.push({
-          'x': barrier.x*8,
-          'y': barrier.y*8,
-          'width': barrier.width,
-          'height': barrier.height,
-          'frame': 0,
-          'direction': 0,
-          'frames': barrier.frames,
-          'directions': barrier.directions,
-          'actions': barrier.actions
+          x: barrier.x*8,
+          y: barrier.y*8,
+          width: barrier.width,
+          height: barrier.height,
+          frame: 0,
+          direction: 0,
+          frames: barrier.frames,
+          directions: barrier.directions,
+          actions: barrier.actions
         });
       });
     }
@@ -397,15 +397,15 @@ export class GameAreaEntity extends AbstractEntity {
         entity.setGraphicsData(data.switches);
         this.spriteEntities.switches.push(entity);
         this.initData.switches.push({
-          'x': swtch.x*8,
-          'y': swtch.y*8,
-          'width': 8,
-          'height': 8,
-          'frame': 0,
-          'direction': 0,
-          'frames': data.switches.frames,
-          'directions': data.switches.directions,
-          'actions': swtch.actions
+          x: swtch.x*8,
+          y: swtch.y*8,
+          width: 8,
+          height: 8,
+          frame: 0,
+          direction: 0,
+          frames: data.switches.frames,
+          directions: data.switches.directions,
+          actions: swtch.actions
         });
       });
     }
@@ -421,13 +421,13 @@ export class GameAreaEntity extends AbstractEntity {
     entity.cloneSprite(0);
     this.spriteEntities.portal.push(entity);
     var portalInitData = {
-      'x': data.portal.x*8,
-      'y': data.portal.y*8,
-      'width': 16,
-      'height': 16,
-      'frame': 0,
-      'direction': 0,
-      'flashShiftFrames': 0
+      x: data.portal.x*8,
+      y: data.portal.y*8,
+      width: 16,
+      height: 16,
+      frame: 0,
+      direction: 0,
+      flashShiftFrames: 0
     };
     if ('actions' in data.portal) {
       portalInitData.actions = data.portal.actions;
@@ -525,6 +525,6 @@ export class GameAreaEntity extends AbstractEntity {
     });
   } // setMonochromeColors
 
-} // class GameAreaEntity
+} // GameAreaEntity
 
 export default GameAreaEntity;

@@ -4,7 +4,7 @@ const { AudioManager } = await import('./audioManager.js?ver='+window.srcVersion
 const { ZXFonts8x8 } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxFonts8x8.js?ver='+window.srcVersion);
 const { Fonts5x5 } = await import('./svision/js/platform/canvas2D/fonts5x5.js?ver='+window.srcVersion);
 const { Fonts3x3 } = await import('./svision/js/platform/canvas2D/fonts3x3.js?ver='+window.srcVersion);
-const { ResetModel } = await import('./resetModel.js?ver='+window.srcVersion);
+const { ZXResetModel } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxResetModel.js?ver='+window.srcVersion);
 const { MenuModel } = await import('./menuModel.js?ver='+window.srcVersion);
 const { MainModel } = await import('./mainModel.js?ver='+window.srcVersion);
 const { CaveModel } = await import('./caveModel.js?ver='+window.srcVersion);
@@ -16,7 +16,7 @@ import AudioManager from './audioManager.js';
 import ZXFonts8x8 from './svision/js/platform/canvas2D/zxSpectrum/zxFonts8x8.js';
 import Fonts5x5 from './svision/js/platform/canvas2D/fonts5x5.js';
 import Fonts3x3 from './svision/js/platform/canvas2D/fonts3x3.js';
-import ResetModel from './resetModel.js';
+import ZXResetModel from './svision/js/platform/canvas2D/zxSpectrum/zxResetModel.js';
 import MenuModel from './menuModel.js';
 import MainModel from './mainModel.js';
 import CaveModel from './caveModel.js';
@@ -40,6 +40,29 @@ export class GameApp extends AbstractApp {
     this.fonts.fonts5x5 = new Fonts5x5(this);
     this.fonts.fonts3x3 = new Fonts3x3(this);
 
+    this.controls = {
+      keyboard: {
+        left: 'ArrowLeft',
+        right: 'ArrowRight',
+        jump: 'ArrowUp',
+        music: 'M',
+        sounds: 'S'
+      },
+      mouse: {
+        enable: false,
+        left: 'B0',
+        right: 'B1',
+        jump: 'B2'
+      },
+      gamepad: {
+        supported: false,
+      },
+      touchscreen: {
+        supported: false,
+        type: 'jump-left-right'
+      }
+    }
+
     this.caveNumber = false;
     this.caveName = '';
     this.cavesCompleted = 0;
@@ -51,7 +74,7 @@ export class GameApp extends AbstractApp {
     this.lastBonusScore = 0;
     this.playerName = this.getCookie('playerName', '');
     this.globalData = false;
-    this.setModel('ResetModel');
+    this.setModel('LoadingModel');
   } // constructor
 
   setModel(model) {
@@ -61,8 +84,8 @@ export class GameApp extends AbstractApp {
       needResizeApp = true;
     }
     switch (model) {
-      case 'ResetModel':
-        this.model = new ResetModel(this);
+      case 'LoadingModel':
+        this.model = new ZXResetModel(this);
         break;
       case 'MenuModel':
         this.model = new MenuModel(this);
@@ -104,6 +127,6 @@ export class GameApp extends AbstractApp {
     this.globalData = data;
   } // setGlobalData
 
-} // class GameApp
+} // GameApp
 
 export default GameApp;

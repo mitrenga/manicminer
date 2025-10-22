@@ -19,6 +19,6 @@ export class AirEntity extends AbstractEntity {
     this.app.layout.paint(this, 0, 2, Math.round(this.width*this.value), 4, this.app.platform.colorByName('brightWhite'));
   } // drawEntity
 
-} // class AirEntity
+} // AirEntity
 
 export default AirEntity;

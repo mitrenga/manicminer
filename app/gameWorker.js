@@ -10,7 +10,7 @@ var counter2 = 0;
 var counter4 = 0;
 var counter6 = 0;
 var gameData = null;
-var controls = {'left': false, 'right': false, 'jump': false};
+var controls = {left: false, right: false, jump: false};
 var jumpCounter = 0;
 var jumpDirection = 0;
 var jumpMap = [-4, -4, -3, -3, -2, -2, -1, -1, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4];
@@ -68,7 +68,7 @@ function gameLoop() {
       }
     }
   
-    postMessage({'id': 'update', 'gameData': gameData});
+    postMessage({id: 'update', gameData: gameData});
   }
 } // gameLoop
 
@@ -140,7 +140,7 @@ function willy() {
         mustMovingDirection = canMovingDirection;
       }
       fallingDirection = 0;
-      postMessage({'id': 'stopAudioChannel', 'channel': 'sounds'});
+      postMessage({id: 'stopAudioChannel', channel: 'sounds'});
     } else {
       willy.y += 4;
       fallingCounter++;
@@ -149,7 +149,7 @@ function willy() {
     if (!jumpCounter && !standingOn.length) {
       fallingCounter = 1;
       fallingDirection = 0;
-      postMessage({'id': 'playSound', 'channel': 'sounds', 'sound': 'fallingSound'});
+      postMessage({id: 'playSound', channel: 'sounds', sound: 'fallingSound'});
     }
   }
 
@@ -160,7 +160,7 @@ function willy() {
         mustMovingDirection = canMovingDirection;
       }
       jumpDirection = 0;
-      postMessage({'id': 'stopAudioChannel', 'channel': 'sounds'});
+      postMessage({id: 'stopAudioChannel', channel: 'sounds'});
     }
   }
 
@@ -173,7 +173,7 @@ function willy() {
       jumpDirection = 0;
       fallingCounter = 1;
       fallingDirection = 0;
-      postMessage({'id': 'playSound', 'channel': 'sounds', 'sound': 'fallingSound'});
+      postMessage({id: 'playSound', channel: 'sounds', sound: 'fallingSound'});
     }
   }
 
@@ -231,7 +231,7 @@ function willy() {
     if (canMove(0, jumpMap[jumpCounter])) {
       jumpCounter = 1;
       willy.y += jumpMap[jumpCounter-1]; 
-      postMessage({'id': 'playSound', 'channel': 'sounds', 'sound': 'jumpSound'});
+      postMessage({id: 'playSound', channel: 'sounds', sound: 'jumpSound'});
     }
   }
 
@@ -431,7 +431,7 @@ function guardians() {
 
 function lightBeam() {
   if ('lightBeam' in gameData) {
-    var lbData = {'x': 0, 'y': 0, 'cancel': false, 'touch': false};
+    var lbData = {x: 0, y: 0, cancel: false, touch: false};
     var part = -1;
     lbData.cancelLight = false;
     while (!lbData.cancelLight) {
@@ -592,7 +592,7 @@ function checkTouchItems() {
         });
       }
     }
-    postMessage({'id': 'playSound', 'channel': 'extra', 'sound': 'itemSound'});
+    postMessage({id: 'playSound', channel: 'extra', sound: 'itemSound'});
   }
 } // checkTouchItems
 
@@ -608,7 +608,7 @@ function checkTouchPortal() {
     var willy = gameData.willy[0];
     var portal = gameData.portal[0];
     if (!(willy.x+willy.width <= portal.x+8 || willy.y+willy.height <= portal.y+8 || willy.x >= portal.x+portal.width-8 || willy.y >= portal.y+portal.height-8)) {
-      postMessage({'id': 'caveDone', 'gameData': gameData});
+      postMessage({id: 'caveDone', gameData: gameData});
     }
   }
 } // checkTouchPortal
@@ -637,7 +637,7 @@ function checkTouchSwitches() {
             bonus += action.value;
             break;
           case 'playSound':
-            postMessage({'id': 'playSound', 'channel': action.channel, 'sound': action.sound, 'options': action.options});
+            postMessage({id: 'playSound', channel: action.channel, sound: action.sound, options: action.options});
             break;
         }
       });

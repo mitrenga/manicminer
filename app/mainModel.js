@@ -2,7 +2,7 @@
 const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+window.srcVersion);
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
 const { MainImageEntity } = await import('./mainImageEntity.js?ver='+window.srcVersion);
-const { BannerTextEntity } = await import('./bannerTextEntity.js?ver='+window.srcVersion);
+const { SlidingTextEntity } = await import('./svision/js/platform/canvas2D/slidingTextEntity.js?ver='+window.srcVersion);
 const { AirEntity } = await import('./airEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcVersion);
@@ -10,7 +10,7 @@ const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcV
 import AbstractModel from './svision/js/abstractModel.js';
 import AbstractEntity from './svision/js/abstractEntity.js';
 import MainImageEntity from './mainImageEntity.js';
-import BannerTextEntity from './bannerTextEntity.js';
+import SlidingTextEntity from './svision/js/platform/canvas2D/slidingTextEntity.js';
 import AirEntity from './airEntity.js';
 import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
 import PauseGameEntity from './pauseGameEntity.js';
@@ -28,9 +28,23 @@ export class MainModel extends AbstractModel {
     this.pianoKey2Entity = null;
     this.airEntity = null;
     this.blackBox = null;
-    this.bannerTxt = '                                     MANIC MINER      writen by Matthew Smith      © 1983 SOFTWARE PROJECTS Ltd.      Guide Miner Willy through 20 lethal caverns.      Bonus Life for each 10.000 points.      M = Music (On/Off)      S = Sounds (On/Off)      ESC = Pause menu                                     ';
-    this.bannerLength = 1900;
-    this.bannerEntity = null;
+    this.slidingText = 
+      'MANIC MINER' +
+      '      ' +
+      'writen by Matthew Smith' +
+      '      ' +
+      '© 1983 SOFTWARE PROJECTS Ltd.' +
+      '      ' +
+      'Guide Miner Willy through 20 lethal caverns.' +
+      '      ' +
+      'Bonus Life for each 10.000 points.' +
+      '      ' +
+      'M = Music (On/Off)' +
+      '      ' +
+      'S = Sounds (On/Off)' +
+      '      ' +
+      'ESC = Pause menu';
+    this.slidingTextEntity = null;
     this.willyEntity = null;
   } // constructor
 
@@ -57,13 +71,13 @@ export class MainModel extends AbstractModel {
     
     this.blackBox = new AbstractEntity(this.desktopEntity, 0, 18*8, 32*8, 6*8, false, this.app.platform.colorByName('black'));
     this.desktopEntity.addEntity(this.blackBox);
-    this.bannerEntity = new BannerTextEntity(this.blackBox, this.app.fonts.zxFonts8x8, 0, 8, 32*8, 8, this.bannerTxt, this.app.platform.colorByName('yellow'), false, this.bannerLength);
-    this.blackBox.addEntity(this.bannerEntity);
+    this.slidingTextEntity = new SlidingTextEntity(this.blackBox, this.app.fonts.zxFonts8x8, 0, 8, 32*8, 8, this.slidingText, this.app.platform.colorByName('yellow'), false, {animation: 'toLeft', speed: 15, leftMargin: 256, rightMargin: 256});
+    this.blackBox.addEntity(this.slidingTextEntity);
 
-    this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'music'});
-    this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'sounds'});
-    this.sendEvent(250, {'id': 'openAudioChannel', 'channel': 'extra'});
-    this.sendEvent(500, {'id': 'playSound', 'channel': 'music', 'sound': 'titleScreenMelody', 'options': false});
+    this.sendEvent(250, {id: 'openAudioChannel', channel: 'music'});
+    this.sendEvent(250, {id: 'openAudioChannel', channel: 'sounds'});
+    this.sendEvent(250, {id: 'openAudioChannel', channel: 'extra'});
+    this.sendEvent(500, {id: 'playSound', channel: 'music', sound: 'titleScreenMelody', options: false});
   } // init
   
   handleEvent(event) {
@@ -124,25 +138,23 @@ export class MainModel extends AbstractModel {
 
     if (this.timer == false) {
       this.timer = timestamp;
-    } else {
-      if (timestamp-this.timer > 30000) {
-        this.bannerEntity.bannerPosition = 0;
-        this.sendEvent(1, {'id': 'newDemoCave'});
-      } else {
-        this.bannerEntity.bannerPosition = Math.round(this.bannerLength*(timestamp-this.timer)/30000);
-        this.airEntity.value = (timestamp-this.timer)/30000;
-      }
-      
-      var steps = Math.round((timestamp-this.timer)/80);
-      var direction = Math.round(steps%20/20);
-      var position = Math.abs((10*direction)-steps%10);
-      this.willyEntity.frame = steps%4+direction*4;
-      this.willyEntity.x = 28*8+position*2;
+    } 
+
+    this.slidingTextEntity.loopEntity(timestamp);
+    this.airEntity.value = this.slidingTextEntity.animationProgress;
+    if (this.slidingTextEntity.animationProgress == 1) {
+      this.sendEvent(1, {id: 'newDemoCave'});
     }
+    
+    var steps = Math.round((timestamp-this.timer)/80);
+    var direction = Math.round(steps%20/20);
+    var position = Math.abs((10*direction)-steps%10);
+    this.willyEntity.frame = steps%4+direction*4;
+    this.willyEntity.x = 28*8+position*2;
     
     this.drawModel();
   } // loopModel
 
-} // class MainModel
+} // MainModel
 
 export default MainModel;

@@ -44,12 +44,16 @@ export class PauseGameEntity extends AbstractEntity {
   } // init
 
   handleEvent(event) {
+    if (super.handleEvent(event)) {
+      return true;
+    }
+
     switch (event.id) {
 
       case 'keyPress':
         switch (event.key) {
           case 'Enter':
-            this.sendEvent(0, 0, {'id': this.buttonsEntities[this.selectedButton].eventID});
+            this.sendEvent(0, 0, {id: this.buttonsEntities[this.selectedButton].eventID});
             return true;
           case 'ArrowDown':
             if (this.selectedButton < this.buttonsEntities.length-1) {
@@ -77,9 +81,9 @@ export class PauseGameEntity extends AbstractEntity {
         return true;
     }
 
-    return super.handleEvent(event);
+    return false;
   } // handleEvent
 
-} // class PauseGameEntity
+} // PauseGameEntity
 
 export default PauseGameEntity;

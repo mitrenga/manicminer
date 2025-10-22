@@ -137,7 +137,7 @@ export class AudioManager extends AbstractAudioManager {
       var c = tone[0]*260;
       var d = tone[1];
       var e = tone[2];
-      events[pulsesCounter] = {'id': 'pianoKey', 'k1': d, 'k2': e};      
+      events[pulsesCounter] = {id: 'pianoKey', k1: d, k2: e};      
       a = 1-a;
       if (pulsesCounter == pulses.length) {
         pulses = this.extendArray(pulses, 5000);
@@ -171,8 +171,8 @@ export class AudioManager extends AbstractAudioManager {
       } while (c > 0)
     }
     pulses = this.resizeArray(pulses, pulsesCounter);
-    events[pulsesCounter] = {'id': 'melodyEnd'};
-    return {'fragments': fragments, 'pulses': pulses, 'volume': this.music, 'events': events};
+    events[pulsesCounter] = {id: 'melodyEnd'};
+    return {fragments: fragments, pulses: pulses, volume: this.music, events: events};
   } // titleScreenMelody
 
   inGameMelody(sampleRate, caveNumber, demo) {
@@ -237,9 +237,9 @@ export class AudioManager extends AbstractAudioManager {
     }
     pulses = this.resizeArray(pulses, pulsesCounter);
     if (demo) {
-      events[pulsesCounter] = {'id': 'animationDemoCaveDone'};
+      events[pulsesCounter] = {id: 'animationDemoCaveDone'};
     }
-    return {'fragments': fragments, 'pulses': pulses, 'volume': this.music, 'events': events};
+    return {fragments: fragments, pulses: pulses, volume: this.music, events: events};
   } // inGameMelody
 
   jumpSound(sampleRate) {
@@ -292,7 +292,7 @@ export class AudioManager extends AbstractAudioManager {
     }
 
     pulses = this.resizeArray(pulses, pulsesCounter);
-    this.audioDataCache.sounds.jumpSound = {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
+    this.audioDataCache.sounds.jumpSound = {fragments: fragments, pulses: pulses, volume: this.sounds};
     return this.audioDataCache.sounds.jumpSound;
   } // jumpSound
 
@@ -327,7 +327,7 @@ export class AudioManager extends AbstractAudioManager {
     }
 
     pulses = this.resizeArray(pulses, pulsesCounter);
-    this.audioDataCache.sounds.fallingSound = {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
+    this.audioDataCache.sounds.fallingSound = {fragments: fragments, pulses: pulses, volume: this.sounds};
     return this.audioDataCache.sounds.fallingSound;
   } // fallingSound
 
@@ -371,7 +371,7 @@ export class AudioManager extends AbstractAudioManager {
     }
 
     pulses = this.resizeArray(pulses, pulsesCounter);
-    return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds*1.5};
+    return {fragments: fragments, pulses: pulses, volume: this.sounds*1.5};
   } // crashSound
 
   itemSound(sampleRate) {
@@ -395,7 +395,7 @@ export class AudioManager extends AbstractAudioManager {
     } while (c > 0);
 
     pulses = this.resizeArray(pulses, pulsesCounter);
-    this.audioDataCache.extra.itemSound = {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
+    this.audioDataCache.extra.itemSound = {fragments: fragments, pulses: pulses, volume: this.sounds};
     return this.audioDataCache.extra.itemSound;
   } // itemSound
 
@@ -425,7 +425,7 @@ export class AudioManager extends AbstractAudioManager {
     }
 
     pulses = this.resizeArray(pulses, pulsesCounter);
-    return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
+    return {fragments: fragments, pulses: pulses, volume: this.sounds};
   } // fallingKongSound
 
   escapeSound(sampleRate) {
@@ -457,10 +457,10 @@ export class AudioManager extends AbstractAudioManager {
     } while (d > 0)
 
     var events = {};
-    events[pulsesCounter] = {'id': 'animationCaveDone'};
+    events[pulsesCounter] = {id: 'animationCaveDone'};
 
     pulses = this.resizeArray(pulses, pulsesCounter);
-    return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds, 'events': events};
+    return {fragments: fragments, pulses: pulses, volume: this.sounds, events: events};
   } // escapeSound
 
   airSupplySound(sampleRate, remainingAirSupply) {
@@ -524,9 +524,9 @@ export class AudioManager extends AbstractAudioManager {
     pulses = this.resizeArray(pulses, pulsesCounter);
 
     var events = {};
-    events[0] = {'id': 'durationAirSupplySound', 'value': Math.ceil(snapshots/sampleRate*1000)};
+    events[0] = {id: 'durationAirSupplySound', value: Math.ceil(snapshots/sampleRate*1000)};
 
-    return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds, 'events': events};
+    return {fragments: fragments, pulses: pulses, volume: this.sounds, events: events};
   } // airSupplySound
 
   gameOverSound(sampleRate) {
@@ -559,7 +559,7 @@ export class AudioManager extends AbstractAudioManager {
     }
 
     pulses = this.resizeArray(pulses, pulsesCounter);
-    return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
+    return {fragments: fragments, pulses: pulses, volume: this.sounds};
   } // gameOverSound
 
   tapePilotToneSound(sampleRate) {
@@ -568,7 +568,7 @@ export class AudioManager extends AbstractAudioManager {
     var pulse = Math.ceil(sampleRate*2168/3500000);
     var fragments = [pulse];
     var pulses = [0];
-    return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
+    return {fragments: fragments, pulses: pulses, volume: this.sounds};
   } // tapePilotToneSound
 
   tapeRndDataSound(sampleRate) {
@@ -581,7 +581,7 @@ export class AudioManager extends AbstractAudioManager {
 
     var fragments = [f667, f735, f885, f1710];
     var pulses = [0, 0, 1, 1];
-    return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds, 'infinityRndPulses': {'fragments': [2, 3], 'quantity': 2}};
+    return {fragments: fragments, pulses: pulses, volume: this.sounds, infinityRndPulses: {fragments: [2, 3], quantity: 2}};
   } // tapeRndDataSound
 
   tapeScreenAttrSound(sampleRate) {
@@ -624,16 +624,16 @@ export class AudioManager extends AbstractAudioManager {
       }
     }
 
-    return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
+    return {fragments: fragments, pulses: pulses, volume: this.sounds};
   } // tapeScreenAttrSound
 
   keyboardSound(sampleRate) {
     var pulse = Math.ceil(15*sampleRate/44100);
     var fragments = [pulse];
     var pulses = [0];
-    return {'fragments': fragments, 'pulses': pulses, 'volume': this.sounds};
+    return {fragments: fragments, pulses: pulses, volume: this.sounds};
   } // keyboardSound
 
-} // class AudioManager
+} // AudioManager
 
 export default AudioManager;

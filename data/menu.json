@@ -84,7 +84,7 @@
       ]
    },
    "floor":{
-      "width":12,
+      "width":230,
       "height":2,
       "frames": 3,
       "directions": 1,

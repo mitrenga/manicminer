@@ -34,15 +34,17 @@ export class AboutEntity extends AbstractEntity {
   } // init
 
   handleEvent(event) {
+    if (super.handleEvent(event)) {
+      return true;
+    }
     switch (event.id) {
       case 'closeAbout':
         this.destroy();
         return true;
     }
-
-    return super.handleEvent(event);
+    return false;
   } // handleEvent
 
-} // class AboutEntity
+} // AboutEntity
 
 export default AboutEntity;

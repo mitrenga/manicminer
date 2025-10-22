@@ -15,8 +15,8 @@ export class BorderEntity  extends AbstractEntity {
     this.animation = false;
     this.stripes = [];
     this.style = {
-      'pilotTone': {'colors': ['cyan', 'red'], 'stripeHeight': 10},
-      'dataTone': {'colors': ['blue', 'yellow'], 'stripeHeight': 3}
+      pilotTone: {colors: ['cyan', 'red'], stripeHeight: 10},
+      dataTone: {colors: ['blue', 'yellow'], stripeHeight: 3}
     };
 
   } // constructor
@@ -43,7 +43,7 @@ export class BorderEntity  extends AbstractEntity {
         if (y+stripeHeight+extraStripe > this.height) {
           stripeHeight = this.height-y-extraStripe;
         }
-        this.stripes.push({'y': y, 'height': stripeHeight+extraStripe, 'color': this.app.platform.colorByName(this.style[this.animation].colors[color])});
+        this.stripes.push({y: y, height: stripeHeight+extraStripe, color: this.app.platform.colorByName(this.style[this.animation].colors[color])});
         y += stripeHeight+extraStripe;
         color = 1-color;
       }
@@ -55,25 +55,27 @@ export class BorderEntity  extends AbstractEntity {
   } // drawEntity
 
   handleEvent(event) {
+    if (super.handleEvent(event)) {
+      return true;
+    }
     switch (event.id) {
       case 'setBorderAnimation':
         this.animation = event.value;
         if (this.animation === 'pilotTone') {
-          this.sendEvent(0, 50, {'id': 'moveStripes'});
+          this.sendEvent(0, 50, {id: 'moveStripes'});
         }
         return true;
       case 'moveStripes':
         this.stripes = [];
         this.diff = this.app.rotateInc(this.diff, 0, 19);
         if (this.animation !== false) {
-          this.sendEvent(0, 50, {'id': 'moveStripes'});
+          this.sendEvent(0, 50, {id: 'moveStripes'});
         }
         return true;
     }
-
-    return super.handleEvent(event);
+    return false;
   } // handleEvent
 
-} // class BorderEntity
+} // BorderEntity
 
 export default BorderEntity;

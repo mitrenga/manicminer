@@ -55,12 +55,15 @@ export class SignboardEntity extends AbstractEntity {
   } // constructor
 
   handleEvent(event) {
+    if (super.handleEvent(event)) {
+      return true;
+    }
     switch (event.id) {
       case 'changeFlashState':
         this.animateState = {false: 0, true: 1}[this.app.stack.flashState];
         break;
     }
-    return super.handleEvent(event);
+    return false;
   } // handleEvent
 
   getCharData(char) {
@@ -141,6 +144,6 @@ export class SignboardEntity extends AbstractEntity {
 
   } // drawEntity
 
-} // class SignboardEntity
+} // SignboardEntity
 
 export default SignboardEntity;
