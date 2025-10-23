@@ -29,9 +29,9 @@ export class VolumeEntity extends AbstractEntity {
 
     this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 0, 22, this.width, 9, 'CHANGE VOLUME FOR GAME '+this.channel.toUpperCase(), this.app.platform.colorByName('black'), false, {align: 'center'}));
 
-    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, 2, 36, 19, 13, 'OFF', '', [], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('green'), {topMargin: 4, leftMargin: 2}));
+    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, 3, 36, 19, 13, 'OFF', '', [], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('green'), {topMargin: 4, leftMargin: 2}));
     this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, 91, 36, 19, 13, '50%', '', [], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('green'), {topMargin: 4, leftMargin: 2}));
-    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, 179, 36, 21, 13, 'MAX', '', [], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('green'), {topMargin: 4, leftMargin: 2}));
+    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, 178, 36, 21, 13, 'MAX', '', [], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('green'), {topMargin: 4, leftMargin: 2}));
 
     var sliderEntity = new SpriteEntity(this, 10, 55, this.app.platform.colorByName('black'), false, 0, 0);
     sliderEntity.setCompressedGraphicsData(
@@ -40,16 +40,16 @@ export class VolumeEntity extends AbstractEntity {
     );
     this.addEntity(sliderEntity);
 
-    var cursorEntity = new SpriteEntity(this, 8+5*18, 52, this.app.platform.colorByName('black'), false, 0, 0);
+    var cursorEntity = new SpriteEntity(this, 8+5*18, 51, this.app.platform.colorByName('brightRed'), false, 0, 0);
     cursorEntity.setCompressedGraphicsData(
-      'hR20005000D02010303012D0103030102',
+      'lP100500F05000501031D012332423321',
       false
     );
     this.addEntity(cursorEntity);
 
 
-    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, 2, 68, 19, 13, '←', '', ['ArrowLeft'], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {align: 'center', topMargin: 4}));
-    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, 179, 68, 21, 13, '➔', '', ['ArrowRight'], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {align: 'center', topMargin: 4}));
+    this.addEntity(new ButtonEntity(this, this.app.fonts.zxFonts8x8, 3, 68, 19, 13, '-', '', ['ArrowLeft'], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {align: 'center', topMargin: 2}));
+    this.addEntity(new ButtonEntity(this, this.app.fonts.zxFonts8x8, 178, 68, 21, 13, '+', '', ['ArrowRight'], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {align: 'center', topMargin: 2}));
 
     this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, 67, 90, 67, 13, 'PLAY SAMPLE', '', [], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('magenta'), {margin: 4}));
 
