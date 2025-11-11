@@ -10,6 +10,7 @@ const { MainModel } = await import('./mainModel.js?ver='+window.srcVersion);
 const { CaveModel } = await import('./caveModel.js?ver='+window.srcVersion);
 const { GameOverModel } = await import('./gameOverModel.js?ver='+window.srcVersion);
 const { TapeLoadingModel } = await import('./tapeLoadingModel.js?ver='+window.srcVersion);
+const { ZXErrorEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxErrorEntity.js?ver='+window.srcVersion);
 /*/
 import AbstractApp from './svision/js/abstractApp.js';
 import AudioManager from './audioManager.js';
@@ -22,6 +23,7 @@ import MainModel from './mainModel.js';
 import CaveModel from './caveModel.js';
 import GameOverModel from './gameOverModel.js';
 import TapeLoadingModel from './tapeLoadingModel.js';
+import ZXErrorEntity from './svision/js/platform/canvas2D/zxSpectrum/zxErrorEntity.js';
 /**/
 // begin code
 
@@ -40,28 +42,15 @@ export class GameApp extends AbstractApp {
     this.fonts.fonts5x5 = new Fonts5x5(this);
     this.fonts.fonts3x3 = new Fonts3x3(this);
 
-    this.controls = {
-      keyboard: {
-        left: 'ArrowLeft',
-        right: 'ArrowRight',
-        jump: 'ArrowUp',
-        music: 'M',
-        sounds: 'S'
-      },
-      mouse: {
-        enable: false,
-        left: 'B0',
-        right: 'B1',
-        jump: 'B2'
-      },
-      gamepad: {
-        supported: false,
-      },
-      touchscreen: {
-        supported: false,
-        type: 'jump-left-right'
-      }
-    }
+    this.controls.keyboard.left = 'ArrowLeft';
+    this.controls.keyboard.right = 'ArrowRight';
+    this.controls.keyboard.jump = 'ArrowUp';
+    this.controls.keyboard.music = 'M';
+    this.controls.keyboard.sounds = 'S';
+    this.controls.mouse.left = 'B0';
+    this.controls.mouse.right = 'B1';
+    this.controls.mouse.jump = 'B2';
+    this.controls.touchscreen.type = 'jump-left-right';
 
     this.caveNumber = false;
     this.caveName = '';
@@ -96,8 +85,11 @@ export class GameApp extends AbstractApp {
       case 'CaveModel':
         this.model = new CaveModel(this, this.caveNumber, this.demo);
         break;
+      case 'GameExitModel':
+        this.model = new GameOverModel(this, false, 'MenuModel');
+        break;
       case 'GameOverModel':
-        this.model = new GameOverModel(this);
+        this.model = new GameOverModel(this, true, 'MainModel');
         break;
       case 'TapeLoadingModel':
         this.model = new TapeLoadingModel(this);
@@ -124,8 +116,31 @@ export class GameApp extends AbstractApp {
   } // startCave
 
   setGlobalData(data) {
-    this.globalData = data;
+    this.globalData = data.data.global;
+
+    Object.keys(data.data).forEach((key) => {
+      if (key == 'hiScore') {
+        this.hiScore = data.data[key];
+      } else {
+        this.saveDataToStorage(key, data.data[key]);
+      }
+    });
   } // setGlobalData
+
+  showErrorMessage(message) {
+    var topModalEntity = this.model.desktopEntity.topModalEntity();
+    topModalEntity.addModalEntity(
+      new ZXErrorEntity(
+        topModalEntity,
+        -topModalEntity.absoluteX(),
+        -topModalEntity.absoluteY(),
+        this.fonts.zxFonts8x8,
+        message,
+        this.platform.colorByName('white'),
+        this.platform.colorByName('red')
+      )
+    );
+  } // showErrorMessage
 
 } // GameApp
 

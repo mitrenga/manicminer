@@ -4,24 +4,22 @@ const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+wi
 const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
 const { SignboardEntity } = await import('./signboardEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
-const { PlayerNameEntity } = await import('./playerNameEntity.js?ver='+window.srcVersion);
+const { ZXPlayerNameEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxPlayerNameEntity.js?ver='+window.srcVersion);
 const { HallOfFameEntity } = await import('./hallOfFameEntity.js?ver='+window.srcVersion);
-const { VolumeEntity } = await import('./volumeEntity.js?ver='+window.srcVersion);
-const { ControlsEntity } = await import('./controlsEntity.js?ver='+window.srcVersion);
+const { ZXVolumeEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxVolumeEntity.js?ver='+window.srcVersion);
+const { ZXControlsEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxControlsEntity.js?ver='+window.srcVersion);
 const { AboutEntity } = await import('./aboutEntity.js?ver='+window.srcVersion);
-const { WatermarkEntity } = await import('./watermarkEntity.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import AbstractEntity from './svision/js/abstractEntity.js';
 import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
 import SignboardEntity from './signboardEntity.js';
 import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
-import PlayerNameEntity from './playerNameEntity.js';
+import ZXPlayerNameEntity from './svision/js/platform/canvas2D/zxSpectrum/zxPlayerNameEntity.js';
 import HallOfFameEntity from './hallOfFameEntity.js';
-import VolumeEntity from './volumeEntityEntity.js';
-import ControlsEntity from './controlsEntity.js';
+import ZXVolumeEntity from './svision/js/platform/canvas2D/zxSpectrum/zxVolumeEntity.js';
+import ZXControlsEntity from './svision/js/platform/canvas2D/zxSpectrum/zxControlsEntity.js';
 import AboutEntity from './aboutEntity.js';
-import WatermarkEntity from './watermarkEntity.js';
 /**/
 // begin code
 
@@ -57,25 +55,13 @@ export class MenuModel extends AbstractModel {
     this.dataLoaded = false;
     this.objectsEntities = [];
     this.copyrightEntity = null;
-
-    const http = new XMLHttpRequest();
-    http.responser = this;
-    http.open('GET', 'menu.data');
-    http.send();
-
-    http.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        var data = JSON.parse(http.responseText);
-        this.responser.sendEvent(1, {id: 'setMenuData', data: data});
-      }
-    }
+    this.watermarkEntity = null;
   } // constructor
 
   init() {
     super.init();
 
     this.borderEntity.bkColor = this.app.platform.colorByName('white');
-    this.borderEntity.addEntity(new WatermarkEntity(this.borderEntity, this.app));
     this.desktopEntity.bkColor = this.app.platform.colorByName('white');
 
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 13, 0, 230, 154, false, this.app.platform.colorByName('blue')));
@@ -109,6 +95,10 @@ export class MenuModel extends AbstractModel {
 
     this.app.stack.flashState = false;
     this.sendEvent(330, {id: 'changeFlashState'});
+
+    this.fetchData('menu.data', {key: 'menu', when: 'required'}, {});
+    
+    this.app.audioManager.closeAllChannels();
   } // init
 
   menuParamValue(event) {
@@ -116,15 +106,21 @@ export class MenuModel extends AbstractModel {
       case 'setPlayerName':
         return this.app.playerName;
       case 'setSounds':
-        if (this.app.audioManager.sounds == 0) {
-          return 'OFF';
+        switch (this.app.audioManager.volume.sounds) {
+          case 0:
+            return 'OFF';
+          case 10:
+            return 'MAX';
         }
-        return 'ON';
+        return (this.app.audioManager.volume.sounds*10)+'%';
       case 'setMusic':
-        if (this.app.audioManager.music == 0) {
-          return 'OFF';
+        switch (this.app.audioManager.volume.music) {
+          case 0:
+            return 'OFF';
+          case 10:
+            return 'MAX';
         }
-        return 'ON';
+        return (this.app.audioManager.volume.music*10)+'%';
     }
     return '';
   } // menuParamValue
@@ -149,13 +145,14 @@ export class MenuModel extends AbstractModel {
   } // changeMenuItem
 
   setData(data) {
+    data.data.willy = this.app.globalData.willy;
     this.objects.forEach((object, o) => {
-      this.objectsEntities[o].setGraphicsData(data[object.id]);
+      this.objectsEntities[o].setGraphicsData(data.data[object.id]);
       this.objectsEntities[o].x = object.x;
       this.objectsEntities[o].y = object.y;
     });
     this.dataLoaded = true;
-    super.setData(data);
+    super.setData(data.data);
   } // setData
 
   handleEvent(event) {
@@ -171,18 +168,14 @@ export class MenuModel extends AbstractModel {
       
       case 'startGame':
         if (!this.app.playerName.length) {
-          this.desktopEntity.addModalEntity(new PlayerNameEntity(this.desktopEntity, 27, 24, 202, 134, true));
+          this.desktopEntity.addModalEntity(new ZXPlayerNameEntity(this.desktopEntity, 27, 24, 202, 134, true));
         } else {
           this.app.setModel('MainModel');
         }
         return true;
       
-      case 'startTapeLoading': 
-        this.app.setModel('TapeLoadingModel');
-        return true;
-
       case 'setPlayerName':
-        this.desktopEntity.addModalEntity(new PlayerNameEntity(this.desktopEntity, 27, 24, 202, 134, false));
+        this.desktopEntity.addModalEntity(new ZXPlayerNameEntity(this.desktopEntity, 27, 24, 202, 134, false));
       return true;
 
       case 'showHallOfFame':
@@ -190,16 +183,20 @@ export class MenuModel extends AbstractModel {
       return true;
 
       case 'setSounds':
-        this.desktopEntity.addModalEntity(new VolumeEntity(this.desktopEntity, 27, 24, 202, 134, 'SOUNDS'));
+        this.desktopEntity.addModalEntity(new ZXVolumeEntity(this.desktopEntity, 27, 24, 202, 134, 'sounds', 'audioChannelSounds', 'exampleJumpSound'));
         return true;
 
       case 'setMusic':
-        this.desktopEntity.addModalEntity(new VolumeEntity(this.desktopEntity, 27, 24, 202, 134, 'MUSIC'));
+        this.desktopEntity.addModalEntity(new ZXVolumeEntity(this.desktopEntity, 27, 24, 202, 134, 'music', 'audioChannelMusic', 'exampleInGameMelody'));
         return true;
 
-        case 'setControls':
-        this.desktopEntity.addModalEntity(new ControlsEntity(this.desktopEntity, 27, 24, 202, 134));
-      return true;
+      case 'setControls':
+        this.desktopEntity.addModalEntity(new ZXControlsEntity(this.desktopEntity, 27, 24, 202, 134));
+        return true;
+
+      case 'startTapeLoading': 
+        this.app.setModel('TapeLoadingModel');
+        return true;
 
       case 'showAbout':
         this.desktopEntity.addModalEntity(new AboutEntity(this.desktopEntity, 27, 24, 202, 134));
@@ -230,21 +227,6 @@ export class MenuModel extends AbstractModel {
           }
         }
         break;
-
-      case 'setMenuData':
-        var willy = Object.assign(
-          event.data.willy,
-          {
-            sprite: this.app.globalData.willy.sprite,
-            paintCorrections: this.app.globalData.willy.paintCorrections,
-            width: this.app.globalData.willy.width,
-            height: this.app.globalData.willy.height,
-            frames: this.app.globalData.willy.frames,
-            directions: this.app.globalData.willy.directions
-          }
-        );
-        this.setData(Object.assign(event.data, {willy: willy}));
-        return true;
 
       case 'changeFlashState':
         this.app.stack.flashState = !this.app.stack.flashState;

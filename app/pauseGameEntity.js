@@ -3,7 +3,7 @@ const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+wi
 const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
 const { ButtonEntity } = await import('./svision/js/platform/canvas2D/buttonEntity.js?ver='+window.srcVersion);
 /*/
-import AbstractEntity from './svision/js//abstractEntity.js';
+import AbstractEntity from './svision/js/abstractEntity.js';
 import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
 import ButtonEntity from './svision/js/platform/canvas2D/buttonEntity.js';
 /**/
@@ -11,10 +11,11 @@ import ButtonEntity from './svision/js/platform/canvas2D/buttonEntity.js';
 
 export class PauseGameEntity extends AbstractEntity {
 
-  constructor(parentEntity, x, y, width, height, borderColor) {
+  constructor(parentEntity, x, y, width, height, borderColor, exitModel) {
     super(parentEntity, x, y, width, height, false, false);
     this.id = 'PauseGameEntity';
     this.borderColor = borderColor;
+    this.exitModel = exitModel;
     this.buttons = [
       {label: 'RESUME GAME', eventID: 'closePauseGame', hotKeys: ['Escape']},
       {label: 'SOUND OFF', eventID: 'changeSoundsState', hotKeys: []},
@@ -77,7 +78,7 @@ export class PauseGameEntity extends AbstractEntity {
         return true;
 
       case 'exitGame':
-        this.app.setModel('MenuModel');
+        this.app.setModel(this.exitModel);
         return true;
     }
 

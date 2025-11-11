@@ -3,7 +3,7 @@ const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+wi
 const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
 const { ButtonEntity } = await import('./svision/js/platform/canvas2D/buttonEntity.js?ver='+window.srcVersion);
 /*/
-import AbstractEntity from './svision/js//abstractEntity.js';
+import AbstractEntity from './svision/js/abstractEntity.js';
 import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
 import ButtonEntity from './svision/js/platform/canvas2D/buttonEntity.js';
 /**/
@@ -13,7 +13,7 @@ export class AboutEntity extends AbstractEntity {
 
   constructor(parentEntity, x, y, width, height) {
     super(parentEntity, x, y, width, height, false, false);
-    this.id = 'AboutEntity';    
+    this.id = 'AboutEntity';
   } // constructor
 
   init() {

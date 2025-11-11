@@ -122,17 +122,6 @@ export class CaveModel extends AbstractModel {
       }
     } // onmessage
 
-    const http = new XMLHttpRequest();
-    http.responser = this;
-    http.open('GET', 'cave'+this.caveNumber.toString().padStart(2, '0')+'.data');
-    http.send();
-
-    http.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        var data = JSON.parse(http.responseText);
-        this.responser.sendEvent(1, {id: 'setCaveData', data: data});
-      }
-    }
   } // constructor
 
   postWorkerMessage(message) {
@@ -155,14 +144,14 @@ export class CaveModel extends AbstractModel {
     this.app.stack.flashState = false;
     this.sendEvent(330, {id: 'changeFlashState'});
 
-    this.sendEvent(250, {id: 'openAudioChannel', channel: 'music'});
     if (this.demo) {
-      this.sendEvent(500, {id: 'playSound', channel: 'music', sound: 'inGameMelody', options: {caveNumber: this.caveNumber, demo: true}});
+      this.sendEvent(0, {id: 'playSound', channel: 'music', sound: 'inGameMelody', options: {caveNumber: this.caveNumber, demo: true}});
     } else {
-      this.sendEvent(500, {id: 'playSound', channel: 'music', sound: 'inGameMelody', options: {repeat: true, caveNumber: this.caveNumber, demo: false}});
+      this.sendEvent(0, {id: 'playSound', channel: 'music', sound: 'inGameMelody', options: {repeat: true, caveNumber: this.caveNumber, demo: false}});
     }
-    this.sendEvent(250, {id: 'openAudioChannel', channel: 'sounds'});
-    this.sendEvent(250, {id: 'openAudioChannel', channel: 'extra'});
+
+    var caveId = 'cave'+this.caveNumber.toString().padStart(2, '0');
+    this.fetchData(caveId+'.data', {key: caveId, when: 'required'}, {});
   } // init
 
   shutdown() {
@@ -171,18 +160,21 @@ export class CaveModel extends AbstractModel {
       this.worker.terminate();
       this.worker = null;
     }
+    this.app.audioManager.stopAllChannels();
   } // shutdown
 
   setData(data) {
-    this.gameInfoEntity.caveNameEntity.setText(data.name);
-    this.app.caveName = data.name;
-    this.gameClock = (256-this.app.hexToInt(data.gameClock))/4;
-    this.airSupply = this.app.hexToInt(data.airSupply);
-    this.borderEntity.bkColor = this.app.platform.zxColorByAttr(this.app.hexToInt(data.borderColor), 7, 1);
+    data.data.willy = Object.assign(this.app.globalData.willy, data.data.willy);
+
+    this.gameInfoEntity.caveNameEntity.setText(data.data.name);
+    this.app.caveName = data.data.name;
+    this.gameClock = (256-this.app.hexToInt(data.data.gameClock))/4;
+    this.airSupply = this.app.hexToInt(data.data.airSupply);
+    this.borderEntity.bkColor = this.app.platform.zxColorByAttr(this.app.hexToInt(data.data.borderColor), 7, 1);
     for (var l = 0; l < 16; l++) {
-      this.gameInfoEntity.liveEntities[l].setGraphicsData(data.willy);
+      this.gameInfoEntity.liveEntities[l].setGraphicsData(data.data.willy);
     }
-    super.setData(data);
+    super.setData(data.data);
     this.postWorkerMessage({id: 'init', initData: this.initData});
     this.app.inputEventsManager.sendEventsActiveKeys('press');
   } // setData
@@ -193,24 +185,9 @@ export class CaveModel extends AbstractModel {
     }
 
     switch (event.id) {
-      case 'setCaveData':
-        var willy = Object.assign(
-          event.data.willy,
-          {
-            sprite: this.app.globalData.willy.sprite,
-            paintCorrections: this.app.globalData.willy.paintCorrections,
-            width: this.app.globalData.willy.width,
-            height: this.app.globalData.willy.height,
-            frames: this.app.globalData.willy.frames,
-            directions: this.app.globalData.willy.directions,
-            attribute: this.app.globalData.willy.attribute
-          }
-        );
-        this.setData(Object.assign(event.data, {willy: willy}));
-        return true;
 
       case 'blurWindow':
-        this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 9*8, 5*8, 14*8+1, 14*8+2, this.borderEntity.bkColor));
+        this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 9*8, 5*8, 14*8+1, 14*8+2, this.borderEntity.bkColor, 'GameExitModel'));
         return true;
 
       case 'keyPress':
@@ -220,7 +197,7 @@ export class CaveModel extends AbstractModel {
         }
         switch (event.key) {
           case 'Escape':
-            this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 9*8, 5*8, 14*8+1, 14*8+2, this.borderEntity.bkColor));
+            this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 9*8, 5*8, 14*8+1, 14*8+2, this.borderEntity.bkColor, 'GameExitModel'));
             return true;
 
           case 'ArrowRight':
