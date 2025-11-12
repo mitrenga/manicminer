@@ -600,7 +600,9 @@ function checkCrash() {
   if (checkTouchWithObjectsArray(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.nasties, gameData.guardians])) {
     gameData.info[5] = true;
   }
-  return 0;
+  if (checkStandingWithObjectsArray(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.nasties]).length) {
+    gameData.info[5] = true;
+  }
 } // checkCrash
 
 function checkTouchPortal() {
