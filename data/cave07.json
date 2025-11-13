@@ -128,8 +128,6 @@
                   "sound":"fallingKongSound",
                   "options":false
                }
-
-
             ]
          }
       ],
@@ -457,10 +455,6 @@
          ],
          "width":10,
          "height":16,
-         "paintCorrections":{
-            "x":0,
-            "y":0
-         },
          "frames":4,
          "directions":1,
          "sprite":[
@@ -556,10 +550,6 @@
          ],
          "width":16,
          "height":16,
-         "paintCorrections":{
-            "x":0,
-            "y":0
-         },
          "frames":2,
          "directions":2,
          "sprite":[

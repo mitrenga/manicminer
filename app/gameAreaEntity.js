@@ -186,11 +186,12 @@ export class GameAreaEntity extends AbstractEntity {
         y: data.willy.init.y,
         width: data.willy.width,
         height: data.willy.height,
-        paintCorrectionsX: data.willy.paintCorrections.x,
-        paintCorrectionsY: data.willy.paintCorrections.y,
+        paintCorrections: data.willy.paintCorrections,
+        touchCorrections: data.willy.touchCorrections,
         frame: data.willy.init.frame,
-        frames: data.willy.init.frames,
-        direction: data.willy.init.direction
+        frames: data.willy.frames,
+        direction: data.willy.init.direction,
+        directions: data.willy.directions
       });
     }
 
@@ -321,7 +322,13 @@ export class GameAreaEntity extends AbstractEntity {
         var guardianTypeData = data.guardians[guardianType];
         guardianTypeData.figures.forEach((guardian) => {
           var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(guardian.attribute));
-          var entity = new SpriteEntity(this, guardian.init.x+guardianTypeData.paintCorrections.x, guardian.init.y+guardianTypeData.paintCorrections.y, penColor, false, guardian.init.frame, guardian.init.direction);
+          var paintCorrectionsX = 0;
+          var paintCorrectionsY = 0;
+          if ('paintCorrections' in guardianTypeData) {
+            paintCorrectionsX = guardianTypeData.paintCorrections.x;
+            paintCorrectionsY = guardianTypeData.paintCorrections.y;
+          }
+          var entity = new SpriteEntity(this, guardian.init.x+paintCorrectionsX, guardian.init.y+paintCorrectionsY, penColor, false, guardian.init.frame, guardian.init.direction);
           entity.setGraphicsData(guardianTypeData);
           this.addEntity(entity);
           this.spriteEntities.guardians.push(entity);
@@ -332,12 +339,17 @@ export class GameAreaEntity extends AbstractEntity {
             y: guardian.init.y,
             width: guardianTypeData.width,
             height: guardianTypeData.height,
-            paintCorrectionsX: guardianTypeData.paintCorrections.x,
-            paintCorrectionsY: guardianTypeData.paintCorrections.y,
             frame: guardian.init.frame,
             frames: guardianTypeData.frames,
-            direction: guardian.init.direction
+            direction: guardian.init.direction,
+            directions: guardianTypeData.directions
           };
+          if ('paintCorrections' in guardianTypeData) {
+            guardianInitData.paintCorrections = guardianTypeData.paintCorrections;
+          }
+          if ('touchCorrections' in guardianTypeData) {
+            guardianInitData.touchCorrections = guardianTypeData.touchCorrections;
+          }
           switch (guardianType) {
             case 'horizontal':
               guardianInitData.limitLeft = guardian.limits.left;
@@ -437,16 +449,14 @@ export class GameAreaEntity extends AbstractEntity {
 
   updateData(data, objectsType) {
     data.gameData[objectsType].forEach((object, o) => {
-      var x = object.x;
-      if ('paintCorrectionsX' in object) {
-        x += object.paintCorrectionsX;
+      var paintCorrectionX = 0;
+      var paintCorrectionY = 0;
+      if ('paintCorrections' in object) {
+        paintCorrectionX = object.paintCorrections.x;
+        paintCorrectionY = object.paintCorrections.y;
       }
-      this.spriteEntities[objectsType][o].x = x;
-      var y = object.y;
-      if ('paintCorrectionsY' in object) {
-        y += object.paintCorrectionsY;
-      }
-      this.spriteEntities[objectsType][o].y = y;
+      this.spriteEntities[objectsType][o].x = object.x+paintCorrectionX;
+      this.spriteEntities[objectsType][o].y = object.y+paintCorrectionY;
       var flashShiftFrames = 0;
       if (('flashShiftFrames' in object) && this.app.stack.flashState) {
         flashShiftFrames = object.flashShiftFrames;
@@ -454,18 +464,10 @@ export class GameAreaEntity extends AbstractEntity {
       this.spriteEntities[objectsType][o].frame = object.frame+flashShiftFrames;
       this.spriteEntities[objectsType][o].direction = object.direction;
       if ('width' in object) {
-        var width = object.width;
-        if ('paintCorrectionsX' in object) {
-          width -= object.paintCorrectionsX;
-        }
-        this.spriteEntities[objectsType][o].width = width;
+        this.spriteEntities[objectsType][o].width = object.width-paintCorrectionX;
       }
       if ('height' in object) {
-        var height = object.height;
-        if ('paintCorrectionsY' in object) {
-          height -= object.paintCorrectionsY;
-        }
-        this.spriteEntities[objectsType][o].height = height;
+        this.spriteEntities[objectsType][o].height = object.height-paintCorrectionY;
       }
       if ('hide' in object) {
         this.spriteEntities[objectsType][o].hide = object.hide;
