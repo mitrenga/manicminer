@@ -186,6 +186,10 @@ export class TapeLoadingModel extends AbstractModel {
             return true;
         }
         break;
+
+      case 'errorAudioChannel':
+        this.app.showErrorMessage(event.error, 'reopen');
+        return true;
     }
 
     return false;
