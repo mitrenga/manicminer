@@ -174,9 +174,9 @@ export class CaveModel extends AbstractModel {
     for (var l = 0; l < 16; l++) {
       this.gameInfoEntity.liveEntities[l].setGraphicsData(data.data.willy);
     }
+    this.app.inputEventsManager.sendEventsActiveKeys('Press');
     super.setData(data.data);
     this.postWorkerMessage({id: 'init', initData: this.initData});
-    this.app.inputEventsManager.sendEventsActiveKeys('press');
   } // setData
 
   handleEvent(event) {
@@ -205,6 +205,7 @@ export class CaveModel extends AbstractModel {
           case 'P':
           case '7':
           case 'MouseButton2':
+          case 'TouchArea2':
             this.postWorkerMessage({id: 'controls', action: 'right', value: true});
             return true;
 
@@ -213,6 +214,7 @@ export class CaveModel extends AbstractModel {
           case 'O':
           case '4':
           case 'MouseButton1':
+          case 'TouchArea1':
             this.postWorkerMessage({id: 'controls', action: 'left', value: true});
             return true;
 
@@ -220,6 +222,7 @@ export class CaveModel extends AbstractModel {
           case ' ':
           case '0':
           case 'MouseButton4':
+          case 'TouchArea4':
             this.postWorkerMessage({id: 'controls', action: 'jump', value: true});
             return true;
         }
@@ -232,6 +235,7 @@ export class CaveModel extends AbstractModel {
           case 'P':
           case '7':
           case 'MouseButton2':
+          case 'TouchArea2':
             this.postWorkerMessage({id: 'controls', action: 'right', value: false});
             return true;
 
@@ -240,6 +244,7 @@ export class CaveModel extends AbstractModel {
           case 'O':
           case '4':
           case 'MouseButton1':
+          case 'TouchArea1':
             this.postWorkerMessage({id: 'controls', action: 'left', value: false});
             return true;
 
@@ -247,6 +252,7 @@ export class CaveModel extends AbstractModel {
           case ' ':
           case '0':
           case 'MouseButton4':
+          case 'TouchArea4':
             this.postWorkerMessage({id: 'controls', action: 'jump', value: false});
             return true;
         }
