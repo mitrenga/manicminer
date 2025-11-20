@@ -195,7 +195,11 @@ export class CaveModel extends AbstractModel {
           this.app.setModel('MainModel');
           return true;
         }
-        switch (event.key) {
+        var key = event.key;
+        if (key.length == 1) {
+          key = key.toUpperCase();
+        }
+        switch (key) {
           case 'Escape':
             this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 9*8, 5*8, 14*8+1, 14*8+2, this.borderEntity.bkColor, 'GameExitModel'));
             return true;
@@ -233,7 +237,11 @@ export class CaveModel extends AbstractModel {
         break;
 
       case 'keyRelease':
-        switch (event.key) {
+        var key = event.key;
+        if (key.length == 1) {
+          key = key.toUpperCase();
+        }
+        switch (key) {
           case this.app.controls.mouse.right:
             if (!this.app.controls.mouse.enable) {
               break;
