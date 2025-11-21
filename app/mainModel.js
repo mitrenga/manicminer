@@ -28,7 +28,7 @@ export class MainModel extends AbstractModel {
     this.pianoKey2Entity = null;
     this.airEntity = null;
     this.blackBox = null;
-    this.slidingText = 
+    this.slidingText =
       'MANIC MINER' +
       '      ' +
       'writen by Matthew Smith' +
@@ -37,11 +37,18 @@ export class MainModel extends AbstractModel {
       '      ' +
       'Guide Miner Willy through 20 lethal caverns.' +
       '      ' +
-      'Bonus Life for each 10.000 points.' +
-      '      ' +
-      this.app.prettyKey(this.app.controls.keyboard.music)+' = Music (On/Off)' +
-      '      ' +
-      this.app.prettyKey(this.app.controls.keyboard.sounds)+' = Sounds (On/Off)' +
+      'Bonus Life for each 10.000 points.';
+    if (this.app.controls.keyboard.music != 'NoKey') {
+      this.slidingText = this.slidingText+
+        '      ' +
+        this.app.prettyKey(this.app.controls.keyboard.music)+' = Music (On/Off)';
+    }
+    if (this.app.controls.keyboard.sounds != 'NoKey') {
+      this.slidingText = this.slidingText+
+        '      ' +
+        this.app.prettyKey(this.app.controls.keyboard.sounds)+' = Sounds (On/Off)';
+    }
+    this.slidingText = this.slidingText+
       '      ' +
       'ESC = Pause menu';
     this.slidingTextEntity = null;
