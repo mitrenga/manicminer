@@ -39,9 +39,9 @@ export class MainModel extends AbstractModel {
       '      ' +
       'Bonus Life for each 10.000 points.' +
       '      ' +
-      'M = Music (On/Off)' +
+      this.app.prettyKey(this.app.controls.keyboard.music)+' = Music (On/Off)' +
       '      ' +
-      'S = Sounds (On/Off)' +
+      this.app.prettyKey(this.app.controls.keyboard.sounds)+' = Sounds (On/Off)' +
       '      ' +
       'ESC = Pause menu';
     this.slidingTextEntity = null;
