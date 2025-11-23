@@ -121,22 +121,28 @@ export class MainModel extends AbstractModel {
 
       case 'keyPress':
         if (this.desktopEntity.modalEntity == null) {
-          switch (event.key) {
+          switch (event.key) {            
             case 'Enter':
               this.app.startCave(false, true, true);
               return true;
-
             case 'Escape':
               this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 9*8, 5*8, 14*8+1, 14*8+2, this.app.platform.colorByName('blue'), 'MenuModel'));
+              return true;
+            case 'Mouse1':
+              this.app.inputEventsManager.keysMap.Mouse1 = this;
               return true;
           }
         }
         break;
-
-      case 'mouseClick':
-        this.app.startCave(false, true, true);
-        return true;
         
+      case 'keyRelease':
+        switch (event.key) {
+          case 'Mouse1':
+            this.app.startCave(false, true, true);
+            return true;
+        }
+        break;
+
       case 'newDemoCave':
         this.app.startCave(true, true, true);
         return true;
