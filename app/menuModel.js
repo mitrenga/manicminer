@@ -30,11 +30,14 @@ export class MenuModel extends AbstractModel {
     this.id = 'MenuModel';
 
     this.gameFrame = 0;
-    this.bwColor = '#7c7c7c';
-    this.selectedItem = 0;
-    this.menuSelectedRow = null;
-    this.penMenuItemColor = this.app.platform.colorByName('blue');
-    this.penSelectedMenuItemColor = this.app.platform.colorByName('brightWhite');
+    this.dataLoaded = false;
+
+    this.selection = 0;
+    this.hoverColor = '#a9a9a9ff';
+    this.selectionHoverColor = this.app.platform.colorByName('blue');
+    this.selectionEntity = null;
+    this.itemPenColor = this.app.platform.colorByName('blue');
+    this.selectionItemPenColor = this.app.platform.colorByName('brightWhite');
     this.menuEntities = [];
     this.menuItems = [
       {label: 'START GAME', event: 'startGame'},
@@ -46,16 +49,16 @@ export class MenuModel extends AbstractModel {
       {label: 'SHOW TAPE LOADING', event: 'startTapeLoading'},
       {label: 'ABOUT GAME', event: 'showAbout'}
     ];
-    this.signboardEntity = null;
-    this.objects = [
+
+    this.animationObjects = [
       {id: 'willy', x: 61, y: 160},
       {id: 'guardian', x: 21, y: 160},
       {id: 'floor', x: 13, y: 176}
     ];
-    this.dataLoaded = false;
-    this.objectsEntities = [];
+    this.animationColor = '#7c7c7c';
+    this.animationObjectsEntities = [];
+    this.signboardEntity = null;
     this.copyrightEntity = null;
-    this.watermarkEntity = null;
   } // constructor
 
   init() {
@@ -67,19 +70,24 @@ export class MenuModel extends AbstractModel {
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 13, 0, 230, 154, false, this.app.platform.colorByName('blue')));
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 14, 14, 228, 139, false, this.desktopEntity.bkColor));
 
-    this.menuSelectedRow = new AbstractEntity(this.desktopEntity, 23, 22+this.selectedItem*16, 210, 12, false, this.app.platform.colorByName('brightBlue'));
-    this.desktopEntity.addEntity(this.menuSelectedRow);
+    this.selectionEntity = new AbstractEntity(this.desktopEntity, 23, 22+this.selection*16, 210, 12, false, this.app.platform.colorByName('brightBlue'));
+    this.desktopEntity.addEntity(this.selectionEntity);
 
     for (var y = 0; y < this.menuItems.length; y++) {
-      var penColor = this.penMenuItemColor;
-      if (y == this.selectedItem) {
-        penColor = this.penSelectedMenuItemColor;
+      var penColor = this.itemPenColor;
+      if (y == this.selection) {
+        penColor = this.selectionItemPenColor;
       }
       this.menuEntities[y] = [];
+      this.menuEntities[y][0] = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 23, 22+y*16, 210, 12, this.menuItems[y].label, penColor, false, {topMargin: 2, leftMargin: 3});
+      if (y != this.selection) {
+        this.menuEntities[y][0].hoverColor = this.hoverColor;
+      } else {
+        this.menuEntities[y][0].hoverColor = this.selectionHoverColor;
+      }
+      this.desktopEntity.addEntity(this.menuEntities[y][0]);
       this.menuEntities[y][1] = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 119, 22+y*16, 114, 12, this.menuParamValue(this.menuItems[y].event), penColor, false, {topMargin: 2, rightMargin: 3, align: 'right'});
       this.desktopEntity.addEntity(this.menuEntities[y][1]);
-      this.menuEntities[y][0] = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 23, 22+y*16, 140, 12, this.menuItems[y].label, penColor, false, {topMargin: 2, leftMargin: 3});
-      this.desktopEntity.addEntity(this.menuEntities[y][0]);
     }
 
     this.signboardEntity = new SignboardEntity(this.desktopEntity, 98, 4, 61, 7, 'menuLabel');
@@ -88,9 +96,9 @@ export class MenuModel extends AbstractModel {
     this.copyrightEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 23*8, 32*8, 8, '© 2025 GNU General Public Licence', this.app.platform.colorByName('black'), false, {align: 'center'});
     this.desktopEntity.addEntity(this.copyrightEntity);
 
-    this.objects.forEach((object, o) => {
-      this.objectsEntities[o] = new SpriteEntity(this.desktopEntity, 0, 0, this.bwColor, false, 0, 0);
-      this.desktopEntity.addEntity(this.objectsEntities[o]);
+    this.animationObjects.forEach((object, o) => {
+      this.animationObjectsEntities[o] = new SpriteEntity(this.desktopEntity, 0, 0, this.animationColor, false, 0, 0);
+      this.desktopEntity.addEntity(this.animationObjectsEntities[o]);
     });
 
     this.app.stack.flashState = false;
@@ -132,24 +140,26 @@ export class MenuModel extends AbstractModel {
     }
   } // refreshMenu
 
-  changeMenuItem(newItem) {
-    if (newItem < 0 || newItem >= this.menuItems.length) {
+  changeMenuItem(newSelection) {
+    if (newSelection < 0 || newSelection >= this.menuItems.length) {
       return;
     }
-    this.menuEntities[this.selectedItem][0].setPenColor(this.penMenuItemColor);
-    this.menuEntities[this.selectedItem][1].setPenColor(this.penMenuItemColor);
-    this.selectedItem = newItem;
-    this.menuEntities[this.selectedItem][0].setPenColor(this.penSelectedMenuItemColor);
-    this.menuEntities[this.selectedItem][1].setPenColor(this.penSelectedMenuItemColor);
-    this.menuSelectedRow.y = 22+this.selectedItem*16;
+    this.menuEntities[this.selection][0].hoverColor = this.hoverColor;
+    this.menuEntities[this.selection][0].setPenColor(this.itemPenColor);
+    this.menuEntities[this.selection][1].setPenColor(this.itemPenColor);
+    this.selection = newSelection;
+    this.menuEntities[this.selection][0].hoverColor = this.selectionHoverColor;
+    this.menuEntities[this.selection][0].setPenColor(this.selectionItemPenColor);
+    this.menuEntities[this.selection][1].setPenColor(this.selectionItemPenColor);
+    this.selectionEntity.y = 22+this.selection*16;
   } // changeMenuItem
 
   setData(data) {
     data.data.willy = this.app.globalData.willy;
-    this.objects.forEach((object, o) => {
-      this.objectsEntities[o].setGraphicsData(data.data[object.id]);
-      this.objectsEntities[o].x = object.x;
-      this.objectsEntities[o].y = object.y;
+    this.animationObjects.forEach((object, o) => {
+      this.animationObjectsEntities[o].setGraphicsData(data.data[object.id]);
+      this.animationObjectsEntities[o].x = object.x;
+      this.animationObjectsEntities[o].y = object.y;
     });
     this.dataLoaded = true;
     super.setData(data.data);
@@ -205,17 +215,17 @@ export class MenuModel extends AbstractModel {
       case 'keyPress':
         switch (event.key) {
           case 'Enter':
-            this.sendEvent(0, {id: this.menuItems[this.selectedItem].event});
+            this.sendEvent(0, {id: this.menuItems[this.selection].event});
             return true;
           case 'ArrowDown':
-            this.changeMenuItem(this.selectedItem+1);
+            this.changeMenuItem(this.selection+1);
             return true;
           case 'ArrowUp':
-            this.changeMenuItem(this.selectedItem-1);
+            this.changeMenuItem(this.selection-1);
             return true;
           case 'Mouse1':
             for (var i = 0; i < this.menuItems.length; i++) {
-              if ((this.menuEntities[i][0].pointOnEntity(event)) || (this.menuEntities[i][1].pointOnEntity(event))) {
+              if ((this.menuEntities[i][0].pointOnEntity(event) || this.menuEntities[i][1].pointOnEntity(event))) {
                 this.app.inputEventsManager.keysMap.Mouse1 = this.menuEntities[i][0];
                 return true;
               }
@@ -227,10 +237,10 @@ export class MenuModel extends AbstractModel {
         switch (event.key) {
           case 'Mouse1':
             for (var i = 0; i < this.menuItems.length; i++) {
-              if ((this.menuEntities[i][0].pointOnEntity(event)) || (this.menuEntities[i][1].pointOnEntity(event))) {
+              if ((this.menuEntities[i][0].pointOnEntity(event) || this.menuEntities[i][1].pointOnEntity(event))) {
                 if (this.app.inputEventsManager.keysMap.Mouse1 === this.menuEntities[i][0]) {
                   this.changeMenuItem(i);
-                  this.sendEvent(0, {id: this.menuItems[this.selectedItem].event});
+                  this.sendEvent(0, {id: this.menuItems[this.selection].event});
                   return true;
                 }
               }
@@ -258,7 +268,7 @@ export class MenuModel extends AbstractModel {
         this.signboardEntity.animateState = counter%4;
 
         counter = Math.round((timestamp-this.timer)/80);
-        this.objectsEntities.forEach((entity) => {
+        this.animationObjectsEntities.forEach((entity) => {
           entity.frame = counter%entity.frames;
         });
       }
