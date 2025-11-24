@@ -21,10 +21,12 @@ var canMovingDirection = 0;
 var previousDirection = 0;
 var completed = 0;
 var bonus = 0;
-
+var pause = false;
 
 function gameLoop() {
-  setTimeout(gameLoop, 80);
+  if (!pause) {
+    setTimeout(gameLoop, 80);
+  }
   
   if (gameData != null) {
     counter++;
@@ -694,6 +696,15 @@ onmessage = (event) => {
 
     case 'controls':
       controls[event.data.action] = event.data.value;
+      break;
+
+    case 'pause':
+      this.pause = true;
+      break;
+
+    case 'continue':
+      this.pause = false;
+      gameLoop();
       break;
   
     }

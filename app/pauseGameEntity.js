@@ -74,6 +74,7 @@ export class PauseGameEntity extends AbstractEntity {
         break;
 
       case 'closePauseGame':
+        this.sendEvent(-1, 1, {id: 'continueGame'});
         this.destroy();
         return true;
 
