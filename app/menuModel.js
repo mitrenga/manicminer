@@ -41,7 +41,6 @@ export class MenuModel extends AbstractModel {
       {t1: 'SHOW TAPE LOADING', event: 'startTapeLoading'},
       {t1: 'ABOUT GAME', event: 'showAbout'}
     ];
-
     this.menuOptions = {
       fonts: this.app.fonts.zxFonts8x8,
       leftMargin: 9,
@@ -81,7 +80,7 @@ export class MenuModel extends AbstractModel {
     this.desktopEntity.bkColor = this.app.platform.colorByName('white');
 
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 13, 0, 230, 154, false, this.app.platform.colorByName('blue')));
-    this.desktopEntity.addEntity(new MenuEntity(this.desktopEntity, 14, 14, 228, 139, this.desktopEntity.bkColor, this.menuOptions, this, this.getData));
+    this.desktopEntity.addEntity(new MenuEntity(this.desktopEntity, 14, 14, 228, 139, this.desktopEntity.bkColor, this.menuOptions, this, this.getMenuData));
 
     this.signboardEntity = new SignboardEntity(this.desktopEntity, 98, 4, 61, 7, 'menuLabel');
     this.desktopEntity.addEntity(this.signboardEntity);
@@ -102,7 +101,7 @@ export class MenuModel extends AbstractModel {
     this.app.audioManager.closeAllChannels();
   } // init
 
-  getData(self, key, row) {
+  getMenuData(self, key, row) {
     switch (key) {
       
       case 'numberOfItems':
@@ -139,7 +138,7 @@ export class MenuModel extends AbstractModel {
 
     }
     return '';
-  } // getData
+  } // getMenuData
 
   setData(data) {
     data.data.willy = this.app.globalData.willy;
