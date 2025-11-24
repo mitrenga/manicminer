@@ -42,6 +42,24 @@ export class MenuModel extends AbstractModel {
       {t1: 'ABOUT GAME', event: 'showAbout'}
     ];
 
+    this.menuOptions = {
+      fonts: this.app.fonts.zxFonts8x8,
+      leftMargin: 9,
+      rightMargin: 9,
+      topMargin: 8,
+      itemHeight: 12,
+      t1LeftMargin: 3,
+      t1TopMargin: 2, 
+      t2Width: 114,
+      t2RightMargin: 3,
+      t2TopMargin: 2, 
+      textColor: this.app.platform.colorByName('blue'),
+      selectionTextColor: this.app.platform.colorByName('brightWhite'),
+      selectionBarColor: this.app.platform.colorByName('brightBlue'),
+      hoverColor: '#a9a9a9ff',
+      selectionHoverColor: this.app.platform.colorByName('blue')
+    }
+
     this.signboardEntity = null;
     this.copyrightEntity = null;
 
@@ -63,7 +81,7 @@ export class MenuModel extends AbstractModel {
     this.desktopEntity.bkColor = this.app.platform.colorByName('white');
 
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 13, 0, 230, 154, false, this.app.platform.colorByName('blue')));
-    this.desktopEntity.addEntity(new MenuEntity(this.desktopEntity, 14, 14, 228, 139, this.desktopEntity.bkColor, this, this.getData));
+    this.desktopEntity.addEntity(new MenuEntity(this.desktopEntity, 14, 14, 228, 139, this.desktopEntity.bkColor, this.menuOptions, this, this.getData));
 
     this.signboardEntity = new SignboardEntity(this.desktopEntity, 98, 4, 61, 7, 'menuLabel');
     this.desktopEntity.addEntity(this.signboardEntity);
