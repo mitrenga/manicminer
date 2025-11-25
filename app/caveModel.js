@@ -186,10 +186,10 @@ export class CaveModel extends AbstractModel {
 
     switch (event.id) {
 
-      case 'blurWindow':        
+      case 'blurWindow':
         this.postWorkerMessage({id: 'pause'});
         this.app.audioManager.pauseAllChannels();
-        this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 9*8, 5*8, 14*8+1, 14*8+2, this.borderEntity.bkColor, 'GameExitModel'));
+        this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 52, 40, 153, 85, 'PAUSE GAME', 'GameExitModel'));
         return true;
 
       case 'continueGame':        
@@ -216,7 +216,7 @@ export class CaveModel extends AbstractModel {
           case 'Escape':
             this.postWorkerMessage({id: 'pause'});
             this.app.audioManager.pauseAllChannels();
-            this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 9*8, 5*8, 14*8+1, 14*8+2, this.borderEntity.bkColor, 'GameExitModel'));
+            this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 52, 40, 153, 85, 'PAUSE GAME', 'GameExitModel'));
             return true;
 
           case this.app.controls.mouse.right:
