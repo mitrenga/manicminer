@@ -56,7 +56,9 @@ export class MenuModel extends AbstractModel {
       selectionTextColor: this.app.platform.colorByName('brightWhite'),
       selectionBarColor: this.app.platform.colorByName('brightBlue'),
       hoverColor: '#a9a9a9ff',
-      selectionHoverColor: this.app.platform.colorByName('blue')
+      selectionHoverColor: this.app.platform.colorByName('blue'),
+      clickColor: '#9a9a9aff',
+      selectionClickColor: '#0a2277ff'
     }
 
     this.signboardEntity = null;
