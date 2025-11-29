@@ -31,6 +31,7 @@ export class CaveModel extends AbstractModel {
     this.animationTime = false;
     this.animationType = false;
     this.autorepeatKeys = false;
+    this.needDraw = true;
 
     this.initData = {
       info: [
@@ -102,6 +103,8 @@ export class CaveModel extends AbstractModel {
                 this.gameAreaEntity.updateData(event.data, objectsType);
             }
           });
+          this.drawModel();
+          this.needDraw = false;
           break;
 
         case 'playSound':
@@ -199,12 +202,16 @@ export class CaveModel extends AbstractModel {
 
       case 'keyPress':
         if (this.demo) {
-          if (event.key.substring(0, 5) != 'Mouse') {
+          if (event.key.substring(0, 5) != 'Mouse' && event.key != 'Touch') {
             this.app.setModel('MainModel');
             return true;
           }
-          if (event.key == 'Mouse1') {
-            this.app.inputEventsManager.keysMap.Mouse1 = this;
+          if (event.key.substring(0, 5) == 'Mouse') {
+            this.app.inputEventsManager.keysMap[event.key] = this;
+            return true;
+          }
+          if (event.key == 'Touch') {
+            this.app.inputEventsManager.touchesMap[event.identifier] = this;
             return true;
           }
         }
@@ -262,7 +269,11 @@ export class CaveModel extends AbstractModel {
 
       case 'keyRelease':
         if (this.demo) {
-          if (event.key == 'Mouse1') {
+          if (event.key.substring(0, 5) == 'Mouse' && this.app.inputEventsManager.keysMap[event.key] === this) {
+            this.app.setModel('MainModel');
+            return true;
+          }
+          if (event.key == 'Touch' && this.app.inputEventsManager.touchesMap[event.identifier] === this) {
             this.app.setModel('MainModel');
             return true;
           }
@@ -492,7 +503,10 @@ export class CaveModel extends AbstractModel {
       }
     }
 
-    this.drawModel();
+    if (this.needDraw) {
+      this.drawModel();
+    }
+    this.needDraw = true;
   } // loopModel
 
 } // CaveModel
