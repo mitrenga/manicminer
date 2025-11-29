@@ -18,13 +18,16 @@ export class TapeLoadingModel extends AbstractModel {
     this.id = 'TapeLoadingModel';
     
     this.inputLineEntity = null;
+    this.commandPhase = 0;
     this.command = ['K', 'LOAD L', 'LOAD "L', 'LOAD ""L', ''];
-    this.phase = 0;
     this.programNameEntity = null;
     this.copyrightLine1 = null;
     this.copyrightLine2 = null;
     this.signboardEntity = null;
     this.app.stack.flashState = false;
+    this.tapeBreak = false;
+    this.tapeBreakLine = '0:1';
+    this.tapePhase = false;
     this.tape = [
       {id: 'pause', duration: 1000},
       
@@ -42,7 +45,7 @@ export class TapeLoadingModel extends AbstractModel {
       {id: 'pilot', duration: 1500},
       {id: 'data', duration: 1380, event: 'showSignboard'},
 
-      {id: 'pause', duration: 1000},
+      {id: 'pause', duration: 1000, event: 'beginLoadCode'},
       
       {id: 'pilot', duration: 3000},
       {id: 'data', duration: 100},
@@ -104,31 +107,30 @@ export class TapeLoadingModel extends AbstractModel {
         this.inputLineEntity.options.align = 'left';
         this.inputLineEntity.fonts = this.app.fonts.zxFonts8x8Mono;
         this.inputLineEntity.options.animationMode = 'flashReverseColors';
-        this.inputLineEntity.setText(this.command[this.phase]);
+        this.inputLineEntity.setText(this.command[this.commandPhase]);
         this.inputLineEntity.options.flashMask = '';
-        if (this.command[this.phase].length > 0) {
-          this.inputLineEntity.options.flashMask = this.inputLineEntity.options.flashMask.padStart (this.command[this.phase].length-1, ' ')+'#';
+        if (this.command[this.commandPhase].length > 0) {
+          this.inputLineEntity.options.flashMask = this.inputLineEntity.options.flashMask.padStart (this.command[this.commandPhase].length-1, ' ')+'#';
         }
-        this.phase++;
+        this.commandPhase++;
         this.sendEvent(0, {id: 'playSound', channel: 'sounds', sound: 'keyboardSound', options: false});
-        if (this.phase < this.command.length) {
+        if (this.commandPhase < this.command.length) {
           this.sendEvent(800, {id: 'updateCommand'});
         } else {
-          this.inputLineEntity.destroy();
-          this.inputLineEntity = null;
-          this.phase = 0;
+          this.inputLineEntity.hide = true;
+          this.tapePhase = 0;
           this.sendEvent(1, {id: 'updateTape'});
         }
         return true;
 
       case 'updateTape':
-        switch (this.tape[this.phase].id) {
+        switch (this.tape[this.tapePhase].id) {
           case 'pilot':
             this.sendEvent(0, {id: 'playSound', channel: 'sounds', sound: 'tapePilotToneSound', options: {repeat: true}});
             this.sendEvent(0, {id: 'setBorderAnimation', value: 'pilotTone'});
             break;
           case 'data':
-            if ('event' in this.tape[this.phase] && this.tape[this.phase].event == 'showSignboard') {
+            if ('event' in this.tape[this.tapePhase] && this.tape[this.tapePhase].event == 'showSignboard') {
               this.sendEvent(0, {id: 'playSound', channel: 'sounds', sound: 'tapeScreenAttrSound', options: false});
             } else {
               this.sendEvent(0, {id: 'playSound', channel: 'sounds', sound: 'tapeRndDataSound', options: false});
@@ -140,14 +142,14 @@ export class TapeLoadingModel extends AbstractModel {
             this.sendEvent(0, {id: 'setBorderAnimation', value: false});
             break;
         }
-        if ('event' in this.tape[this.phase]) {
-          this.sendEvent(0, {id: this.tape[this.phase].event});
+        if ('event' in this.tape[this.tapePhase]) {
+          this.sendEvent(0, {id: this.tape[this.tapePhase].event});
         }
-        this.phase++;
-        if (this.phase < this.tape.length) {
-          this.sendEvent(this.tape[this.phase-1].duration, {id: 'updateTape'});
+        this.tapePhase++;
+        if (this.tapePhase < this.tape.length) {
+          this.sendEvent(this.tape[this.tapePhase-1].duration, {id: 'updateTape'});
         } else {
-          this.sendEvent(this.tape[this.phase-1].duration, {id: 'setMenuModel'});
+          this.sendEvent(this.tape[this.tapePhase-1].duration, {id: 'setMenuModel'});
         }
       return true;
 
@@ -161,12 +163,18 @@ export class TapeLoadingModel extends AbstractModel {
         this.copyrightLine1.hide = false;
         this.copyrightLine2.hide = false;
         this.desktopEntity.bkColor = this.app.platform.colorByName('black');
-        this.borderEntity.bkColor = this.app.platform.colorByName('white');
+        this.borderEntity.bkColor = this.app.platform.colorByName('black');
+        this.inputLineEntity.setPenColor(this.app.platform.colorByName('white'));
+        this.tapeBreakLine = '10:7';
         return true;
 
       case 'showSignboard':
         this.signboardEntity.hide = false;
         this.signboardEntity.loadTimer = this.app.now;
+        return true;
+
+      case 'beginLoadCode':
+        this.tapeBreakLine = '10:8';
         return true;
 
       case 'scrollScreen':
@@ -184,6 +192,36 @@ export class TapeLoadingModel extends AbstractModel {
           case 'Escape':
             this.app.setModel('MenuModel');
             return true;
+          case ' ':
+            if (this.break()) {
+              return true;
+            }
+            break;
+          case 'Mouse1':
+          case 'Mouse2':
+          case 'Mouse4':
+            this.app.inputEventsManager.keysMap[event.key] = this;
+            return true;
+          case 'Touch':
+            this.app.inputEventsManager.touchesMap[event.identifier] = this;
+            return true;
+        }
+        break;
+
+      case 'keyRelease':
+        switch (event.key) {
+          case 'Mouse1':
+          case 'Mouse2':
+          case 'Mouse4':
+            if (this.app.inputEventsManager.keysMap[event.key] === this && this.break()) {
+              return true;
+            }
+            return true;
+          case 'Touch':
+            if (this.app.inputEventsManager.touchesMap[event.identifier] === this && this.break()) {
+              return true;
+            }
+            return true;
         }
         break;
 
@@ -194,6 +232,27 @@ export class TapeLoadingModel extends AbstractModel {
 
     return false;
   } // handleEvent
+
+  break() {
+    if (this.tapeBreak) {
+      this.app.setModel('MenuModel');
+      return true;
+    }
+
+    if (this.tapePhase !== false) {
+      this.cancelEvent('updateTape');
+      this.cancelEvent('setMenuModel');
+      this.sendEvent(0, {id: 'stopAudioChannel', channel: 'sounds'});
+      this.tapeBreak = true;
+      this.signboardEntity.breakTimer = this.app.now;
+      this.inputLineEntity.setText('D BREAK - CONT repeats, '+this.tapeBreakLine);
+      this.inputLineEntity.hide = false;
+      this.sendEvent(0, {id: 'setBorderAnimation', value: false});
+      this.sendEvent(5000, {id: 'setMenuModel'});
+      return true;
+    }
+    return false;
+  } // break
 
   loopModel(timestamp) {
     super.loopModel(timestamp);

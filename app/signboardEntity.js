@@ -14,6 +14,7 @@ export class SignboardEntity extends AbstractEntity {
     this.animationMode = animationMode;
     this.animateState = 0;
     this.loadTimer = false;
+    this.breakTimer = false;
     this.cursorX = 0;
     this.scale = 1;
 
@@ -80,7 +81,12 @@ export class SignboardEntity extends AbstractEntity {
         case 'splashScreen':
           if (char.flashState == this.app.stack.flashState) {
             if (this.loadTimer !== false) {
-              var loaded = (this.app.now-this.loadTimer)/1380;
+              var loaded = 0;
+              if (this.breakTimer !== false) {
+                loaded = (this.breakTimer-this.loadTimer)/1380;
+              } else {
+                loaded = (this.app.now-this.loadTimer)/1380;
+              }
               if (loaded >= 1) {
                 this.loadTimer = false;
               } else {
