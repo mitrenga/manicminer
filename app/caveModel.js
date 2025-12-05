@@ -223,6 +223,7 @@ export class CaveModel extends AbstractModel {
 
         switch (key) {
           case 'Escape':
+          case 'GamepadPause':
             this.postWorkerMessage({id: 'pause'});
             this.app.audioManager.pauseAllChannels();
             this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 52, 40, 153, 85, 'PAUSE GAME', 'GameExitModel'));
