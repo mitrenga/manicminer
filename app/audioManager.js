@@ -39,7 +39,7 @@ export class AudioManager extends AbstractAudioManager {
       return new AudioDisableHandler(this.app);
     }
 
-    if (this.unsupportedAudioChannel == false) {
+    if (this.unsupportedAudioChannel === false) {
       this.unsupportedAudioChannel = this.app.readCookie('unsupportedAudioChannel', false);
     }
 

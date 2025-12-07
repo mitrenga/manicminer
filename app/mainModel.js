@@ -127,9 +127,11 @@ export class MainModel extends AbstractModel {
           }
           switch (key) {            
             case 'Enter':
+            case 'GamepadOK':
               this.app.startCave(false, true, true);
               return true;
             case 'Escape':
+            case 'GamepadExit':
               this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 52, 40, 153, 85, 'OPTIONS', 'MenuModel'));
               return true;
             case 'Mouse1':
