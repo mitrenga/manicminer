@@ -34,14 +34,14 @@ export class MenuModel extends AbstractModel {
     this.id = 'MenuModel';
 
     this.menuItems = [
-      {t1: 'START GAME', event: 'startGame'},
-      {t1: 'PLAYER NAME', event: 'setPlayerName'},
-      {t1: 'HALL OF FAME', event: 'showHallOfFame'},
-      {t1: 'SOUNDS', event: 'setSounds'},
-      {t1: 'MUSIC', event: 'setMusic'},
-      {t1: 'CONTROLS', event: 'setControls'},
-      {t1: 'SHOW TAPE LOADING', event: 'startTapeLoading'},
-      {t1: 'ABOUT GAME', event: 'showAbout'}
+      {t1: 'START GAME', event: {id: 'startGame'}},
+      {t1: 'PLAYER NAME', event: {id: 'setPlayerName'}},
+      {t1: 'HALL OF FAME', event: {id: 'showHallOfFame'}},
+      {t1: 'SOUNDS', event: {id: 'setSounds'}},
+      {t1: 'MUSIC', event: {id: 'setMusic'}},
+      {t1: 'CONTROLS', event: {id: 'setControls'}},
+      {t1: 'SHOW TAPE LOADING', event: {id: 'startTapeLoading'}},
+      {t1: 'ABOUT GAME', event: {id: 'showAbout'}}
     ];
     this.menuOptions = {
       fonts: this.app.fonts.zxFonts8x8,
@@ -168,7 +168,7 @@ export class MenuModel extends AbstractModel {
           return true;
         } else {
           if (this.app.inputEventsManager.needEventForAudio()) {
-            this.desktopEntity.addModalEntity(new ZXWaitForAudioEventEntity(this.desktopEntity, 64, 75, 128, 45, this.app.platform.colorByName('black'), this.app.platform.colorByName('green'), 'startGame2'));
+            this.desktopEntity.addModalEntity(new ZXWaitForAudioEventEntity(this.desktopEntity, 64, 75, 128, 45, this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('magenta'), 'startGame2'));
             return true;
           }
         }
@@ -198,7 +198,7 @@ export class MenuModel extends AbstractModel {
 
       case 'startTapeLoading':
         if (this.app.inputEventsManager.needEventForAudio()) {
-          this.desktopEntity.addModalEntity(new ZXWaitForAudioEventEntity(this.desktopEntity, 64, 75, 128, 45, this.app.platform.colorByName('black'), this.app.platform.colorByName('green'), 'startTapeLoading2'));
+          this.desktopEntity.addModalEntity(new ZXWaitForAudioEventEntity(this.desktopEntity, 64, 75, 128, 45, this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('magenta'), 'startTapeLoading2'));
           return true;
         }
       case 'startTapeLoading2':

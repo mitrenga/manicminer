@@ -33,23 +33,23 @@ export class TapeLoadingModel extends AbstractModel {
       
       {id: 'pilot', duration: 3000},
       {id: 'data', duration: 100},
-      {id: 'pause', duration: 800, 'event': 'setProgramName'},
+      {id: 'pause', duration: 800, event: {id: 'setProgramName'}},
       {id: 'pilot', duration: 1500},
       {id: 'data', duration: 840},
       
-      {id: 'pause', duration: 1000, event: 'printCopyright'},
+      {id: 'pause', duration: 1000, event: {id: 'printCopyright'}},
       
       {id: 'pilot', duration: 3000},
       {id: 'data', duration: 100},
       {id: 'pause', duration: 800},
       {id: 'pilot', duration: 1500},
-      {id: 'data', duration: 1380, event: 'showSignboard'},
+      {id: 'data', duration: 1380, event: {id: 'showSignboard'}},
 
-      {id: 'pause', duration: 1000, event: 'beginLoadCode'},
+      {id: 'pause', duration: 1000, event: {id: 'beginLoadCode'}},
       
       {id: 'pilot', duration: 3000},
       {id: 'data', duration: 100},
-      {id: 'pause', duration: 800, event: 'scrollScreen'},
+      {id: 'pause', duration: 800, event: {id: 'scrollScreen'}},
       {id: 'pilot', duration: 1500},
       {id: 'data', duration: 5000}
     ];
@@ -143,7 +143,7 @@ export class TapeLoadingModel extends AbstractModel {
             break;
         }
         if ('event' in this.tape[this.tapePhase]) {
-          this.sendEvent(0, {id: this.tape[this.tapePhase].event});
+          this.sendEvent(0, this.tape[this.tapePhase].event);
         }
         this.tapePhase++;
         if (this.tapePhase < this.tape.length) {
