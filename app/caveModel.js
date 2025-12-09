@@ -1,11 +1,13 @@
 /**/
 const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+window.srcVersion);
+const { BorderEntity } = await import('./borderEntity.js?ver='+window.srcVersion);
 const { GameAreaEntity } = await import('./gameAreaEntity.js?ver='+window.srcVersion);
 const { GameInfoEntity } = await import('./gameInfoEntity.js?ver='+window.srcVersion);
 const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
+import BorderEntity from './borderEntity.js';
 import GameAreaEntity from './gameAreaEntity.js';
 import GameInfoEntity from './gameInfoEntity.js';
 import PauseGameEntity from './pauseGameEntity.js';
@@ -165,6 +167,10 @@ export class CaveModel extends AbstractModel {
     }
     this.app.audioManager.stopAllChannels();
   } // shutdown
+
+  newBorderEntity() {
+    return new BorderEntity(null, 0, 0, 0, 0, false, false);
+  } // newBorderEntity
 
   setData(data) {
     data.data.willy = Object.assign(this.app.globalData.willy, data.data.willy);

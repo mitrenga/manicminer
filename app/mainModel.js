@@ -1,6 +1,7 @@
 /**/
 const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+window.srcVersion);
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
+const { BorderEntity } = await import('./borderEntity.js?ver='+window.srcVersion);
 const { MainImageEntity } = await import('./mainImageEntity.js?ver='+window.srcVersion);
 const { SlidingTextEntity } = await import('./svision/js/platform/canvas2D/slidingTextEntity.js?ver='+window.srcVersion);
 const { AirEntity } = await import('./airEntity.js?ver='+window.srcVersion);
@@ -9,6 +10,7 @@ const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcV
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import AbstractEntity from './svision/js/abstractEntity.js';
+import BorderEntity from './borderEntity.js';
 import MainImageEntity from './mainImageEntity.js';
 import SlidingTextEntity from './svision/js/platform/canvas2D/slidingTextEntity.js';
 import AirEntity from './airEntity.js';
@@ -91,6 +93,10 @@ export class MainModel extends AbstractModel {
     super.shutdown();
     this.app.audioManager.stopAllChannels();
   } // shutdown
+
+  newBorderEntity() {
+    return new BorderEntity(null, 0, 0, 0, 0, false, false);
+  } // newBorderEntity
 
   handleEvent(event) {
     if (super.handleEvent(event)) {
