@@ -174,6 +174,9 @@ export class GameApp extends AbstractApp {
       this.lives = 2;
       if (setInitCave) {
         this.caveNumber = this.globalData.initCave;
+        this.inputEventsManager.touchesControls.left = {};
+        this.inputEventsManager.touchesControls.right = {};
+        this.inputEventsManager.touchesControls.jump = {};
       }
     }
     this.demo = demo;
