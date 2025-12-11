@@ -169,7 +169,7 @@ export class CaveModel extends AbstractModel {
   } // shutdown
 
   newBorderEntity() {
-    return new BorderEntity(null, 0, 0, 0, 0, false, false);
+    return new BorderEntity(true, this.app.controls.touchscreen.supported & !this.demo);
   } // newBorderEntity
 
   setData(data) {
@@ -219,6 +219,7 @@ export class CaveModel extends AbstractModel {
             case 'Mouse4':
               this.app.inputEventsManager.keysMap[event.key] = this.borderEntity;
               return true;
+
             case 'Touch':
               this.app.inputEventsManager.touchesMap[event.identifier] = this.borderEntity;
               return true;
@@ -240,6 +241,24 @@ export class CaveModel extends AbstractModel {
               this.postWorkerMessage({id: 'controls', action: 'right', value: true});
             }
             return true;
+
+          case 'Touch':
+            if (this.borderEntity.leftControlEntity.pointOnEntity(event)) {
+              this.app.inputEventsManager.touchesMap[event.identifier] = this.borderEntity.leftControlEntity;
+              this.postWorkerMessage({id: 'controls', action: 'left', value: true});
+              return true;
+            }
+            if (this.borderEntity.rightControlEntity.pointOnEntity(event)) {
+              this.app.inputEventsManager.touchesMap[event.identifier] = this.borderEntity.rightControlEntity;
+              this.postWorkerMessage({id: 'controls', action: 'right', value: true});
+              return true;
+            }
+            if (this.borderEntity.jumpControlEntity.pointOnEntity(event)) {
+              this.app.inputEventsManager.touchesMap[event.identifier] = this.borderEntity.jumpControlEntity;
+              this.postWorkerMessage({id: 'controls', action: 'jump', value: true});
+              return true;
+            }
+            break;
 
           case this.app.controls.keyboard.right:
           case 'GamepadRight':  
@@ -298,6 +317,7 @@ export class CaveModel extends AbstractModel {
                 return true;
               }
               break;
+
             case 'Touch':
               if (this.app.inputEventsManager.touchesMap[event.identifier] === this.borderEntity) {
                 this.app.setModel('MainModel');
@@ -314,6 +334,21 @@ export class CaveModel extends AbstractModel {
               this.postWorkerMessage({id: 'controls', action: 'right', value: false});
             }
             return true;
+
+          case 'Touch':
+            if (this.app.inputEventsManager.touchesMap[event.identifier] === this.borderEntity.leftControlEntity) {
+              this.postWorkerMessage({id: 'controls', action: 'left', value: false});
+              return true;
+            }
+            if (this.app.inputEventsManager.touchesMap[event.identifier] === this.borderEntity.rightControlEntity) {
+              this.postWorkerMessage({id: 'controls', action: 'right', value: false});
+              return true;
+            }
+            if (this.app.inputEventsManager.touchesMap[event.identifier] === this.borderEntity.jumpControlEntity) {
+              this.postWorkerMessage({id: 'controls', action: 'jump', value: false});
+              return true;
+            }
+            break;
 
           case this.app.controls.keyboard.right:
           case 'GamepadRight':  
