@@ -21,7 +21,7 @@ class DataCommand {
     }
 
     $mysqli = new mysqli($GLOBALS['dbHostname'], $GLOBALS['dbUser'], $GLOBALS['dbPassword'], $GLOBALS['dbName']);
-    $data = $mysqli->query('SELECT `score` FROM `hallOfFame` ORDER BY `score` DESC LIMIT 1');
+    $data = $mysqli->query('SELECT `score` FROM `rg_mm_hallOfFame` ORDER BY `score` DESC LIMIT 1');
     $mysqli->close();
     $result['hiScore'] = 0;
     if ($row = $data->fetch_object()) {
