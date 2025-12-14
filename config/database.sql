@@ -1,4 +1,4 @@
-SET @dbname = 'mm2';
+SET @dbname = 'manicminer';
 
 SET @query = CONCAT('CREATE DATABASE IF NOT EXISTS `', @dbname, '`');
 PREPARE stmt FROM @query;
