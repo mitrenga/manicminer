@@ -1,5 +1,6 @@
 {
    "name":"The Sixteenth Cavern",
+   "shortName":"16. Cavern",
    "bkColor":"00",
    "borderColor":"02",
    "airSupply":"3F",
@@ -407,6 +408,12 @@
                "-----#-#-#--------",
                "----#--#--#-------"
             ]
+         ],
+         "mapSprite": [
+            "-##",
+            "#--",
+            "###",
+            "#-#"
          ]
       }
    }

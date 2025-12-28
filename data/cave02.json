@@ -1,5 +1,6 @@
 {
    "name":"The Menagerie",
+   "shortName":"The Menagerie",
    "bkColor":"00",
    "borderColor":"02",
    "airSupply":"3F",
@@ -392,6 +393,12 @@
                "-----#----",
                "----#-#---"
             ]
+         ],
+         "mapSprite": [
+            "-##",
+            "--#",
+            "##-",
+            "-#-"
          ]
       }
    }

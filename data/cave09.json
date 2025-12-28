@@ -1,5 +1,6 @@
 {
    "name":"The Endorian Forest",
+   "shortName":"Endorian Forest",
    "bkColor":"00",
    "borderColor":"02",
    "airSupply":"3F",
@@ -402,6 +403,12 @@
                "---###-##--",
                "--###-###--"
             ]
+         ],
+         "mapSprite": [
+            "##-",
+            "-##",
+            "-#-",
+            "#-#"
          ]
       }
    }

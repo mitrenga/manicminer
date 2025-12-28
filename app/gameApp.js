@@ -7,6 +7,7 @@ const { Fonts3x3 } = await import('./svision/js/platform/canvas2D/fonts3x3.js?ve
 const { ZXResetModel } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxResetModel.js?ver='+window.srcVersion);
 const { MenuModel } = await import('./menuModel.js?ver='+window.srcVersion);
 const { MainModel } = await import('./mainModel.js?ver='+window.srcVersion);
+const { CavesMapModel } = await import('./cavesMapModel.js?ver='+window.srcVersion);
 const { CaveModel } = await import('./caveModel.js?ver='+window.srcVersion);
 const { GameOverModel } = await import('./gameOverModel.js?ver='+window.srcVersion);
 const { TapeLoadingModel } = await import('./tapeLoadingModel.js?ver='+window.srcVersion);
@@ -20,6 +21,7 @@ import Fonts3x3 from './svision/js/platform/canvas2D/fonts3x3.js';
 import ZXResetModel from './svision/js/platform/canvas2D/zxSpectrum/zxResetModel.js';
 import MenuModel from './menuModel.js';
 import MainModel from './mainModel.js';
+import CavesMapModel from './cavesMapModel.js';
 import CaveModel from './caveModel.js';
 import GameOverModel from './gameOverModel.js';
 import TapeLoadingModel from './tapeLoadingModel.js';
@@ -54,6 +56,19 @@ export class GameApp extends AbstractApp {
     this.caveNumber = false;
     this.caveName = '';
     this.cavesCompleted = 0;
+    this.cavesOpened = 0;
+    var cavesOpenedCookie = this.readCookie('cavesOpened', false);
+    if (cavesOpenedCookie !== false) {
+      try {
+        this.cavesOpened = (parseInt(cavesOpenedCookie, 5)-6912)/16384;
+      }
+      catch (error) {
+        this.cavesOpened = 0;
+      }
+      if (this.cavesOpened-Math.round(this.cavesOpened) != 0) {
+        this.cavesOpened = 0;
+      }
+    }
     this.airValue = 0;
     this.demo = false;
     this.lives = 2;
@@ -147,7 +162,14 @@ export class GameApp extends AbstractApp {
       case 'MainModel':
         this.model = new MainModel(this);
         break;
+      case 'CavesMapModel':
+        this.model = new CavesMapModel(this);
+        break;
       case 'CaveModel':
+        if (!this.demo && this.caveNumber > this.cavesOpened) {
+          this.cavesOpened = this.caveNumber;
+          this.writeCookie('cavesOpened', (this.cavesOpened*16384+6912).toString(5).padStart(8, '0'));
+        }
         this.model = new CaveModel(this, this.caveNumber, this.demo);
         break;
       case 'GameExitModel':

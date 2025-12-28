@@ -1,5 +1,6 @@
 {
    "name":"Attack of the Mutant Telephones",
+   "shortName":"Attack of Phones",
    "bkColor":"00",
    "borderColor":"02",
    "airSupply":"3F",
@@ -309,6 +310,12 @@
                "-#--------",
                "--##-###--"
             ]
+         ],
+         "mapSprite": [
+            "-#-",
+            "#-#",
+            "-#-",
+            "###"
          ]
       },
       "vertical":{
@@ -461,6 +468,12 @@
                "--############--",
                "--############--"
             ]
+         ],
+         "mapSprite": [
+            "####",
+            "-##-",
+            "#--#",
+            "####"
          ]
       }
    }

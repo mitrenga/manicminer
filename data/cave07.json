@@ -1,5 +1,6 @@
 {
    "name":"Miner Willy meets the Kong Beast",
+   "shortName":"Meets the Kong",
    "bkColor":"00",
    "borderColor":"02",
    "airSupply":"3F",
@@ -530,6 +531,12 @@
                "--##--##--",
                "----##----"
             ]
+         ],
+         "mapSprite": [
+            "#-#",
+            "-#-",
+            "#-#",
+            "-#-"
          ]
       },
       "forDropping":{
@@ -625,6 +632,12 @@
                "----##-##-##----",
                "------####------"
             ]
+         ],
+         "mapSprite": [
+            "-#-",
+            "###",
+            "-#-",
+            "#-#"
          ]
       }
    }

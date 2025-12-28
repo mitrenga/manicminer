@@ -1,5 +1,6 @@
 {
    "name":"Skylab Landing Bay",
+   "shortName":"Skylab Land. Bay",
    "bkColor":"08",
    "borderColor":"06",
    "airSupply":"3F",
@@ -428,6 +429,12 @@
                "------#-##------",
                "-----###-##-----"
             ]
+         ],
+         "mapSprite": [
+            "####",
+            "####",
+            "-##-",
+            "#--#"
          ]
       }
    }

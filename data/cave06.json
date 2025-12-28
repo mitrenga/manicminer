@@ -1,5 +1,6 @@
 {
    "name":"The Vat",
+   "shortName":"The Vat",
    "bkColor":"00",
    "borderColor":"04",
    "airSupply":"3F",
@@ -400,6 +401,12 @@
                "----#------#--",
                "--------------"
             ]
+         ],
+         "mapSprite": [
+            "-#-",
+            "-##",
+            "-#-",
+            "#-#"
          ]
       }
    }

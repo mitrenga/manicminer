@@ -1,5 +1,6 @@
 {
    "name":"Central Cavern",
+   "shortName":"Central Cavern",
    "bkColor":"00",
    "borderColor":"02",
    "airSupply":"3F",
@@ -371,6 +372,12 @@
                "---#-----#----",
                "----#---#-----"
             ]
+         ],
+         "mapSprite": [
+            "-##",
+            "##-",
+            "-#-",
+            "#-#"
          ]
       }
    }

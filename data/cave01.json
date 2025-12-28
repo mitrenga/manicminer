@@ -1,5 +1,6 @@
 {
    "name":"The Cold Room",
+   "shortName":"The Cold Room",
    "bkColor":"08",
    "borderColor":"02",
    "airSupply":"3F",
@@ -341,6 +342,12 @@
                "-----#----",
                "---####---"
             ]
+         ],
+         "mapSprite": [
+            "-#-",
+            "#-#",
+            "##-",
+            "##-"
          ]
       }
    }

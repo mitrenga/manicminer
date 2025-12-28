@@ -1,5 +1,6 @@
 {
    "name":"Return of the Alien Kong Beast",
+   "shortName":"Return of Kong",
    "bkColor":"00",
    "borderColor":"02",
    "airSupply":"3F",
@@ -561,6 +562,12 @@
                "--##--##--",
                "----##----"
             ]
+         ],
+         "mapSprite": [
+            "#-#",
+            "-#-",
+            "#-#",
+            "-#-"
          ]
       },
       "forDropping":{
@@ -656,6 +663,12 @@
                "----##-##-##----",
                "------####------"
             ]
+         ],
+         "mapSprite": [
+            "-#-",
+            "###",
+            "-#-",
+            "#-#"
          ]
       }
    }

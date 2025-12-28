@@ -1,5 +1,6 @@
 {
    "name":"Abandoned Uranium Workings",
+   "shortName":"Uranium Workings",
    "bkColor":"00",
    "borderColor":"02",
    "airSupply":"3F",
@@ -369,6 +370,12 @@
                "---##-#######---",
                "---#---####-----"
             ]
+         ],
+         "mapSprite": [
+            "-##",
+            "-##",
+            "--#",
+            "###"
          ]
       }
    }

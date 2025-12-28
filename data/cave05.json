@@ -1,5 +1,6 @@
 {
    "name":"Processing Plant",
+   "shortName":"Processing Plant",
    "bkColor":"00",
    "borderColor":"02",
    "airSupply":"3F",
@@ -408,6 +409,12 @@
                "----#-#----",
                "---#####---"
             ]
+         ],
+         "mapSprite": [
+            "-##-",
+            "##-#",
+            "-##-",
+            "-#--"
          ]
       }
    }

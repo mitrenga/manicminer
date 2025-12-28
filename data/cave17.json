@@ -1,5 +1,6 @@
 {
    "name":"Amoebatrons' Revenge",
+   "shortName":"Amoeb. Revenge",
    "bkColor":"00",
    "borderColor":"01",
    "airSupply":"3F",
@@ -250,6 +251,12 @@
                "####--##-#",
                "-##----##-"
             ]
+         ],
+         "mapSprite": [
+            "-#-",
+            "-#-",
+            "-#-",
+            "#-#"
          ]
       },
       "vertical":{
@@ -484,6 +491,11 @@
                "-#---######---#-",
                "-------##-------"
             ]
+         ],
+         "mapSprite": [
+            "-##-",
+            "####",
+            "#--#"
          ]
       }
    }
