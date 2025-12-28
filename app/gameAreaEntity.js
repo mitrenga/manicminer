@@ -97,7 +97,7 @@ export class GameAreaEntity extends AbstractEntity {
                 bkColor2 = this.bkColor;
               }
               if (bkColor != this.bkColor) {
-                this.app.layout.paintRect(this.drawingCache[1].ctx, column*8, (row)*8, 8, 8, bkColor2);
+                this.app.layout.paintRect(this.drawingCache[1].ctx, column*8, row*8, 8, 8, bkColor2);
               }
               for (var line = 0; line < 8; line++) {
                 var binMask = this.app.hexToBin(this.caveData.image.data[row+line*8].substring(column*2, column*2+2))
