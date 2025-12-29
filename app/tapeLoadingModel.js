@@ -130,7 +130,7 @@ export class TapeLoadingModel extends AbstractModel {
             this.sendEvent(0, {id: 'setBorderAnimation', value: 'pilotTone'});
             break;
           case 'data':
-            if ('event' in this.tape[this.tapePhase] && this.tape[this.tapePhase].event == 'showSignboard') {
+            if ('event' in this.tape[this.tapePhase] && this.tape[this.tapePhase].event.id == 'showSignboard') {
               this.sendEvent(0, {id: 'playSound', channel: 'sounds', sound: 'tapeScreenAttrSound', options: false});
             } else {
               this.sendEvent(0, {id: 'playSound', channel: 'sounds', sound: 'tapeRndDataSound', options: false});
