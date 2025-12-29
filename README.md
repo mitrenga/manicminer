@@ -15,7 +15,7 @@ Supported:
 - PWA application
 
 
-## Running application
+## Application website
 https://manicminer.free
 
 
