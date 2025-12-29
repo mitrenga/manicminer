@@ -21,6 +21,8 @@ https://manicminer.free
 
 ## Install
 - clone this repository
+- clone library repository https://github.com/mitrenga/svision
+- check symlink ~/app/svision
 - configure nginx (example: ~/config/nginx.conf)
 - create path ~/js with permissions 0777
 - create database (script: ~/config/database.sql)
