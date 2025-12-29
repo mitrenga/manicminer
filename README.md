@@ -3,6 +3,7 @@
 MANIC MINER
 =====================
 The legendary MANIC MINER game in retro style Sinclair ZX Spectrum for all modern web browsers.
+
 Supported:
 - keyboard
 - mouse
