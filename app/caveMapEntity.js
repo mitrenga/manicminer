@@ -258,14 +258,14 @@ export class CaveMapEntity extends AbstractEntity {
       case 'keyPress':
         switch (event.key) {            
           case 'Mouse1':
-            if (this.pointOnEntity(event)) {
+            if (this.app.cavesOpened >= this.caveNumber && this.pointOnEntity(event)) {
               this.app.inputEventsManager.keysMap.Mouse1 = this;
               this.clickState = true;
               return true;
             }
             return false;
           case 'Touch':
-            if (this.pointOnEntity(event)) {
+            if (this.app.cavesOpened >= this.caveNumber && this.pointOnEntity(event)) {
               this.app.inputEventsManager.touchesMap[event.identifier] = this;
               this.clickState = true;
               return true;
