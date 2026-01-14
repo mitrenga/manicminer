@@ -90,7 +90,7 @@ export class MenuModel extends AbstractModel {
     this.signboardEntity = new SignboardEntity(this.desktopEntity, 98, 4, 61, 7, 'menuLabel');
     this.desktopEntity.addEntity(this.signboardEntity);
 
-    this.copyrightEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 23*8, 32*8, 8, '© 2025 GNU General Public Licence', this.app.platform.colorByName('black'), false, {align: 'center'});
+    this.copyrightEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 23*8, 32*8, 8, this.app.copyright, this.app.platform.colorByName('black'), false, {align: 'center'});
     this.desktopEntity.addEntity(this.copyrightEntity);
 
     this.animationObjects.forEach((object, o) => {
