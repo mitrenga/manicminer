@@ -90,6 +90,7 @@ export class MainModel extends AbstractModel {
     this.desktopEntity.addEntity(this.airEntity);
     
     this.blackBox = new AbstractEntity(this.desktopEntity, 0, 18*8, 32*8, 6*8, false, this.app.platform.colorByName('black'));
+    this.blackBox.clickColor = '#444444';
     this.desktopEntity.addEntity(this.blackBox);
     this.slidingTextEntity = new SlidingTextEntity(this.blackBox, this.app.fonts.zxFonts8x8, 0, 8, 32*8, 8, this.slidingText, this.app.platform.colorByName('yellow'), false, {animation: 'toLeft', speed: 15, leftMargin: 256, rightMargin: 256});
     this.blackBox.addEntity(this.slidingTextEntity);
@@ -173,17 +174,17 @@ export class MainModel extends AbstractModel {
               this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 52, 40, 153, 85, 'OPTIONS', 'MenuModel'));
               return true;
             case 'Mouse1':
-              if (this.selectCaveEntity.pointOnEntity(event)) {
-                this.app.inputEventsManager.keysMap.Mouse1 = this.selectCaveEntity;
-                this.selectCaveEntity.clickState = true;
+              if (this.blackBox.pointOnEntity(event)) {
+                this.app.inputEventsManager.keysMap.Mouse1 = this.blackBox;
+                this.blackBox.clickState = true;
                 return true;
               }
               this.app.inputEventsManager.keysMap.Mouse1 = this.borderEntity;
               return true;
             case 'Touch':
-              if (this.selectCaveEntity.pointOnEntity(event)) {
-                this.app.inputEventsManager.touchesMap[event.identifier] = this.selectCaveEntity;
-                this.selectCaveEntity.clickState = true;
+              if (this.blackBox.pointOnEntity(event)) {
+                this.app.inputEventsManager.touchesMap[event.identifier] = this.blackBox;
+                this.blackBox.clickState = true;
                 return true;
               }
               this.app.inputEventsManager.touchesMap[event.identifier] = this.borderEntity;
@@ -204,8 +205,8 @@ export class MainModel extends AbstractModel {
       case 'keyRelease':
         switch (event.key) {
           case 'Mouse1':
-            if (this.selectCaveEntity.pointOnEntity(event)) {
-              if (this.app.inputEventsManager.keysMap.Mouse1 === this.selectCaveEntity) {
+            if (this.blackBox.pointOnEntity(event)) {
+              if (this.app.inputEventsManager.keysMap.Mouse1 === this.blackBox) {
                 this.app.setModel('CavesMapModel');
                 return true;
               }
@@ -216,8 +217,8 @@ export class MainModel extends AbstractModel {
             }
             break;
           case 'Touch':
-            if (this.selectCaveEntity.pointOnEntity(event)) {
-              if (this.app.inputEventsManager.touchesMap[event.identifier] === this.selectCaveEntity) {
+            if (this.blackBox.pointOnEntity(event)) {
+              if (this.app.inputEventsManager.touchesMap[event.identifier] === this.blackBox) {
                 this.app.setModel('CavesMapModel');
                 return true;
               }
