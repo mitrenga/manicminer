@@ -29,7 +29,7 @@ export class MainModel extends AbstractModel {
     this.pianoKey1Entity = null;
     this.pianoKey2Entity = null;
     this.airEntity = null;
-    this.blackBox = null;
+    this.blackBoxEntity = null;
     this.slidingText =
       'MANIC MINER' +
       '      ' +
@@ -89,13 +89,13 @@ export class MainModel extends AbstractModel {
     this.airEntity = new AirEntity(this.desktopEntity, 0, 17*8, 32*8, 8, 0.0);
     this.desktopEntity.addEntity(this.airEntity);
     
-    this.blackBox = new AbstractEntity(this.desktopEntity, 0, 18*8, 32*8, 6*8, false, this.app.platform.colorByName('black'));
-    this.blackBox.clickColor = '#444444';
-    this.desktopEntity.addEntity(this.blackBox);
-    this.slidingTextEntity = new SlidingTextEntity(this.blackBox, this.app.fonts.zxFonts8x8, 0, 8, 32*8, 8, this.slidingText, this.app.platform.colorByName('yellow'), false, {animation: 'toLeft', speed: 15, leftMargin: 256, rightMargin: 256});
-    this.blackBox.addEntity(this.slidingTextEntity);
+    this.blackBoxEntity = new AbstractEntity(this.desktopEntity, 0, 18*8, 32*8, 6*8, false, this.app.platform.colorByName('black'));
+    this.blackBoxEntity.clickColor = '#444444';
+    this.desktopEntity.addEntity(this.blackBoxEntity);
+    this.slidingTextEntity = new SlidingTextEntity(this.blackBoxEntity, this.app.fonts.zxFonts8x8, 0, 8, 32*8, 8, this.slidingText, this.app.platform.colorByName('yellow'), false, {animation: 'toLeft', speed: 15, leftMargin: 256, rightMargin: 256});
+    this.blackBoxEntity.addEntity(this.slidingTextEntity);
 
-    this.selectCaveEntity = new SpriteEntity(this.blackBox, 25, 28, this.app.platform.colorByName('white'), false, 0, 0);
+    this.selectCaveEntity = new SpriteEntity(this.blackBoxEntity, 25, 28, this.app.platform.colorByName('white'), false, 0, 0);
     this.selectCaveEntity.setCompressedGraphicsData(
       'lP105R0080K0006020705031M0B010A040E1L091N0C1P081O0D012123245463247423821324239448A2528B83838383C383D383821' +
       '38383D35552528D5282528212A882A8E2A252D2A882121212A852F2A8228222528243838AA454G2A252D45AA21AA2H2F2125282528' +
@@ -103,14 +103,14 @@ export class MainModel extends AbstractModel {
       '3D38383838352F383555D1252832454I2447423838324A2J42252A8A3',
       false
     );
-    this.blackBox.addEntity(this.selectCaveEntity);
+    this.blackBoxEntity.addEntity(this.selectCaveEntity);
 
-    this.spaceEntity = new SpriteEntity(this.blackBox, 73, 28, this.app.platform.color(3), false, 0, 0);
+    this.spaceEntity = new SpriteEntity(this.blackBoxEntity, 73, 28, this.app.platform.color(3), false, 0, 0);
     this.spaceEntity.setCompressedGraphicsData(
       'lP101300809010502060E070309040123101124056665078002622202228002116502620238110322620238601002350280021502350505012232622125',
       false
     );
-    this.blackBox.addEntity(this.spaceEntity);
+    this.blackBoxEntity.addEntity(this.spaceEntity);
 
     this.sendEvent(0, {id: 'openAudioChannel', channel: 'music', options: {muted: this.app.muted.music}});
     this.sendEvent(0, {id: 'openAudioChannel', channel: 'sounds', options: {muted: this.app.muted.sounds}});
@@ -174,17 +174,17 @@ export class MainModel extends AbstractModel {
               this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 52, 40, 153, 85, 'OPTIONS', 'MenuModel'));
               return true;
             case 'Mouse1':
-              if (this.blackBox.pointOnEntity(event)) {
-                this.app.inputEventsManager.keysMap.Mouse1 = this.blackBox;
-                this.blackBox.clickState = true;
+              if (this.blackBoxEntity.pointOnEntity(event)) {
+                this.app.inputEventsManager.keysMap.Mouse1 = this.blackBoxEntity;
+                this.blackBoxEntity.clickState = true;
                 return true;
               }
               this.app.inputEventsManager.keysMap.Mouse1 = this.borderEntity;
               return true;
             case 'Touch':
-              if (this.blackBox.pointOnEntity(event)) {
-                this.app.inputEventsManager.touchesMap[event.identifier] = this.blackBox;
-                this.blackBox.clickState = true;
+              if (this.blackBoxEntity.pointOnEntity(event)) {
+                this.app.inputEventsManager.touchesMap[event.identifier] = this.blackBoxEntity;
+                this.blackBoxEntity.clickState = true;
                 return true;
               }
               this.app.inputEventsManager.touchesMap[event.identifier] = this.borderEntity;
@@ -205,8 +205,8 @@ export class MainModel extends AbstractModel {
       case 'keyRelease':
         switch (event.key) {
           case 'Mouse1':
-            if (this.blackBox.pointOnEntity(event)) {
-              if (this.app.inputEventsManager.keysMap.Mouse1 === this.blackBox) {
+            if (this.blackBoxEntity.pointOnEntity(event)) {
+              if (this.app.inputEventsManager.keysMap.Mouse1 === this.blackBoxEntity) {
                 this.app.setModel('CavesMapModel');
                 return true;
               }
@@ -217,8 +217,8 @@ export class MainModel extends AbstractModel {
             }
             break;
           case 'Touch':
-            if (this.blackBox.pointOnEntity(event)) {
-              if (this.app.inputEventsManager.touchesMap[event.identifier] === this.blackBox) {
+            if (this.blackBoxEntity.pointOnEntity(event)) {
+              if (this.app.inputEventsManager.touchesMap[event.identifier] === this.blackBoxEntity) {
                 this.app.setModel('CavesMapModel');
                 return true;
               }
