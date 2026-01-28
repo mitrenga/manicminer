@@ -37,6 +37,9 @@ export class CavesMapModel extends AbstractModel {
     }
     this.caveSelectionEntity = new CaveSelectionEntity(this.desktopEntity, this.selectionCave%4*64, Math.floor(this.selectionCave/4)*38);
     this.desktopEntity.addEntity(this.caveSelectionEntity);
+
+    this.app.stack.flashState = false;
+    this.sendEvent(330, {id: 'changeFlashState'});
   } // init
 
   newBorderEntity() {
@@ -49,6 +52,10 @@ export class CavesMapModel extends AbstractModel {
     }
 
     switch (event.id) {
+      case 'changeFlashState':
+        this.app.stack.flashState = !this.app.stack.flashState;
+        this.sendEvent(330, {id: 'changeFlashState'});
+        return true;
 
       case 'keyPress':
         if (this.desktopEntity.modalEntity == null) {

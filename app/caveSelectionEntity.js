@@ -12,7 +12,6 @@ export class CaveSelectionEntity extends AbstractEntity {
     this.id = 'CaveSelectionEntity';
 
     this.colorState = 0;
-    this.lastColorChange = false;
   } // constructor
 
   drawEntity() {
@@ -24,14 +23,10 @@ export class CaveSelectionEntity extends AbstractEntity {
   } // drawEntity
 
   loopEntity(timestamp) {
-    if (this.lastColorChange === false) {
-      this.lastColorChange = timestamp;
+    this.colorState = 0;
+    if (this.app.stack.flashState) {
+      this.colorState = 1;
     }
-    if (timestamp - this.lastColorChange < 480) {
-      return;
-    }
-    this.lastColorChange = timestamp;
-    this.colorState = Math.abs(1-this.colorState);
   } // loopEntity
 
 } // CaveSelectionEntity
