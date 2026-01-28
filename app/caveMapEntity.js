@@ -17,10 +17,11 @@ export class CaveMapEntity extends AbstractEntity {
 
     this.caveNumber = caveNumber;
     this.locked = locked;
-    this.app.layout.newDrawingCache(this, 0);
     this.caveData = null;
     this.mapKinds = ['floor', 'crumblingFloor', 'wall', 'nasty', 'conveyor'];
     this.caveNameEntity = null;
+
+    this.app.layout.newDrawingCache(this, 0);
   } // constructor
 
   init() {
