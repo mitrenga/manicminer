@@ -27,7 +27,7 @@ export class CaveMapEntity extends AbstractEntity {
   init() {
     super.init();
 
-    this.caveNameEntity = new TextEntity(this, this.app.fonts.fonts3x3, 0, 33, 64, 3, '', this.app.platform.colorByName('brightWhite'), false, {align: 'center'});
+    this.caveNameEntity = new TextEntity(this, this.app.fonts.fonts3x3, 0, 32, 64, 6, '', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlack'), {align: 'center', topMargin: 1});
     this.addEntity(this.caveNameEntity);
     if (this.locked) {
       this.addEntity(new AbstractEntity(this, 0, 0, this.width, this.height, false, '#9a9595c0'));
@@ -49,7 +49,6 @@ export class CaveMapEntity extends AbstractEntity {
 
       this.bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(this.caveData.bkColor));
       this.app.layout.paint(this, 0, 0, this.width, this.height-6, this.bkColor);
-      this.app.layout.paint(this, 0, this.height-6, this.width, 6, this.app.platform.colorByName('black'));
 
       if (this.drawingCache[0].needToRefresh(this, this.width, this.height)) {
 
