@@ -31,26 +31,9 @@ export class CaveMapEntity extends AbstractEntity {
     this.addEntity(this.caveNameEntity);
     if (this.locked) {
       this.addEntity(new AbstractEntity(this, 0, 0, this.width, this.height, false, '#9a9595c0'));
-      var spriteData = {
-        sprite: [
-          '----###----',
-          '---#####---',
-          '--##---##--',
-          '--##---##--',
-          '--##---##--',
-          '-#########-',
-          '###########',
-          '####---####',
-          '####---####',
-          '#####-#####',
-          '#####-#####',
-          '###########',
-          '-#########-'
-        ]
-      }
       var padlockEntity = new SpriteEntity(this, Math.floor((this.width-11)/2), Math.floor((this.height-13)/2), this.app.platform.colorByName('red'), false, 0, 0);
+      padlockEntity.setCompressedGraphicsData('lP100B00D0B040307050209010F080A0G012334140414041415671815696A656', false);
       this.addEntity(padlockEntity);
-      padlockEntity.setGraphicsData(spriteData);
     } 
     var caveId = 'cave'+this.caveNumber.toString().padStart(2, '0');
     this.fetchData(caveId+'.data', {key: caveId, when: 'required'}, {});
