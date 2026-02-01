@@ -19,8 +19,14 @@ export class CavesMapModel extends AbstractModel {
     super(app);
     this.id = 'CavesMapModel';
 
+    this.cavesMapEntities = [];
+    this.adjustX = 0;
+    this.adjustY = 0;
     this.caveSelectionEntity = null;
-    this.selectionCave = this.app.cavesOpened;
+    this.selectionX = this.app.cavesOpened%4;
+    this.selectionY = Math.floor(this.app.cavesOpened/4);
+    this.adjustSelectionX = 0;
+    this.adjustSelectionY = 0;
   } // constructor
 
   init() {
@@ -28,14 +34,17 @@ export class CavesMapModel extends AbstractModel {
 
     this.borderEntity.bkColor = this.app.platform.colorByName('cyan');
     this.desktopEntity.bkColor = false;
-    for (var x = 0; x < 4; x++) {
-      for (var y = 0; y < 5; y++) {
+    for (var y = 0; y < 5; y++) {
+      this.cavesMapEntities.push([]);
+      for (var x = 0; x < 4; x++) {
+        this.cavesMapEntities[y].push(null);
         var caveNumber = x+y*4;
-        var caveMapEntity = new CaveMapEntity(this.desktopEntity, x*64+3, y*38+3, caveNumber, (caveNumber > this.app.cavesOpened));
+        var caveMapEntity = new CaveMapEntity(this.desktopEntity, x*64, y*38+3, caveNumber, (caveNumber > this.app.cavesOpened));
         this.desktopEntity.addEntity(caveMapEntity);
+        this.cavesMapEntities[y][x] = caveMapEntity;
       }
     }
-    this.caveSelectionEntity = new CaveSelectionEntity(this.desktopEntity, this.selectionCave%4*64, Math.floor(this.selectionCave/4)*38);
+    this.caveSelectionEntity = new CaveSelectionEntity(this.desktopEntity, this.selectionX*64-3, this.selectionY*38);
     this.desktopEntity.addEntity(this.caveSelectionEntity);
 
     this.app.stack.flashState = false;
@@ -66,36 +75,46 @@ export class CavesMapModel extends AbstractModel {
           switch (key) {        
             case 'ArrowUp':
             case 'GamepadUp':
-              if (this.selectionCave >= 4) {
-                this.selectionCave -= 4;
-                this.caveSelectionEntity.y -= 38;
+              if (this.adjustX == 0 && this.adjustY == 0 && this.adjustSelectionX == 0 && this.adjustSelectionY == 0) {
+                if (this.selectionY > 0) {
+                  this.selectionY--;
+                  this.adjustSelectionY -= 38;
+                }
               }
               return true;
             case 'ArrowDown':
             case 'GamepadDown':
-              if (this.selectionCave < 16 && this.selectionCave+4 <= this.app.cavesOpened) {
-                this.selectionCave += 4;
-                this.caveSelectionEntity.y += 38;
+              if (this.adjustX == 0 && this.adjustY == 0 && this.adjustSelectionX == 0 && this.adjustSelectionY == 0) {
+                if (this.selectionY < 4 && this.selectionX+this.selectionY*4+4 <= this.app.cavesOpened) {
+                  this.selectionY++;
+                  this.adjustSelectionY += 38;
+                }
               }
               return true;
             case 'ArrowLeft':
             case 'GamepadLeft':
-              if (this.selectionCave % 4 > 0) {
-                this.selectionCave -= 1;
-                this.caveSelectionEntity.x -= 64;
+              if (this.adjustX == 0 && this.adjustY == 0 && this.adjustSelectionX == 0 && this.adjustSelectionY == 0) {
+                if (this.selectionX > 0) {
+                  this.selectionX--;
+                  this.adjustSelectionX -= 64;
+                }
               }
               return true;
             case 'ArrowRight':
             case 'GamepadRight':
-              if (this.selectionCave % 4 < 3 && this.selectionCave+1 <= this.app.cavesOpened) {
-                this.selectionCave += 1;
-                this.caveSelectionEntity.x += 64;
+              if (this.adjustX == 0 && this.adjustY == 0 && this.adjustSelectionX == 0 && this.adjustSelectionY == 0) {
+                if (this.selectionX < 3 && this.selectionX+this.selectionY*4 < this.app.cavesOpened) {
+                  this.selectionX++;
+                  this.adjustSelectionX += 64;
+                }
               }
               return true;
             case 'Enter':
             case 'GamepadOK':
-              this.app.caveNumber = this.selectionCave;
-              this.app.startCave(false, true, false);
+              if (this.adjustX == 0 && this.adjustY == 0 && this.adjustSelectionX == 0 && this.adjustSelectionY == 0) {
+                this.app.caveNumber = this.selectionX+this.selectionY*4;
+                this.app.startCave(false, true, false);
+              }
               return true;
             case 'Escape':
             case 'GamepadExit':
@@ -111,6 +130,59 @@ export class CavesMapModel extends AbstractModel {
 
   loopModel(timestamp) {
     super.loopModel(timestamp);
+
+    if (this.adjustX != 0 || this.adjustY != 0) {
+      var corrX = 0;
+      var corrY = 0;
+      if (this.adjustX > 0) {
+        corrX = Math.min(this.adjustX, 4);
+      }
+      if (this.adjustX < 0) {
+        corrX = Math.max(this.adjustX, -4);
+      }
+      if (this.adjustY > 0) {
+        corrY = Math.min(this.adjustY, 2);
+      }
+      if (this.adjustY < 0) {
+        corrY = Math.max(this.adjustY, -2);
+      }
+      this.adjustX -= corrX;
+      this.adjustY -= corrY;
+
+      for (var y = 0; y < this.cavesMapEntities.length; y++) {
+        for (var x = 0; x < this.cavesMapEntities[y].length; x++) {
+          var caveMapEntity = this.cavesMapEntities[y][x];
+          if (caveMapEntity !== null) {
+            caveMapEntity.x += corrX;
+            caveMapEntity.y += corrY;
+          }
+        }
+      }
+      this.caveSelectionEntity.x += corrX;
+      this.caveSelectionEntity.y += corrY;
+    }
+
+    if (this.adjustSelectionX != 0 || this.adjustSelectionY != 0) {
+      var corrX = 0;
+      var corrY = 0;
+      if (this.adjustSelectionX > 0) {
+        corrX = Math.min(this.adjustSelectionX, 4);
+      }
+      if (this.adjustSelectionX < 0) {
+        corrX = Math.max(this.adjustSelectionX, -4);
+      }
+      if (this.adjustSelectionY > 0) {
+        corrY = Math.min(this.adjustSelectionY, 2);
+      }
+      if (this.adjustSelectionY < 0) {
+        corrY = Math.max(this.adjustSelectionY, -2);
+      }
+      this.adjustSelectionX -= corrX;
+      this.adjustSelectionY -= corrY;
+
+      this.caveSelectionEntity.x += corrX;
+      this.caveSelectionEntity.y += corrY;
+    }
     
     this.caveSelectionEntity.loopEntity(timestamp);
     this.drawModel();
