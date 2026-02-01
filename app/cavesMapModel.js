@@ -22,11 +22,14 @@ export class CavesMapModel extends AbstractModel {
     this.cavesMapEntities = [];
     this.adjustX = 0;
     this.adjustY = 0;
+
     this.caveSelectionEntity = null;
     this.selectionX = this.app.cavesOpened%4;
     this.selectionY = Math.floor(this.app.cavesOpened/4);
     this.adjustSelectionX = 0;
     this.adjustSelectionY = 0;
+
+    this.prevTimestamp = false;
   } // constructor
 
   init() {
@@ -130,21 +133,19 @@ export class CavesMapModel extends AbstractModel {
 
   loopModel(timestamp) {
     super.loopModel(timestamp);
-
+        
+    var timeDelta = 0;
+    if (this.prevTimestamp !== false) {
+      timeDelta = timestamp - this.prevTimestamp;
+    }
+    this.prevTimestamp = timestamp;
+    
     if (this.adjustX != 0 || this.adjustY != 0) {
       var corrX = 0;
       var corrY = 0;
-      if (this.adjustX > 0) {
-        corrX = Math.min(this.adjustX, 4);
-      }
-      if (this.adjustX < 0) {
-        corrX = Math.max(this.adjustX, -4);
-      }
-      if (this.adjustY > 0) {
-        corrY = Math.min(this.adjustY, 2);
-      }
-      if (this.adjustY < 0) {
-        corrY = Math.max(this.adjustY, -2);
+      if (timeDelta > 0) {
+        corrX = Math.max(Math.min(Math.abs(this.adjustX), Math.round(timeDelta/3)), 1)*Math.sign(this.adjustX);
+        corrY = Math.max(Math.min(Math.abs(this.adjustY), Math.round(timeDelta/6)), 1)*Math.sign(this.adjustY);
       }
       this.adjustX -= corrX;
       this.adjustY -= corrY;
@@ -165,17 +166,9 @@ export class CavesMapModel extends AbstractModel {
     if (this.adjustSelectionX != 0 || this.adjustSelectionY != 0) {
       var corrX = 0;
       var corrY = 0;
-      if (this.adjustSelectionX > 0) {
-        corrX = Math.min(this.adjustSelectionX, 4);
-      }
-      if (this.adjustSelectionX < 0) {
-        corrX = Math.max(this.adjustSelectionX, -4);
-      }
-      if (this.adjustSelectionY > 0) {
-        corrY = Math.min(this.adjustSelectionY, 2);
-      }
-      if (this.adjustSelectionY < 0) {
-        corrY = Math.max(this.adjustSelectionY, -2);
+      if (timeDelta > 0) {
+        corrX = Math.max(Math.min(Math.abs(this.adjustSelectionX), Math.round(timeDelta/2.5)), 1)*Math.sign(this.adjustSelectionX);
+        corrY = Math.max(Math.min(Math.abs(this.adjustSelectionY), Math.round(timeDelta/5)), 1)*Math.sign(this.adjustSelectionY);
       }
       this.adjustSelectionX -= corrX;
       this.adjustSelectionY -= corrY;
