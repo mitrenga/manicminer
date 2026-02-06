@@ -46,7 +46,6 @@ export class CaveMapEntity extends AbstractEntity {
 
   drawEntity() {
     if (this.caveData) {
-
       this.bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(this.caveData.bkColor));
       this.app.layout.paint(this, 0, 0, this.width, this.height-6, this.bkColor);
 
@@ -59,7 +58,7 @@ export class CaveMapEntity extends AbstractEntity {
             if (attr != this.caveData.bkColor) {
               if (this.mapKinds.includes(this.caveData.graphicData[attr].kind)) {
                 var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(attr));
-                if (bkColor == this.app.platform.bkColorByAttr(this.app.hexToInt(this.caveData.bkColor))) {
+                if (bkColor == this.bkColor) {
                   bkColor = false;
                 }
                 if (bkColor != false) {
@@ -69,7 +68,9 @@ export class CaveMapEntity extends AbstractEntity {
                 switch (this.caveData.graphicData[attr].kind) {
                   case 'floor':
                   case 'crumblingFloor':
-                    this.app.layout.paintRect(this.drawingCache[0].ctx, column*2, r*2, 2, 1, penColor);
+                    if (bkColor === false || penColor != this.bkColor) {
+                      this.app.layout.paintRect(this.drawingCache[0].ctx, column*2, r*2, 2, 1, penColor);
+                    }
                     this.app.layout.paintRect(this.drawingCache[0].ctx, column*2+1, r*2+1, 1, 1, penColor);
                     break;
                   case 'wall':
@@ -148,7 +149,7 @@ export class CaveMapEntity extends AbstractEntity {
         this.caveData.items.data.forEach((item) => {
           var itemColor = this.app.platform.color(this.app.hexToInt(item.initAttribute)&7);
           var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(item.initAttribute));
-          if (bkColor == this.app.platform.bkColorByAttr(this.app.hexToInt(this.caveData.bkColor))) {
+          if (bkColor == this.bkColor) {
             bkColor = false;
           }
           if (bkColor != false) {
@@ -210,7 +211,7 @@ export class CaveMapEntity extends AbstractEntity {
           this.caveData.switches.data.forEach((swtch) => {
             var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(swtch.attribute));
             var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(swtch.attribute));
-            if (bkColor == this.app.platform.bkColorByAttr(this.app.hexToInt(this.caveData.bkColor))) {
+            if (bkColor == this.bkColor) {
               bkColor = false;
             }
             if (bkColor != false) {

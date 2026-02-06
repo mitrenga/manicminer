@@ -33,6 +33,7 @@ export class GameAreaEntity extends AbstractEntity {
 
   drawEntity() {
     if (this.caveData) {
+      var caveBkColor = this.app.platform.zxColorByAttr(this.app.hexToInt(this.caveData.bkColor), 56, 8);
 
       this.app.layout.paint(this, 0, 0, this.width, this.height, this.bkColor);
 
@@ -44,7 +45,7 @@ export class GameAreaEntity extends AbstractEntity {
             if (attr != this.caveData.bkColor) {
               if (this.backgroundKinds.includes(this.caveData.graphicData[attr].kind)) {
                 var bkColor = this.bkColorByAttr(this.app.hexToInt(attr));
-                if (bkColor == this.app.platform.bkColorByAttr(this.app.hexToInt(this.caveData.bkColor))) {
+                if (bkColor == caveBkColor) {
                   bkColor = false;
                 }
                 if (bkColor != false) {
