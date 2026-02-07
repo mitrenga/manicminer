@@ -173,7 +173,7 @@ export class CaveModel extends AbstractModel {
   } // newBorderEntity
 
   setData(data) {
-    data.data.willy = Object.assign(this.app.globalData.willy, data.data.willy);
+    data.data.willy = {...this.app.globalData.willy, ...data.data.willy};
 
     this.gameInfoEntity.caveNameEntity.setText(data.data.name);
     this.app.caveName = data.data.name;
