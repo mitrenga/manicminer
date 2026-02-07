@@ -432,7 +432,8 @@ export class CaveModel extends AbstractModel {
           }
           this.gameAreaEntity.spriteEntities.portal[0].frame = 0;
           this.app.cavesCompleted++;
-          if (this.app.cavesCompleted < this.app.globalData.cavesCount || this.app.caveNumber < this.app.globalData.cavesCount-1) {
+          //if (this.app.cavesCompleted < this.app.globalData.cavesCount || this.app.caveNumber < this.app.globalData.cavesCount-1) {
+          if (this.app.caveNumber < this.app.globalData.cavesCount-1) {
             this.sendEvent(1, {id: 'animationCaveDone'});
           } else {
             this.sendEvent(1, {id: 'showSwordFish'});
