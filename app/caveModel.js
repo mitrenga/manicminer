@@ -270,7 +270,6 @@ export class CaveModel extends AbstractModel {
 
           case 'Touch.right':
             this.app.inputEventsManager.touchesMap[event.identifier] = this.borderEntity.rightControlEntity;
-            console.log(event.identifier);
             this.postWorkerMessage({id: 'controls', action: 'right', value: true});
             return true;
 
