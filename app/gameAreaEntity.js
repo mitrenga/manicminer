@@ -448,8 +448,8 @@ export class GameAreaEntity extends AbstractEntity {
     this.initData.portal.push(portalInitData);
   } // setData
 
-  updateData(data, objectsType) {
-    data.gameData[objectsType].forEach((object, o) => {
+  updateData(gameData, objectsType) {
+    gameData[objectsType].forEach((object, o) => {
       var paintCorrectionX = 0;
       var paintCorrectionY = 0;
       if ('paintCorrections' in object) {

@@ -102,7 +102,7 @@ export class CaveModel extends AbstractModel {
                 break;
 
               default:  
-                this.gameAreaEntity.updateData(event.data, objectsType);
+                this.gameAreaEntity.updateData(event.data.gameData, objectsType);
             }
           });
           this.drawModel();
