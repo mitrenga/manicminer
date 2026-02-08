@@ -81,38 +81,30 @@ export class CavesMapModel extends AbstractModel {
           switch (key) {        
             case 'ArrowUp':
             case 'GamepadUp':
-              if (this.adjustX == 0 && this.adjustY == 0 && this.adjustSelectionX == 0 && this.adjustSelectionY == 0) {
-                if (this.selectionY > 0) {
-                  this.selectionY--;
-                  this.adjustSelectionY -= 38;
-                }
+              if (this.selectionY > 0) {
+                this.selectionY--;
+                this.adjustSelectionY -= 38;
               }
               return true;
             case 'ArrowDown':
             case 'GamepadDown':
-              if (this.adjustX == 0 && this.adjustY == 0 && this.adjustSelectionX == 0 && this.adjustSelectionY == 0) {
-                if (this.selectionY < 4 && this.selectionX+this.selectionY*4+4 <= this.app.cavesOpened) {
-                  this.selectionY++;
-                  this.adjustSelectionY += 38;
-                }
+              if (this.selectionY < 4 && this.selectionX+this.selectionY*4+4 <= this.app.cavesOpened) {
+                this.selectionY++;
+                this.adjustSelectionY += 38;
               }
               return true;
             case 'ArrowLeft':
             case 'GamepadLeft':
-              if (this.adjustX == 0 && this.adjustY == 0 && this.adjustSelectionX == 0 && this.adjustSelectionY == 0) {
-                if (this.selectionX > 0) {
-                  this.selectionX--;
-                  this.adjustSelectionX -= 64;
-                }
+              if (this.selectionX > 0) {
+                this.selectionX--;
+                this.adjustSelectionX -= 64;
               }
               return true;
             case 'ArrowRight':
             case 'GamepadRight':
-              if (this.adjustX == 0 && this.adjustY == 0 && this.adjustSelectionX == 0 && this.adjustSelectionY == 0) {
-                if (this.selectionX < 3 && this.selectionX+this.selectionY*4 < this.app.cavesOpened) {
-                  this.selectionX++;
-                  this.adjustSelectionX += 64;
-                }
+              if (this.selectionX < 3 && this.selectionX+this.selectionY*4 < this.app.cavesOpened) {
+                this.selectionX++;
+                this.adjustSelectionX += 64;
               }
               return true;
             case 'Enter':
