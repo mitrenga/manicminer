@@ -450,38 +450,39 @@ export class GameAreaEntity extends AbstractEntity {
 
   updateData(gameData, objectsType) {
     gameData[objectsType].forEach((object, o) => {
+      var spriteEntity = this.spriteEntities[objectsType][o];
       var paintCorrectionX = 0;
       var paintCorrectionY = 0;
       if ('paintCorrections' in object) {
         paintCorrectionX = object.paintCorrections.x;
         paintCorrectionY = object.paintCorrections.y;
       }
-      this.spriteEntities[objectsType][o].x = object.x+paintCorrectionX;
-      this.spriteEntities[objectsType][o].y = object.y+paintCorrectionY;
+      spriteEntity.x = object.x+paintCorrectionX;
+      spriteEntity.y = object.y+paintCorrectionY;
       var flashShiftFrames = 0;
       if (('flashShiftFrames' in object) && this.app.stack.flashState) {
         flashShiftFrames = object.flashShiftFrames;
       }
-      this.spriteEntities[objectsType][o].frame = object.frame+flashShiftFrames;
-      this.spriteEntities[objectsType][o].direction = object.direction;
+      spriteEntity.frame = object.frame+flashShiftFrames;
+      spriteEntity.direction = object.direction;
       if ('width' in object) {
-        this.spriteEntities[objectsType][o].width = object.width-paintCorrectionX;
+        spriteEntity.width = object.width-paintCorrectionX;
       }
       if ('height' in object) {
-        this.spriteEntities[objectsType][o].height = object.height-paintCorrectionY;
+        spriteEntity.height = object.height-paintCorrectionY;
       }
       if ('hide' in object) {
-        this.spriteEntities[objectsType][o].hide = object.hide;
+        spriteEntity.hide = object.hide;
       }
       if ('action' in object) {
         switch (object.action.id) {
           case 'setColorsMap':
             var colorsMap = {};
-            colorsMap[this.spriteEntities[objectsType][o].penChar] = {};
+            colorsMap[spriteEntity.penChar] = {};
             object.action.data.forEach((attr, frame) => {
-              colorsMap[this.spriteEntities[objectsType][o].penChar][frame] = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
+              colorsMap[spriteEntity.penChar][frame] = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
             });
-            this.spriteEntities[objectsType][o].setColorsMap(colorsMap);
+            spriteEntity.setColorsMap(colorsMap);
             break;
         }
       }
