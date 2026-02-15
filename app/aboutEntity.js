@@ -43,7 +43,7 @@ export class AboutEntity extends AbstractEntity {
     }
     var sysInfoText =
       'version: ' + this.app.version + '\n' +
-      'screen: ' + this.app.element.clientWidth + ' x ' + this.app.element.clientHeight + '\n' +
+      'element: ' + this.app.element.clientWidth + ' x ' + this.app.element.clientHeight + '\n' +
       'canvas: ' + this.app.element.width + ' x ' + this.app.element.height + '\n' +
       'ratio: ' + this.app.layout.ratio + '\n' +
       'ip:' + ipLabelSeparator + window.clientIP + '\n'
@@ -71,7 +71,7 @@ export class AboutEntity extends AbstractEntity {
         return true;
 
       case 'openGithub':
-        window.open('https://github.com/mitrenga/manicminer', '_blank');
+        window.open('https://github.com/mitrenga/manicminer', 'github:mm');
         return true;
 
       case 'resizeModel':
