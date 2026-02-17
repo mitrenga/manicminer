@@ -106,9 +106,9 @@ function willy() {
 
   canMovingDirection = 0;
 
-  var standingOn = checkStandingWithObjectsArray(willy.x, willy.y, 10, 16, [gameData.walls, gameData.floors, gameData.crumblingFloors, gameData.conveyors]);
+  var standing = checkStandingWithObjectsArray(willy.x, willy.y, 10, 16, [gameData.walls, gameData.floors, gameData.crumblingFloors, gameData.conveyors]);
 
-  standingOn.forEach((object) => {
+  standing.forEach((object) => {
     if ('crumbling' in object) {
       if (object.frame < 7) {
         object.frame++;
@@ -133,7 +133,7 @@ function willy() {
   }
 
   if (fallingCounter) {
-    if (standingOn.length) {
+    if (standing.length) {
       if (fallingCounter > 9) {
         gameData.info[5] = true;
       }
@@ -148,7 +148,7 @@ function willy() {
       fallingCounter++;
     }
   } else {
-    if (!jumpCounter && !standingOn.length) {
+    if (!jumpCounter && !standing.length) {
       fallingCounter = 1;
       fallingDirection = 0;
       postMessage({id: 'playSound', channel: 'sounds', sound: 'fallingSound'});
@@ -156,7 +156,7 @@ function willy() {
   }
 
   if (jumpCounter && jumpMap[jumpCounter] >= 0) {
-    if (standingOn.length) {
+    if (standing.length) {
       jumpCounter = 0;
       if (canMovingDirection == jumpDirection) {
         mustMovingDirection = canMovingDirection;
