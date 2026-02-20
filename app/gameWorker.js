@@ -53,11 +53,11 @@ function gameLoop() {
     lightBeam();
     barriers();
     if (!gameData.info[4]) { // if not demo
-      checkTouchItems();
-      checkCrash();
-      checkTouchPortal();
-      checkTouchLightBeam();
-      checkTouchSwitches();
+      isTouchingItem();
+      isColliding();
+      isOnPlatform();
+      isTouchingLightBeam();
+      isTouchingSwitch();
     }
 
     if (bonus) {
@@ -106,7 +106,7 @@ function willy() {
 
   canMovingDirection = 0;
 
-  var standing = checkStandingWithObjectsArray(willy.x, willy.y, 10, 16, [gameData.walls, gameData.floors, gameData.crumblingFloors, gameData.conveyors]);
+  var standing = isStandingOn(willy.x, willy.y, 10, 16, [gameData.walls, gameData.floors, gameData.crumblingFloors, gameData.conveyors]);
 
   standing.forEach((object) => {
     if ('crumbling' in object) {
@@ -451,7 +451,7 @@ function lightBeam() {
         gameData.lightBeam[part].width = 8;
         gameData.lightBeam[part].height = 8;
         gameData.lightBeam[part].hide = false;
-        checkTurnLightBeam(lbData, 0, 8);
+        doesLightBeamHit(lbData, 0, 8);
         gameData.lightBeam[part].width = 8;
         gameData.lightBeam[part].height = lbData.y-gameData.lightBeam[part].y;
       } else { // to left
@@ -460,7 +460,7 @@ function lightBeam() {
         gameData.lightBeam[part].x = lbData.x;
         gameData.lightBeam[part].y = lbData.y;
         gameData.lightBeam[part].hide = false;
-        checkTurnLightBeam(lbData, -8, 0);
+        doesLightBeamHit(lbData, -8, 0);
         gameData.lightBeam[part].width = gameData.lightBeam[part].x-lbData.x;
         gameData.lightBeam[part].x = lbData.x+8;
         gameData.lightBeam[part].height = 8;
@@ -496,7 +496,7 @@ function barriers() {
   }
 } // barriers
 
-function checkTouchWithObjectsArray(x, y, width, height, objectsArray) {
+function isTouching(x, y, width, height, objectsArray) {
   for (var a = 0; a < objectsArray.length; a++) {
     var objects = objectsArray[a];
     for (var o = 0; o < objects.length; o++) {
@@ -532,10 +532,10 @@ function checkTouchWithObjectsArray(x, y, width, height, objectsArray) {
     }
   }
   return 0;
-} // checkTouchWithObjectsArray
+} // isTouching
 
 /*
-function checkInsideWithObjectsArray(x, y, width, height, objectsArray) {
+function isInside(x, y, width, height, objectsArray) {
   for (var a = 0; a < objectsArray.length; a++) {
     var objects = objectsArray[a];
     for (var o = 0; o < objects.length; o++) {
@@ -548,10 +548,10 @@ function checkInsideWithObjectsArray(x, y, width, height, objectsArray) {
     }
   }
   return 0;
-} // checkInsideWithObjectsArray
+} // isInside
 */
 
-function checkStandingWithObjectsArray(x, y, width, height, objectsArray) {
+function isStandingOn(x, y, width, height, objectsArray) {
   var result = [];
 
   if (jumpCounter && jumpMap[jumpCounter] < 0) {
@@ -570,32 +570,32 @@ function checkStandingWithObjectsArray(x, y, width, height, objectsArray) {
     }
   }
   return result;
-} // checkStandingWithObjectsArray
+} // isStandingOn
 
-function checkTurnLightBeam(lbData, moveX, moveY) {
+function doesLightBeamHit(lbData, moveX, moveY) {
   while (!lbData.touchLight && !lbData.cancelLight) {
     if (!lbData.touchLight && !lbData.cancelLight) {
-      lbData.touchLight = checkTouchWithObjectsArray(lbData.x, lbData.y, 8, 8, [gameData.guardians]);
+      lbData.touchLight = isTouching(lbData.x, lbData.y, 8, 8, [gameData.guardians]);
     }
     if (!lbData.touchLight && !lbData.cancelLight) {
-      lbData.cancelLight = checkTouchWithObjectsArray(lbData.x, lbData.y, 8, 8, [gameData.walls]);
+      lbData.cancelLight = isTouching(lbData.x, lbData.y, 8, 8, [gameData.walls]);
     }
     if (!lbData.touchLight && !lbData.cancelLight) {
-      lbData.cancelLight = checkTouchWithObjectsArray(lbData.x, lbData.y, 8, 8, [gameData.floors]);
+      lbData.cancelLight = isTouching(lbData.x, lbData.y, 8, 8, [gameData.floors]);
     }
     if (!lbData.cancelLight) {
       lbData.x += moveX;
       lbData.y += moveY;
     }
   }
-} // checkTurnLightBeam
+} // doesLightBeamHit
 
 function canMove(moveX, moveY) {
-  return !checkTouchWithObjectsArray(gameData.willy[0].x+moveX, gameData.willy[0].y+moveY, 10, 16, [gameData.walls, gameData.barriers]);
+  return !isTouching(gameData.willy[0].x+moveX, gameData.willy[0].y+moveY, 10, 16, [gameData.walls, gameData.barriers]);
 } // canMove
 
-function checkTouchItems() {
-  var touchId = checkTouchWithObjectsArray(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.items]);
+function isTouchingItem() {
+  var touchId = isTouching(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.items]);
   if (touchId) {
     gameData.items[touchId-1].hide = true;
     completed++;
@@ -619,23 +619,23 @@ function checkTouchItems() {
     }
     postMessage({id: 'playSound', channel: 'extra', sound: 'itemSound'});
   }
-} // checkTouchItems
+} // isTouchingItem
 
-function checkCrash() {
+function isColliding() {
   var willy = gameData.willy[0];
   var f = willy.frame+willy.direction*willy.frames;
-  if (checkTouchWithObjectsArray(willy.x+willy.touchCorrections[f].x1, willy.y, willy.touchCorrections[f].x2-willy.touchCorrections[f].x1, 16, [gameData.guardians])) {
+  if (isTouching(willy.x+willy.touchCorrections[f].x1, willy.y, willy.touchCorrections[f].x2-willy.touchCorrections[f].x1, 16, [gameData.guardians])) {
     gameData.info[5] = true;
   }
-  if (checkTouchWithObjectsArray(willy.x, willy.y, 10, 16, [gameData.nasties])) {
+  if (isTouching(willy.x, willy.y, 10, 16, [gameData.nasties])) {
     gameData.info[5] = true;
   }
-  if (checkStandingWithObjectsArray(willy.x, willy.y, 10, 16, [gameData.nasties]).length) {
+  if (isStandingOn(willy.x, willy.y, 10, 16, [gameData.nasties]).length) {
     gameData.info[5] = true;
   }
-} // checkCrash
+} // isColliding
 
-function checkTouchPortal() {
+function isOnPlatform() {
   if (gameData.portal[0].flashShiftFrames) {
     var willy = gameData.willy[0];
     var portal = gameData.portal[0];
@@ -643,19 +643,19 @@ function checkTouchPortal() {
       postMessage({id: 'caveDone', gameData: gameData});
     }
   }
-} // checkTouchPortal
+} // isOnPlatform
 
-function checkTouchLightBeam() {
+function isTouchingLightBeam() {
   if ('lightBeam' in gameData) {
-    var touchId = checkTouchWithObjectsArray(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.lightBeam]);
+    var touchId = isTouching(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.lightBeam]);
     if (touchId) {
       gameData.info[7] += 4;
     }
   }
-} // checkTouchLightBeam
+} // isTouchingLightBeam
 
-function checkTouchSwitches() {
-  var touchId = checkTouchWithObjectsArray(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.switches]);
+function isTouchingSwitch() {
+  var touchId = isTouching(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.switches]);
   if (touchId) {
     if (gameData.switches[touchId-1].frame == 0) {
       gameData.switches[touchId-1].frame = 1;
@@ -675,7 +675,7 @@ function checkTouchSwitches() {
       });
     }
   }
-} // checkTouchSwitches
+} // isTouchingSwitch
 
 onmessage = (event) => {
   switch (event.data.id) {
