@@ -34,6 +34,7 @@ export class CaveModel extends AbstractModel {
     this.animationType = false;
     this.autorepeatKeys = false;
     this.needDraw = true;
+    this.tsJoystick = {left: {}, right: {}};
 
     this.initData = {
       info: [
@@ -246,13 +247,13 @@ export class CaveModel extends AbstractModel {
             if (this.borderEntity.leftControlEntity.pointOnEntity(event)) {
               this.app.inputEventsManager.touchesMap[event.identifier] = this.borderEntity.leftControlEntity;
               this.app.inputEventsManager.touchesControls.left[event.identifier] = true;
-              this.postWorkerMessage({id: 'controls', action: 'left', value: true});
+              this.touchStart('left');
               return true;
             }
             if (this.borderEntity.rightControlEntity.pointOnEntity(event)) {
               this.app.inputEventsManager.touchesMap[event.identifier] = this.borderEntity.rightControlEntity;
               this.app.inputEventsManager.touchesControls.right[event.identifier] = true;
-              this.postWorkerMessage({id: 'controls', action: 'right', value: true});
+              this.touchStart('right');
               return true;
             }
             break;
@@ -349,15 +350,11 @@ export class CaveModel extends AbstractModel {
 
           case 'Touch':
             if (this.app.inputEventsManager.touchesMap[event.identifier] === this.borderEntity.leftControlEntity) {
-              if (Object.keys(this.app.inputEventsManager.touchesControls.left).length == 1) {
-                this.postWorkerMessage({id: 'controls', action: 'left', value: false});
-              }
+              this.touchEnd('left');
               return true;
             }
             if (this.app.inputEventsManager.touchesMap[event.identifier] === this.borderEntity.rightControlEntity) {
-              if (Object.keys(this.app.inputEventsManager.touchesControls.right).length == 1) {
-                this.postWorkerMessage({id: 'controls', action: 'right', value: false});
-              }
+              this.touchEnd('right');
               return true;
             }
             break;
@@ -503,6 +500,30 @@ export class CaveModel extends AbstractModel {
 
     return false;
   } // handleEvent
+
+  touchStart(side) {
+    var ts = this.app.controlsOptions.touchscreen.types[this.app.controls.touchscreen.type][side];
+    switch (ts.type) {
+      case 'button':
+        this.postWorkerMessage({id: 'controls', action: ts.action, value: true});
+        break;
+      case 'joystick':
+        break;
+    }
+  } // touchStart
+
+  touchEnd(side) {
+    var ts = this.app.controlsOptions.touchscreen.types[this.app.controls.touchscreen.type][side];
+    switch (ts.type) {
+      case 'button':
+        if (Object.keys(this.app.inputEventsManager.touchesControls[side]).length == 1) {
+          this.postWorkerMessage({id: 'controls', action: ts.action, value: false});
+        }
+        break;
+      case 'joystick':
+        break;
+    }
+  } // touchEnd
 
   loopModel(timestamp) {
     super.loopModel(timestamp);
