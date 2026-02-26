@@ -387,7 +387,15 @@ export class CaveModel extends AbstractModel {
             return true;
         }
         break;
-    
+
+      case 'keyMove':
+        switch (event.key) {
+          case 'Touch':
+            this.touchMove(event);
+            return true;
+        }
+        break;
+
       case 'crash':
         if (this.worker) {
           this.worker.terminate();
@@ -527,8 +535,10 @@ export class CaveModel extends AbstractModel {
     }
   } // touchEnd
 
-  touchMove(event, side) {
-    console.log(event);
+  touchMove(event) {
+    if (event.identifier in this.tsJoysticks) {
+      console.log(event.x-this.tsJoysticks[event.identifier].center.x);
+    }
   } // touchMove
 
   loopModel(timestamp) {
