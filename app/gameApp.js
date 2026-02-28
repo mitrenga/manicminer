@@ -83,9 +83,42 @@ export class GameApp extends AbstractApp {
       touchscreen: {
         device: 'touchscreen',
         types: {
-          keys: ['leftJump', 'rightJump'],
-          leftJump: {left: {type: 'button', action: 'jump', sprite: 'jump'}, right: {type: 'joystick', control: 'horizontal', actions: ['left', 'right'], sprite: 'left-right'}},
-          rightJump: {left: {type: 'joystick', control: 'horizontal', actions: ['left', 'right'], sprite: 'left-right'}, right: {type: 'button', action: 'jump', sprite: 'jump'}}
+          keys: [
+            'leftJump',
+            'rightJump'
+          ],
+          leftJump: {
+            left: {
+              type: 'button',
+              control: false,
+              action: 'jump',
+              actions: false,
+              sprite: 'jump'
+            },
+            right: {
+              type: 'joystick',
+              control: 'horizontal',
+              action: false,
+              actions: ['left', 'right'],
+              sprite: 'left-right'
+            }
+          },
+          rightJump: {
+            left: {
+              type: 'joystick',
+              control: 'horizontal',
+              action: false,
+              actions: ['left', 'right'],
+              sprite: 'left-right'
+            },
+            right: {
+              type: 'button',
+              control: false,
+              action: 'jump',
+              actions: false,
+              sprite: 'jump'
+            }
+          }
         },
         icons: {
           jump: {
@@ -252,9 +285,6 @@ export class GameApp extends AbstractApp {
       this.lives = 2;
       if (setInitCave) {
         this.caveNumber = this.globalData.initCave;
-        this.inputEventsManager.touchesControls.left = {};
-        this.inputEventsManager.touchesControls.right = {};
-        this.inputEventsManager.touchesControls.jump = {};
       }
     }
     this.demo = demo;
