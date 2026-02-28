@@ -498,10 +498,12 @@ export class CaveModel extends AbstractModel {
 
   touchEnd(event, side) {
     var ts = this.app.controlsOptions.touchscreen.types[this.app.controls.touchscreen.type][side];
-    if (this.app.inputEventsManager.touchesGameControls[event.identifier].action !== false) {
-      this.postWorkerMessage({id: 'controls', action: this.app.inputEventsManager.touchesGameControls[event.identifier].action, value: false});
+    if (event.identifier in this.app.inputEventsManager.touchesGameControls) {
+      if (this.app.inputEventsManager.touchesGameControls[event.identifier].action !== false) {
+        this.postWorkerMessage({id: 'controls', action: this.app.inputEventsManager.touchesGameControls[event.identifier].action, value: false});
+      }
+      delete this.app.inputEventsManager.touchesGameControls[event.identifier];
     }
-    delete this.app.inputEventsManager.touchesGameControls[event.identifier];
   } // touchEnd
 
   touchMove(event) {
