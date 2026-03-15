@@ -45,7 +45,7 @@ export class CavesMapModel extends AbstractModel {
       for (var x = 0; x < 4; x++) {
         this.cavesMapEntities[y].push(null);
         var caveNumber = x+y*4;
-        var caveMapEntity = new CaveMapEntity(this.desktopEntity, x*64, y*38+3, caveNumber, (caveNumber > this.app.cavesOpened));
+        var caveMapEntity = new CaveMapEntity(this.desktopEntity, x*64, y*38+3, caveNumber, (caveNumber > this.app.cavesOpened), x, y);
         this.desktopEntity.addEntity(caveMapEntity);
         this.cavesMapEntities[y][x] = caveMapEntity;
       }
@@ -135,6 +135,13 @@ export class CavesMapModel extends AbstractModel {
           this.wheelDeltaX = 0;
           this.wheelDeltaY = 0;
         }
+        return true;
+
+      case 'selectCaveMapEntity':
+        this.caveSelectionEntity.x += (event.cavesMapX-this.selectionX)*64;
+        this.selectionX = event.cavesMapX;
+        this.caveSelectionEntity.y += (event.cavesMapY-this.selectionY)*38;
+        this.selectionY = event.cavesMapY;
         return true;
     }
     

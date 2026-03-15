@@ -11,12 +11,14 @@ import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
 
 export class CaveMapEntity extends AbstractEntity {
   
-  constructor(parentEntity, x, y, caveNumber, locked) {
+  constructor(parentEntity, x, y, caveNumber, locked, cavesMapX, cavesMapY) {
     super(parentEntity, x, y, 64, 38, false, false);
     this.id = 'CaveMapEntity';
 
     this.caveNumber = caveNumber;
     this.locked = locked;
+    this.cavesMapX = cavesMapX;
+    this.cavesMapY = cavesMapY;
     this.caveData = null;
     this.mapKinds = ['floor', 'crumblingFloor', 'wall', 'nasty', 'conveyor'];
     this.caveNameEntity = null;
@@ -243,6 +245,7 @@ export class CaveMapEntity extends AbstractEntity {
         switch (event.key) {            
           case 'Mouse1':
             if (!this.locked && this.pointOnEntity(event)) {
+              this.sendEvent(0, 0, {id: 'selectCaveMapEntity', cavesMapX: this.cavesMapX, cavesMapY: this.cavesMapY});
               this.app.inputEventsManager.keysMap.Mouse1 = this;
               this.clickState = true;
               return true;
@@ -250,6 +253,7 @@ export class CaveMapEntity extends AbstractEntity {
             return false;
           case 'Touch':
             if (!this.locked && this.pointOnEntity(event)) {
+              this.sendEvent(0, 0, {id: 'selectCaveMapEntity', cavesMapX: this.cavesMapX, cavesMapY: this.cavesMapY});
               this.app.inputEventsManager.touchesMap[event.identifier] = this;
               this.clickState = true;
               return true;
