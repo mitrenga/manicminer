@@ -14,6 +14,10 @@ CREATE TABLE IF NOT EXISTS rg_mm_hallOfFame (
   `ndx` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `name` CHAR(64) NOT NULL,
   `score` BIGINT(20) NOT NULL,
+  `created` TIMESTAMP NOT NULL,
   PRIMARY KEY (`ndx`),
-  INDEX (`score`)
+  INDEX `score` (`score`),
+  INDEX `name` (`name`),
+  INDEX `created` (`created`),
+  INDEX `created_name` (`created`, `name`)
 );
