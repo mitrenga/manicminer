@@ -47,94 +47,7 @@ export class CaveModel extends AbstractModel {
         0 // light beam touches
       ]
     };
-
-    this.worker = new Worker(this.app.importPath+'/gameWorker.js?ver='+window.srcVersion);
-    this.worker.onmessage = (event) => {
-
-      if (this.demo && this.app.audioManager.music == 0 && event.data.gameData.info[0] == 80) {
-        this.sendEvent(1, {id: 'newDemoCave'});
-      }
-
-      switch (event.data.id) {
-        case 'update':
-          if (this.bkAnimation !== false) {
-            this.gameAreaEntity.bkColor = this.app.platform.color(this.bkAnimation);
-            if (this.bkAnimation >= 0) {
-              this.bkAnimation--;
-            } else {
-              this.bkAnimation = false;
-            }
-            if (this.bkAnimation < 0) {
-              this.gameAreaEntity.restoreBkColor();
-              this.bkAnimation = false;
-            }
-          }
-          Object.keys(event.data.gameData).forEach((objectsType) => {
-            switch (objectsType) {
-              case 'info':
-                var ptrClock = event.data.gameData.info[0]+event.data.gameData.info[7]+this.gameClock;
-                if (event.data.gameData.info[0] < 2) {
-                  ptrClock = event.data.gameData.info[0];
-                }
-                var maxClock = (this.airSupply-36+1)*(256/4);
-                if (ptrClock > maxClock) {
-                  this.sendEvent(1, {id: 'crash'});
-                }
-                if (event.data.gameData.info[5]) {
-                  this.sendEvent(1, {id: 'crash'});
-                }
-                this.app.airValue = 1-(ptrClock/maxClock);
-                this.gameInfoEntity.airEntity.value = this.app.airValue;
-                if (this.app.score != event.data.gameData.info[6]) {
-                  this.app.score = event.data.gameData.info[6];
-                  this.gameInfoEntity.scoreEntity.setText(this.app.score.toString().padStart(6, '0'));
-                }
-                for (var l = 0; l < this.app.lives; l++) {
-                  this.gameInfoEntity.liveEntities[l].x = event.data.gameData.info[3]%4*2+l*16;
-                  this.gameInfoEntity.liveEntities[l].frame = event.data.gameData.info[3]%4;
-                }                
-                break;
-                
-              case 'floors':
-              case 'walls':
-              case 'nasties':
-              case 'extra':
-                break;
-
-              default:  
-                this.gameAreaEntity.updateData(event.data.gameData, objectsType);
-            }
-          });
-          this.drawModel();
-          this.needDraw = false;
-          break;
-
-        case 'playSound':
-          this.sendEvent(0, {id: 'playSound', channel: event.data.channel, sound: event.data.sound, options: false});
-          break;
-
-        case 'stopAudioChannel':
-          this.sendEvent(0, {id: 'stopAudioChannel', channel: event.data.channel});
-          break;
-
-        case 'caveDone':
-          var ptrClock = event.data.gameData.info[0]+event.data.gameData.info[7]+this.gameClock;
-          var maxClock = (this.airSupply-36+1)*(256/4);
-          this.undisplayedScore = maxClock-ptrClock;
-          this.app.score += this.undisplayedScore;
-          this.sendEvent(0, {id: 'caveDone'});
-          break;
-      }
-    } // onmessage
-
   } // constructor
-
-  postWorkerMessage(message) {
-    if (this.worker) {
-      this.worker.postMessage(message);
-    }
-  } // postWorkerMessage
-
 
   init() {
     super.init();
@@ -161,10 +74,7 @@ export class CaveModel extends AbstractModel {
 
   shutdown() {
     super.shutdown();
-    if (this.worker) {
-      this.worker.terminate();
-      this.worker = null;
-    }
+    this.sendWorkerMessage({id: 'reset'});
     this.app.audioManager.stopAllChannels();
   } // shutdown
 
@@ -185,7 +95,7 @@ export class CaveModel extends AbstractModel {
     }
     this.app.inputEventsManager.sendEventsActiveKeys('Press');
     super.setData(data.data);
-    this.postWorkerMessage({id: 'init', initData: this.initData});
+    this.sendWorkerMessage({id: 'init', initData: this.initData});
   } // setData
 
   handleEvent(event) {
@@ -196,13 +106,13 @@ export class CaveModel extends AbstractModel {
     switch (event.id) {
 
       case 'blurWindow':
-        this.postWorkerMessage({id: 'pause'});
+        this.sendWorkerMessage({id: 'pause'});
         this.app.audioManager.pauseAllChannels();
         this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 52, 40, 153, 85, 'PAUSE GAME', 'GameExitModel'));
         return true;
 
       case 'continueGame':        
-        this.postWorkerMessage({id: 'continue'});
+        this.sendWorkerMessage({id: 'continue'});
         this.app.audioManager.continueAllChannels();
         return true;
 
@@ -231,14 +141,14 @@ export class CaveModel extends AbstractModel {
         switch (key) {
           case 'Escape':
           case 'GamepadExit':
-            this.postWorkerMessage({id: 'pause'});
+            this.sendWorkerMessage({id: 'pause'});
             this.app.audioManager.pauseAllChannels();
             this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 52, 40, 153, 85, 'PAUSE GAME', 'GameExitModel'));
             return true;
 
           case this.app.controls.mouse.right:
             if (this.app.controls.mouse.enable && this.app.inputEventsManager.keysMap[this.app.controls.mouse.right] === false) {
-              this.postWorkerMessage({id: 'controls', action: 'right', value: true});
+              this.sendWorkerMessage({id: 'controls', action: 'right', value: true});
             }
             return true;
 
@@ -256,35 +166,35 @@ export class CaveModel extends AbstractModel {
             break;
 
           case 'RetryTouch':
-            this.postWorkerMessage({id: 'controls', action: event.action, value: true});
+            this.sendWorkerMessage({id: 'controls', action: event.action, value: true});
             return true;
 
           case this.app.controls.keyboard.right:
           case 'GamepadRight':  
-            this.postWorkerMessage({id: 'controls', action: 'right', value: true});
+            this.sendWorkerMessage({id: 'controls', action: 'right', value: true});
             return true;
 
           case this.app.controls.mouse.left:
             if (this.app.controls.mouse.enable && this.app.inputEventsManager.keysMap[this.app.controls.mouse.left] === false) {
-              this.postWorkerMessage({id: 'controls', action: 'left', value: true});
+              this.sendWorkerMessage({id: 'controls', action: 'left', value: true});
             }
             return true;
 
           case this.app.controls.keyboard.left:
           case 'GamepadLeft':  
-            this.postWorkerMessage({id: 'controls', action: 'left', value: true});
+            this.sendWorkerMessage({id: 'controls', action: 'left', value: true});
             return true;
 
           case this.app.controls.mouse.jump:
             if (this.app.controls.mouse.enable && this.app.inputEventsManager.keysMap[this.app.controls.mouse.jump] === false) {
-              this.postWorkerMessage({id: 'controls', action: 'jump', value: true});
+              this.sendWorkerMessage({id: 'controls', action: 'jump', value: true});
               break;
             }
             return true;
 
           case this.app.controls.keyboard.jump:
           case 'GamepadJump':  
-            this.postWorkerMessage({id: 'controls', action: 'jump', value: true});
+            this.sendWorkerMessage({id: 'controls', action: 'jump', value: true});
             return true;
 
           case this.app.controls.keyboard.music:
@@ -330,7 +240,7 @@ export class CaveModel extends AbstractModel {
         switch (key) {
           case this.app.controls.mouse.right:
             if (this.app.controls.mouse.enable && this.app.inputEventsManager.keysMap[this.app.controls.mouse.right] === false) {
-              this.postWorkerMessage({id: 'controls', action: 'right', value: false});
+              this.sendWorkerMessage({id: 'controls', action: 'right', value: false});
             }
             return true;
 
@@ -340,29 +250,29 @@ export class CaveModel extends AbstractModel {
 
           case this.app.controls.keyboard.right:
           case 'GamepadRight':  
-            this.postWorkerMessage({id: 'controls', action: 'right', value: false});
+            this.sendWorkerMessage({id: 'controls', action: 'right', value: false});
             return true;
 
           case this.app.controls.mouse.left:
             if (this.app.controls.mouse.enable && this.app.inputEventsManager.keysMap[this.app.controls.mouse.left] === false) {
-              this.postWorkerMessage({id: 'controls', action: 'left', value: false});
+              this.sendWorkerMessage({id: 'controls', action: 'left', value: false});
             }
             return true;
 
           case this.app.controls.keyboard.left:
           case 'GamepadLeft':  
-            this.postWorkerMessage({id: 'controls', action: 'left', value: false});
+            this.sendWorkerMessage({id: 'controls', action: 'left', value: false});
             return true;
 
           case this.app.controls.mouse.jump:
             if (this.app.controls.mouse.enable && this.app.inputEventsManager.keysMap[this.app.controls.mouse.jump] === false) {
-              this.postWorkerMessage({id: 'controls', action: 'jump', value: false});
+              this.sendWorkerMessage({id: 'controls', action: 'jump', value: false});
             }
             return true;
 
           case this.app.controls.keyboard.jump:
           case 'GamepadJump':  
-            this.postWorkerMessage({id: 'controls', action: 'jump', value: false});
+            this.sendWorkerMessage({id: 'controls', action: 'jump', value: false});
             return true;
         }
         break;
@@ -376,10 +286,10 @@ export class CaveModel extends AbstractModel {
         break;
 
       case 'crash':
-        if (this.worker) {
-          this.worker.terminate();
-          this.worker = null;
+        if (this.animationTime !== false) {
+          return true;
         }
+        this.sendWorkerMessage({id: 'reset'});
         if (!this.demo) {
           this.gameAreaEntity.spriteEntities.willy[0].hide = true;
         }
@@ -395,10 +305,7 @@ export class CaveModel extends AbstractModel {
       case 'caveDone':
         if (this.animationTime == false) {
           this.sendEvent(0, {id: 'stopAllAudioChannels'});
-          if (this.worker) {
-            this.worker.terminate();
-            this.worker = null;
-          }
+          this.sendWorkerMessage({id: 'reset'});
           if (!this.demo) {
             this.gameAreaEntity.spriteEntities.willy[0].hide = true;
           }
@@ -437,10 +344,7 @@ export class CaveModel extends AbstractModel {
 
       case 'animationDemoCaveDone':
         this.sendEvent(0, {id: 'stopAllAudioChannels'});
-        if (this.worker) {
-          this.worker.terminate();
-          this.worker = null;
-        }
+        this.sendWorkerMessage({id: 'reset'});
         this.gameAreaEntity.setMonochromeColors(this.app.platform.color(3), this.app.platform.color(7));
         this.animationTime = this.timer;
         this.animationType = 'demoCaveDone';
@@ -491,7 +395,7 @@ export class CaveModel extends AbstractModel {
   touchStart(event, side) {
     var ts = this.app.controlsOptions.touchscreen.types[this.app.controls.touchscreen.type][side];
     if (ts.type == 'button') {
-      this.postWorkerMessage({id: 'controls', action: ts.action, value: true});
+      this.sendWorkerMessage({id: 'controls', action: ts.action, value: true});
     }
     this.app.inputEventsManager.touchesGameControls[event.identifier] = {center: {x: event.x, y: event.y}, type: ts.type, control: ts.control, action: ts.action, actions: ts.actions};
   } // touchStart
@@ -500,7 +404,7 @@ export class CaveModel extends AbstractModel {
     var ts = this.app.controlsOptions.touchscreen.types[this.app.controls.touchscreen.type][side];
     if (event.identifier in this.app.inputEventsManager.touchesGameControls) {
       if (this.app.inputEventsManager.touchesGameControls[event.identifier].action !== false) {
-        this.postWorkerMessage({id: 'controls', action: this.app.inputEventsManager.touchesGameControls[event.identifier].action, value: false});
+        this.sendWorkerMessage({id: 'controls', action: this.app.inputEventsManager.touchesGameControls[event.identifier].action, value: false});
       }
       delete this.app.inputEventsManager.touchesGameControls[event.identifier];
     }
@@ -534,9 +438,9 @@ export class CaveModel extends AbstractModel {
             break;
         }
         if (touchGameControl.action !== action) {
-          this.postWorkerMessage({id: 'controls', action: touchGameControl.action, value: false});
+          this.sendWorkerMessage({id: 'controls', action: touchGameControl.action, value: false});
           touchGameControl.action = action;
-          this.postWorkerMessage({id: 'controls', action: touchGameControl.action, value: true});
+          this.sendWorkerMessage({id: 'controls', action: touchGameControl.action, value: true});
         }
       }
     }
@@ -623,6 +527,93 @@ export class CaveModel extends AbstractModel {
     }
     this.needDraw = true;
   } // loopModel
+
+  sendWorkerMessage(event) {
+    if (this.app.worker) {
+      this.app.worker.postMessage(event);
+    }
+  } // sendWorkerMessage
+
+  handleWorkerMessage(event) {
+    if (this.demo && this.app.audioManager.music == 0 && event.data.gameData.info[0] == 80) {
+      this.sendEvent(1, {id: 'newDemoCave'});
+    }
+
+    switch (event.data.id) {
+      case 'update':
+        if (this.bkAnimation !== false) {
+          this.gameAreaEntity.bkColor = this.app.platform.color(this.bkAnimation);
+          if (this.bkAnimation >= 0) {
+            this.bkAnimation--;
+          } else {
+            this.bkAnimation = false;
+          }
+          if (this.bkAnimation < 0) {
+            this.gameAreaEntity.restoreBkColor();
+            this.bkAnimation = false;
+          }
+        }
+        Object.keys(event.data.gameData).forEach((objectsType) => {
+          switch (objectsType) {
+            case 'info':
+              if (this.animationTime !== false) {
+                break;
+              }
+              var ptrClock = event.data.gameData.info[0]+event.data.gameData.info[7]+this.gameClock;
+              if (event.data.gameData.info[0] < 2) {
+                ptrClock = event.data.gameData.info[0];
+              }
+              var maxClock = (this.airSupply-36+1)*(256/4);
+              if (ptrClock > maxClock) {
+                this.sendEvent(1, {id: 'crash'});
+              }
+              this.app.airValue = 1-(ptrClock/maxClock);
+              this.gameInfoEntity.airEntity.value = this.app.airValue;
+              if (this.app.score != event.data.gameData.info[6]) {
+                this.app.score = event.data.gameData.info[6];
+                this.gameInfoEntity.scoreEntity.setText(this.app.score.toString().padStart(6, '0'));
+              }
+              for (var l = 0; l < this.app.lives; l++) {
+                this.gameInfoEntity.liveEntities[l].x = event.data.gameData.info[3]%4*2+l*16;
+                this.gameInfoEntity.liveEntities[l].frame = event.data.gameData.info[3]%4;
+              }                
+              break;
+              
+            case 'floors':
+            case 'walls':
+            case 'nasties':
+            case 'extra':
+              break;
+
+            default:  
+              this.gameAreaEntity.updateData(event.data.gameData, objectsType);
+          }
+        });
+        this.drawModel();
+        this.needDraw = false;
+        break;
+
+      case 'playSound':
+        this.sendEvent(0, {id: 'playSound', channel: event.data.channel, sound: event.data.sound, options: false});
+        break;
+
+      case 'stopAudioChannel':
+        this.sendEvent(0, {id: 'stopAudioChannel', channel: event.data.channel});
+        break;
+
+      case 'caveDone':
+        var ptrClock = event.data.gameData.info[0]+event.data.gameData.info[7]+this.gameClock;
+        var maxClock = (this.airSupply-36+1)*(256/4);
+        this.undisplayedScore = maxClock-ptrClock;
+        this.app.score += this.undisplayedScore;
+        this.sendEvent(0, {id: 'caveDone'});
+        break;
+
+      case 'crash':
+        this.sendEvent(1, {id: 'crash'});
+        break;
+    }
+  } // getWorkerMessage
 
 } // CaveModel
 

@@ -5,29 +5,44 @@
 /**/
 // begin code
 
-var counter = 0;
-var counter2 = 0;
-var counter4 = 0;
-var counter6 = 0;
-var gameData = null;
 var controls = {left: false, right: false, jump: false};
-var jumpCounter = 0;
-var jumpDirection = 0;
 var jumpMap = [-4, -4, -3, -3, -2, -2, -1, -1, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4];
-var fallingCounter = 0;
-var fallingDirection = 0;
-var mustMovingDirection = 0;
-var canMovingDirection = 0;
-var previousDirection = 0;
-var completed = 0;
-var bonus = 0;
-var pause = false;
+var counter, counter2, counter4, counter6, gameData,
+    jumpCounter, jumpDirection, fallingCounter, fallingDirection,
+    mustMovingDirection, canMovingDirection, previousDirection,
+    completed, bonus, pause, nextLoop, ended;
+
+function resetData() {
+  counter = 0;
+  counter2 = 0;
+  counter4 = 0;
+  counter6 = 0;
+  gameData = null;
+  jumpCounter = 0;
+  jumpDirection = 0;
+  fallingCounter = 0;
+  fallingDirection = 0;
+  mustMovingDirection = 0;
+  canMovingDirection = 0;
+  previousDirection = 0;
+  completed = 0;
+  bonus = 0;
+  pause = false;
+  nextLoop = false;
+  ended = false;
+} // resetData
 
 function gameLoop() {
-  if (!pause) {
-    setTimeout(gameLoop, 80);
+  if (ended) {
+    nextLoop = false;
+    return;
   }
-  
+  if (!pause) {
+    nextLoop = setTimeout(gameLoop, 80);
+  } else {
+    nextLoop = false;
+  }
+
   if (gameData != null) {
     counter++;
     gameData.info[0] = counter;
@@ -69,8 +84,10 @@ function gameLoop() {
         bonus -= 100;
       }
     }
-  
-    postMessage({id: 'update', gameData: gameData});
+
+    if (!ended) {
+      postMessage({id: 'update', gameData: gameData});
+    }
   }
 } // gameLoop
 
@@ -633,6 +650,10 @@ function isColliding() {
   if (isStandingOn(willy.x, willy.y, 10, 16, [gameData.nasties]).length) {
     gameData.info[5] = true;
   }
+  if (gameData.info[5]) {
+    ended = true;
+    postMessage({id: 'crash', gameData: gameData});
+  }
 } // isColliding
 
 function isOnPlatform() {
@@ -640,6 +661,7 @@ function isOnPlatform() {
     var willy = gameData.willy[0];
     var portal = gameData.portal[0];
     if (!(willy.x+willy.width <= portal.x+8 || willy.y+willy.height <= portal.y+8 || willy.x >= portal.x+portal.width-8 || willy.y >= portal.y+portal.height-8)) {
+      ended = true;
       postMessage({id: 'caveDone', gameData: gameData});
     }
   }
@@ -680,6 +702,7 @@ function isTouchingSwitch() {
 onmessage = (event) => {
   switch (event.data.id) {
     case 'init':
+      resetData();
       gameData = {};
       Object.keys(event.data.initData).forEach((objectsType) => {
         gameData[objectsType] = [];
@@ -699,13 +722,19 @@ onmessage = (event) => {
       break;
 
     case 'pause':
-      this.pause = true;
+      pause = true;
       break;
 
     case 'continue':
-      this.pause = false;
+      pause = false;
       gameLoop();
       break;
   
-    }
+    case 'reset':
+      clearTimeout(nextLoop);
+      nextLoop = false;
+      controls = {left: false, right: false, jump: false};
+      break;
+
+  }
 } // onmessage
