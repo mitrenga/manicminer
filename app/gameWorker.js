@@ -5,12 +5,34 @@
 /**/
 // begin code
 
-var controls = {left: false, right: false, jump: false};
+var controls = {
+  left: false,
+  right: false,
+  jump: false,
+  isLeft: function() {
+    if (this.left && !this.right) {
+      return true;
+    }
+    return false;
+  },
+  isRight: function() {
+    if (this.right && !this.left) {
+      return true;
+    }
+    return false;
+  },
+  isJump: function() {
+    return this.jump;
+  }
+};
+
 var jumpMap = [-4, -4, -3, -3, -2, -2, -1, -1, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4];
+var framesInterval = 80;
+
 var counter, counter2, counter4, counter6, gameData,
     jumpCounter, jumpDirection, fallingCounter, fallingDirection,
     mustMovingDirection, canMovingDirection, previousDirection,
-    completed, bonus, pause, nextLoop, ended;
+    completed, bonus, pause, loopCounter,nextLoop, ended;
 
 function resetData() {
   counter = 0;
@@ -28,17 +50,19 @@ function resetData() {
   completed = 0;
   bonus = 0;
   pause = false;
+  loopCounter = 0;
   nextLoop = false;
   ended = false;
 } // resetData
 
 function gameLoop() {
+  loopCounter++;
   if (ended) {
     nextLoop = false;
     return;
   }
   if (!pause) {
-    nextLoop = setTimeout(gameLoop, 80);
+    nextLoop = setTimeout(gameLoop, framesInterval);
   } else {
     nextLoop = false;
   }
@@ -196,15 +220,15 @@ function willy() {
     }
   }
 
-  if (canMovingDirection == 1 && !controls.left) {
+  if (canMovingDirection == 1 && !controls.isLeft()) {
     mustMovingDirection = 1;
   }
-  if (canMovingDirection == -1 && !controls.right) {
+  if (canMovingDirection == -1 && !controls.isRight()) {
     mustMovingDirection = -1;
   }
 
   var newDirection = 0;
-  if ((controls.right && !controls.left && !jumpCounter && !fallingCounter && !mustMovingDirection && (!canMovingDirection || (canMovingDirection == -1 && previousDirection == 1))) ||
+  if ((controls.isRight() && !jumpCounter && !fallingCounter && !mustMovingDirection && (!canMovingDirection || (canMovingDirection == -1 && previousDirection == 1))) ||
       (jumpCounter && jumpDirection == 1) ||
       (mustMovingDirection == 1)) {
 
@@ -224,7 +248,7 @@ function willy() {
     }
   }
 
-  if ((controls.left && !controls.right && !jumpCounter && !fallingCounter && !mustMovingDirection && (!canMovingDirection || (canMovingDirection == 1 && previousDirection == -1))) ||
+  if ((controls.isLeft() && !jumpCounter && !fallingCounter && !mustMovingDirection && (!canMovingDirection || (canMovingDirection == 1 && previousDirection == -1))) ||
       (jumpCounter && jumpDirection == -1) ||
       (mustMovingDirection == -1)) {
 
@@ -246,7 +270,7 @@ function willy() {
 
   previousDirection = newDirection;
 
-  if (!jumpCounter && !fallingCounter && controls.jump) {
+  if (!jumpCounter && !fallingCounter && controls.isJump()) {
     if (canMove(0, jumpMap[jumpCounter])) {
       jumpCounter = 1;
       willy.y += jumpMap[jumpCounter-1]; 
@@ -702,6 +726,7 @@ function isTouchingSwitch() {
 onmessage = (event) => {
   switch (event.data.id) {
     case 'init':
+      clearTimeout(nextLoop);
       resetData();
       gameData = {};
       Object.keys(event.data.initData).forEach((objectsType) => {
@@ -718,14 +743,18 @@ onmessage = (event) => {
       break;
 
     case 'controls':
-      controls[event.data.action] = event.data.value;
+      if (event.data.action.startsWith('is')) {
+        controls[event.data.action] = new Function('return('+event.data.value+')')();
+      } else {
+        controls[event.data.action] = event.data.value;
+      }
       break;
-
     case 'pause':
       pause = true;
       break;
 
     case 'continue':
+      clearTimeout(nextLoop);
       pause = false;
       gameLoop();
       break;
@@ -733,7 +762,9 @@ onmessage = (event) => {
     case 'reset':
       clearTimeout(nextLoop);
       nextLoop = false;
-      controls = {left: false, right: false, jump: false};
+      controls.left = false;
+      controls.right = false;
+      controls.jump = false;
       break;
 
   }
