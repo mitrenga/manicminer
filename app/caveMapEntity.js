@@ -2,10 +2,12 @@
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
 const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
+const { SpriteTool } = await import('./svision/js/spriteTool.js?ver='+window.srcVersion);
 /*/
 import AbstractEntity from './svision/js/abstractEntity.js';
 import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
 import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
+import SpriteTool from './svision/js/spriteTool.js';
 /**/
 // begin code
 
@@ -34,7 +36,7 @@ export class CaveMapEntity extends AbstractEntity {
     if (this.locked) {
       this.addEntity(new AbstractEntity(this, 0, 0, this.width, this.height, false, '#9a9595c0'));
       var padlockEntity = new SpriteEntity(this, Math.floor((this.width-11)/2), Math.floor((this.height-13)/2), this.app.platform.colorByName('red'), false, 0, 0);
-      padlockEntity.setCompressedGraphicsData('lP100B00D0B040307050209010F080A0G012334140414041415671815696A656', false);
+      padlockEntity.setGraphicsData(SpriteTool.decode('lP100B00D0B040307050209010F080A0G012334140414041415671815696A656'));
       this.addEntity(padlockEntity);
     } 
     var caveId = 'cave'+this.caveNumber.toString().padStart(2, '0');

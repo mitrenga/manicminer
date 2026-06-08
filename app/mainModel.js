@@ -6,6 +6,7 @@ const { MainImageEntity } = await import('./mainImageEntity.js?ver='+window.srcV
 const { SlidingTextEntity } = await import('./svision/js/platform/canvas2D/slidingTextEntity.js?ver='+window.srcVersion);
 const { AirEntity } = await import('./airEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
+const { SpriteTool } = await import('./svision/js/spriteTool.js?ver='+window.srcVersion);
 const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
@@ -15,6 +16,7 @@ import MainImageEntity from './mainImageEntity.js';
 import SlidingTextEntity from './svision/js/platform/canvas2D/slidingTextEntity.js';
 import AirEntity from './airEntity.js';
 import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
+import SpriteTool from './svision/js/spriteTool.js';
 import PauseGameEntity from './pauseGameEntity.js';
 /**/
 // begin code
@@ -75,10 +77,7 @@ export class MainModel extends AbstractModel {
     this.mainImageEntity.addEntity(this.pianoKey2Entity);
 
     this.enterEntity = new SpriteEntity(this.mainImageEntity, 96, 96, this.app.platform.color(0), false, 0, 0);
-    this.enterEntity.setCompressedGraphicsData(
-        'lP10130080900070102030609040B01234321212521243321212657234373534577234377787327437775235327437353233123344371233321234343712343',
-        false
-    );
+    this.enterEntity.setGraphicsData(SpriteTool.decode('lP10130080900070102030609040B01234321212521243321212657234373534577234377787327437775235327437353233123344371233321234343712343'));
     this.mainImageEntity.addEntity(this.enterEntity);
 
     this.willyEntity = new SpriteEntity(this.mainImageEntity, 28*8, 9*8, this.app.platform.colorByName('white'), false, 0, 0);
@@ -96,20 +95,16 @@ export class MainModel extends AbstractModel {
     this.blackBoxEntity.addEntity(this.slidingTextEntity);
 
     this.selectCaveEntity = new SpriteEntity(this.blackBoxEntity, 25, 28, this.app.platform.colorByName('white'), false, 0, 0);
-    this.selectCaveEntity.setCompressedGraphicsData(
+    this.selectCaveEntity.setGraphicsData(SpriteTool.decode(
       'lP105R0080K0006020705031M0B010A040E1L091N0C1P081O0D012123245463247423821324239448A2528B83838383C383D383821' +
       '38383D35552528D5282528212A882A8E2A252D2A882121212A852F2A8228222528243838AA454G2A252D45AA21AA2H2F2125282528' +
       'A51212A1454E2A252748AA21AA2H2F2125222822A5212825218A288A2E2A252D8A282121212A852F2A883228222421222238383E2A' +
       '3D38383838352F383555D1252832454I2447423838324A2J42252A8A3',
-      false
-    );
+    ));
     this.blackBoxEntity.addEntity(this.selectCaveEntity);
 
     this.spaceEntity = new SpriteEntity(this.blackBoxEntity, 73, 28, this.app.platform.color(3), false, 0, 0);
-    this.spaceEntity.setCompressedGraphicsData(
-      'lP101300809010502060E070309040123101124056665078002622202228002116502620238110322620238601002350280021502350505012232622125',
-      false
-    );
+    this.spaceEntity.setGraphicsData(SpriteTool.decode('lP101300809010502060E070309040123101124056665078002622202228002116502620238110322620238601002350280021502350505012232622125'));
     this.blackBoxEntity.addEntity(this.spaceEntity);
 
     this.sendEvent(0, {id: 'openAudioChannel', channel: 'music', options: {muted: this.app.muted.music}});
