@@ -2,10 +2,12 @@
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
 const { DrawingCache } = await import('./svision/js/platform/canvas2D/drawingCache.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
+const { SpriteTool } = await import('./svision/js/spriteTool.js?ver='+window.srcVersion);
 /*/
 import AbstractEntity from './svision/js/abstractEntity.js';
 import DrawingCache from './svision/js/platform/canvas2D/drawingCache.js';
 import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
+import SpriteTool from './svision/js/spriteTool.js';
 /**/
 // begin code
 
@@ -225,9 +227,9 @@ export class GameAreaEntity extends AbstractEntity {
             case 'crumblingFloor':
               var entity = new SpriteEntity(this, column*8, r*8, penColor, false, 0, 0);
               entity.setGraphicsData(data.graphicData[attr]);
-              for (var c = 0; c < 7; c++) {
-                entity.cloneSprite(0);
-                entity.moveSpriteWithCrop(c+1, 0, c+1, 8, 8);
+              var crumbleGrid = data.graphicData[attr].sprite;
+              for (var c = 1; c <= 7; c++) {
+                entity.addFrameData(SpriteTool.shiftCrop(crumbleGrid, 0, c, 8, 8), false);
               }
               this.addEntity(entity);
               this.spriteEntities.crumblingFloors.push(entity);
@@ -262,19 +264,16 @@ export class GameAreaEntity extends AbstractEntity {
       entity.setFixSize(8, 8);
       entity.setRepeatX(conveyorData.length);
       entity.setGraphicsData(data.graphicData[conveyorData.attr]);
-      entity.cloneSprite(0);
       var rotateDirection = 1;
       if (data.graphicData[conveyorData.attr].moving == 'right') {
         rotateDirection = -1;
       }
-      entity.rotateSpriteRow(1, 0, -2*rotateDirection);
-      entity.rotateSpriteRow(1, 2, 2*rotateDirection);
-      entity.cloneSprite(1);
-      entity.rotateSpriteRow(2, 0, -2*rotateDirection);
-      entity.rotateSpriteRow(2, 2, 2*rotateDirection);
-      entity.cloneSprite(2);
-      entity.rotateSpriteRow(3, 0, -2*rotateDirection);
-      entity.rotateSpriteRow(3, 2, 2*rotateDirection);
+      var conveyorGrid = data.graphicData[conveyorData.attr].sprite;
+      for (var f = 1; f <= 3; f++) {
+        var grid = SpriteTool.rotateRow(conveyorGrid, 0, -2*f*rotateDirection);
+        grid = SpriteTool.rotateRow(grid, 2, 2*f*rotateDirection);
+        entity.addFrameData(grid, false);
+      }
       this.addEntity(entity);
       this.spriteEntities.conveyors.push(entity);
       this.initData.conveyors.push({
@@ -308,9 +307,9 @@ export class GameAreaEntity extends AbstractEntity {
       this.addEntity(entity);
       entity.setSharedPalette({'#': {0: penColor0, 1: penColor1, 2: penColor2, 3: penColor3}});
       entity.setGraphicsData(data.items);
-      entity.cloneSprite(0);
-      entity.cloneSprite(0);
-      entity.cloneSprite(0);
+      for (var f = 0; f < 3; f++) {
+        entity.addFrameData(data.items.sprite, false);
+      }
       this.spriteEntities.items.push(entity);
       this.initData.items.push({hide: false, x: item.x*8, y: item.y*8, width: 8, height: 8, frame: 0, direction: 0});
       itemColor = this.app.rotateInc(itemColor, 3, 6);
@@ -433,7 +432,7 @@ export class GameAreaEntity extends AbstractEntity {
     this.addEntity(entity);
     entity.setSharedPalette({'-': {0: bkColor, 1: penColor}, '#': {0: penColor, 1: bkColor}});
     entity.setGraphicsData(data.portal);
-    entity.cloneSprite(0);
+    entity.addFrameData(data.portal.sprite, false);
     this.spriteEntities.portal.push(entity);
     var portalInitData = {
       x: data.portal.x*8,
