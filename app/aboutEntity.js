@@ -26,7 +26,7 @@ export class AboutEntity extends AbstractEntity {
     this.addEntity(new AbstractEntity(this, 1, 9, this.width-2, this.height-10, false, this.app.platform.colorByName('yellow')));
 
     this.aboutText = 'MANIC MINER IS A REMAKE OF THE ORIGINAL 1983 GAME FOR THE SINCLAIR ZX SPECTRUM BY MATTHEW SMITH.\n' +
-                    'THIS GAME HAS FASCINATED ME EVER SINCE I SAW IT FOR THE FIRST TIME. ' +
+                    'THIS GAME HAS FASCINATED ME EVER SINCE I\u00A0SAW IT FOR THE FIRST TIME. ' +
                     'I BELIEVE THAT MANY PLAYERS WILL ENJOY REMINISCING ABOUT THIS LEGENDARY GAME, AND NOT JUST OUT OF NOSTALGIA.\n' +
                     'IN THIS REMAKE, YOU ALSO HAVE THE OPTION TO CONTINUE IN THE CAVE FROM WHERE YOU LEFT OFF IN YOUR PREVIOUS GAME. ' +
                     'THIS GIVES YOU THE CHANCE TO TRY COMPLETING ALL THE CAVES.';
