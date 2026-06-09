@@ -139,7 +139,7 @@
             "objectsArray":"guardians",
             "index":2,
             "value":{
-               "id":"setColorsMap",
+               "id":"setSharedPalette",
                "data":[
                   "57",
                   "56",

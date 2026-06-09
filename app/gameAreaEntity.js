@@ -306,7 +306,7 @@ export class GameAreaEntity extends AbstractEntity {
       var penColor3 = this.app.platform.color(tmpColor);
       var entity = new SpriteEntity(this, item.x*8, item.y*8, false, bkColor, 0, 0);
       this.addEntity(entity);
-      entity.setColorsMap({'#': {0: penColor0, 1: penColor1, 2: penColor2, 3: penColor3}});
+      entity.setSharedPalette({'#': {0: penColor0, 1: penColor1, 2: penColor2, 3: penColor3}});
       entity.setGraphicsData(data.items);
       entity.cloneSprite(0);
       entity.cloneSprite(0);
@@ -330,6 +330,8 @@ export class GameAreaEntity extends AbstractEntity {
             paintCorrectionsY = guardianTypeData.paintCorrections.y;
           }
           var entity = new SpriteEntity(this, guardian.init.x+paintCorrectionsX, guardian.init.y+paintCorrectionsY, penColor, false, guardian.init.frame, guardian.init.direction);
+          // build with a palette so pixels carry c='#'; lets the runtime setSharedPalette action recolor per frame
+          entity.setSharedPalette({'#': penColor});
           entity.setGraphicsData(guardianTypeData);
           this.addEntity(entity);
           this.spriteEntities.guardians.push(entity);
@@ -429,7 +431,7 @@ export class GameAreaEntity extends AbstractEntity {
     var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(data.portal.attribute));
     var entity = new SpriteEntity(this, data.portal.x*8, data.portal.y*8, false, false, 0, 0);
     this.addEntity(entity);
-    entity.setColorsMap({'-': {0: bkColor, 1: penColor}, '#': {0: penColor, 1: bkColor}});
+    entity.setSharedPalette({'-': {0: bkColor, 1: penColor}, '#': {0: penColor, 1: bkColor}});
     entity.setGraphicsData(data.portal);
     entity.cloneSprite(0);
     this.spriteEntities.portal.push(entity);
@@ -476,13 +478,13 @@ export class GameAreaEntity extends AbstractEntity {
       }
       if ('action' in object) {
         switch (object.action.id) {
-          case 'setColorsMap':
-            var colorsMap = {};
-            colorsMap[spriteEntity.penChar] = {};
+          case 'setSharedPalette':
+            var palette = {};
+            palette[spriteEntity.penChar] = {};
             object.action.data.forEach((attr, frame) => {
-              colorsMap[spriteEntity.penChar][frame] = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
+              palette[spriteEntity.penChar][frame] = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
             });
-            spriteEntity.setColorsMap(colorsMap);
+            spriteEntity.setSharedPalette(palette);
             break;
         }
       }
