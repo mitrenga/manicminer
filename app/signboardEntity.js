@@ -1,7 +1,9 @@
 /**/
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
+const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
 /*/
 import AbstractEntity from './svision/js/abstractEntity.js';
+import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
 /**/
 // begin code
 
@@ -127,7 +129,7 @@ export class SignboardEntity extends AbstractEntity {
       if (ch == 6 && this.animationMode == 'splashScreen') {
         this.cursorX = 0;
       }
-      var penColor = this.app.platform.colorByName(this.textData[ch].color);
+      var penColor = ZXColor[this.textData[ch].color];
       var charData = this.getCharData(this.textData[ch]);
       for (var x = 0; x < charData.data.length; x++) {
         this.app.layout.paintRect(ctx, posX+this.cursorX+charData.data[x][0]*this.scale, posY+charData.data[x][1]*this.scale, charData.data[x][2]*this.scale, charData.data[x][3]*this.scale, penColor);

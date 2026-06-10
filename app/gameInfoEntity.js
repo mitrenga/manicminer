@@ -3,11 +3,13 @@ const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+wi
 const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
 const { AirEntity } = await import('./airEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
+const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
 /*/
 import AbstractEntity from './svision/js/abstractEntity.js';
 import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
 import AirEntity from './airEntity.js';
 import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
+import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
 /**/
 // begin code
 
@@ -26,22 +28,22 @@ export class GameInfoEntity extends AbstractEntity {
   init() {
     super.init();
 
-    this.caveNameEntity = new TextEntity(this, this.app.fonts.zxFonts8x8, 0, 0, 32*8, 8, '', this.app.platform.colorByName('black'), this.app.platform.colorByName('yellow'), {align: 'center'});
+    this.caveNameEntity = new TextEntity(this, this.app.fonts.zxFonts8x8, 0, 0, 32*8, 8, '', ZXColor.black, ZXColor.yellow, {align: 'center'});
     this.addEntity(this.caveNameEntity);
-    this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 0, 8, 4*8, 8, 'AIR', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightRed'), {leftMargin: 5}));
+    this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 0, 8, 4*8, 8, 'AIR', ZXColor.brightWhite, ZXColor.brightRed, {leftMargin: 5}));
     this.airEntity = new AirEntity(this, 4*8, 8, 28*8, 8, 1.0);
     this.addEntity(this.airEntity);
-    this.addEntity(new AbstractEntity(this, 0, 2*8, 32*8, 8, false, this.app.platform.colorByName('black')));
-    this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 0, 3*8, 10*8, 8, 'High Score', this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), {leftMargin: 1}));
-    this.hiScoreEntity = new TextEntity(this, this.app.fonts.zxFonts8x8Mono, 10*8, 3*8, 10*8, 8, this.app.hiScore.toString().padStart(6, '0'), this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), {});
+    this.addEntity(new AbstractEntity(this, 0, 2*8, 32*8, 8, false, ZXColor.black));
+    this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 0, 3*8, 10*8, 8, 'High Score', ZXColor.brightYellow, ZXColor.brightBlack, {leftMargin: 1}));
+    this.hiScoreEntity = new TextEntity(this, this.app.fonts.zxFonts8x8Mono, 10*8, 3*8, 10*8, 8, this.app.hiScore.toString().padStart(6, '0'), ZXColor.brightYellow, ZXColor.brightBlack, {});
     this.addEntity(this.hiScoreEntity);
-    this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 20*8, 3*8, 6*8, 8, 'Score', this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), {leftMargin: 1}));
-    this.scoreEntity = new TextEntity(this, this.app.fonts.zxFonts8x8Mono, 26*8, 3*8, 6*8, 8, this.app.score.toString().padStart(6, '0'), this.app.platform.colorByName('brightYellow'), this.app.platform.colorByName('brightBlack'), {});
+    this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 20*8, 3*8, 6*8, 8, 'Score', ZXColor.brightYellow, ZXColor.brightBlack, {leftMargin: 1}));
+    this.scoreEntity = new TextEntity(this, this.app.fonts.zxFonts8x8Mono, 26*8, 3*8, 6*8, 8, this.app.score.toString().padStart(6, '0'), ZXColor.brightYellow, ZXColor.brightBlack, {});
     this.addEntity(this.scoreEntity);
-    this.addEntity(new AbstractEntity(this, 0, 4*8, 32*8, 8, false, this.app.platform.colorByName('black')));
-    this.addEntity(new AbstractEntity(this, 0, 5*8, 32*8, 3*8, false, this.app.platform.colorByName('black')));
+    this.addEntity(new AbstractEntity(this, 0, 4*8, 32*8, 8, false, ZXColor.black));
+    this.addEntity(new AbstractEntity(this, 0, 5*8, 32*8, 3*8, false, ZXColor.black));
     for (var l = 0; l < 16; l++) {
-      this.liveEntities[l] = new SpriteEntity(this, l*16, 5*8, this.app.platform.colorByName('brightCyan'), false, 0, 0);
+      this.liveEntities[l] = new SpriteEntity(this, l*16, 5*8, ZXColor.brightCyan, false, 0, 0);
       this.addEntity(this.liveEntities[l]);
       if (l >= this.app.lives) {
         this.liveEntities[l].hide = true;

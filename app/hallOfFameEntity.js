@@ -2,10 +2,12 @@
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
 const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
 const { ButtonEntity } = await import('./svision/js/platform/canvas2D/buttonEntity.js?ver='+window.srcVersion);
+const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
 /*/
 import AbstractEntity from './svision/js/abstractEntity.js';
 import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
 import ButtonEntity from './svision/js/platform/canvas2D/buttonEntity.js';
+import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
 /**/
 // begin code
 
@@ -19,11 +21,11 @@ export class HallOfFameEntity extends AbstractEntity {
   init() {
     super.init();
     
-    this.addEntity(new AbstractEntity(this, 0, 0, this.width, this.height, false, this.app.platform.colorByName('black')));
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 0, 0, this.width, 9, 'HALL OF FAME', this.app.platform.colorByName('brightWhite'), false, {align: 'center', topMargin: 2}));
-    this.addEntity(new AbstractEntity(this, 1, 9, this.width-2, this.height-10, false, this.app.platform.colorByName('yellow')));
+    this.addEntity(new AbstractEntity(this, 0, 0, this.width, this.height, false, ZXColor.black));
+    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 0, 0, this.width, 9, 'HALL OF FAME', ZXColor.brightWhite, false, {align: 'center', topMargin: 2}));
+    this.addEntity(new AbstractEntity(this, 1, 9, this.width-2, this.height-10, false, ZXColor.yellow));
 
-    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-39, this.height-16, 36, 13, 'CLOSE', {id: 'closeHallOfFame'}, ['Enter', 'Escape', ' ', 'GamepadOK', 'GamepadExit'], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {align: 'center', margin: 4}));
+    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-39, this.height-16, 36, 13, 'CLOSE', {id: 'closeHallOfFame'}, ['Enter', 'Escape', ' ', 'GamepadOK', 'GamepadExit'], ZXColor.brightWhite, ZXColor.brightBlue, {align: 'center', margin: 4}));
 
     this.fetchData('hallOfFame.db', {key: 'hallOfFame', when: 'offline'}, {});
   } // init
@@ -34,9 +36,9 @@ export class HallOfFameEntity extends AbstractEntity {
     }
     for (var i = 0; i < Object.keys(data.data).length; i++) {
       var y = 12+i*10;
-      this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 2, y, 18, 8, (i+1)+'.', this.app.platform.colorByName('black'), false, {align: 'right'}));
-      this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 24, y, 120, 8, data.data[i].name, this.app.platform.colorByName('black'), false, {}));
-      this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8Mono, this.width-108, y, 102, 8, data.data[i].score, this.app.platform.colorByName('black'), false, {align: 'right'}));
+      this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 2, y, 18, 8, (i+1)+'.', ZXColor.black, false, {align: 'right'}));
+      this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 24, y, 120, 8, data.data[i].name, ZXColor.black, false, {}));
+      this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8Mono, this.width-108, y, 102, 8, data.data[i].score, ZXColor.black, false, {align: 'right'}));
       if (i == 0) {
         this.app.hiScore = data.data[0].score;
       }
@@ -44,7 +46,7 @@ export class HallOfFameEntity extends AbstractEntity {
   } // setData
 
   errorData(error) {
-    this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 0, this.height/2-20, this.width, 32, 'ERROR: '+error.message, this.app.platform.colorByName('brightRed'), false, {align: 'center', textWrap: true}));
+    this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 0, this.height/2-20, this.width, 32, 'ERROR: '+error.message, ZXColor.brightRed, false, {align: 'center', textWrap: true}));
     super.errorData(error);
   } // errorData
 

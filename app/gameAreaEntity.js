@@ -4,12 +4,14 @@ const { DrawingCache } = await import('./svision/js/platform/canvas2D/drawingCac
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 const { SpriteTool } = await import('./svision/js/spriteTool.js?ver='+window.srcVersion);
 const { Tool } = await import('./svision/js/tool.js?ver='+window.srcVersion);
+const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
 /*/
 import AbstractEntity from './svision/js/abstractEntity.js';
 import DrawingCache from './svision/js/platform/canvas2D/drawingCache.js';
 import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
 import SpriteTool from './svision/js/spriteTool.js';
 import Tool from './svision/js/tool.js';
+import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
 /**/
 // begin code
 
@@ -37,7 +39,7 @@ export class GameAreaEntity extends AbstractEntity {
 
   drawEntity() {
     if (this.caveData) {
-      var caveBkColor = this.app.platform.zxColorByAttr(Tool.hexToInt(this.caveData.bkColor), 56, 8);
+      var caveBkColor = ZXColor.attrColor(Tool.hexToInt(this.caveData.bkColor), 56, 8);
 
       this.app.layout.paint(this, 0, 0, this.width, this.height, this.bkColor);
 
@@ -94,10 +96,10 @@ export class GameAreaEntity extends AbstractEntity {
             for (var column = 0; column < 32; column++) {
               var attr = Tool.hexToInt(this.caveData.image.attributes[row].substring(column*2, column*2+2));
               var penColor = this.monochromeColor;
-              var bkColor = this.app.platform.bkColorByAttr(attr);
+              var bkColor = ZXColor.bkAttrColor(attr);
               var bkColor2 = bkColor;
               if (penColor == false) {
-                penColor = this.app.platform.penColorByAttr(attr);
+                penColor = ZXColor.penAttrColor(attr);
               } else {
                 bkColor2 = this.bkColor;
               }
@@ -157,14 +159,14 @@ export class GameAreaEntity extends AbstractEntity {
   setData(data) {
     this.caveData = data;
     
-    this.bkColor = this.app.platform.zxColorByAttr(Tool.hexToInt(this.caveData.bkColor), 56, 8);
+    this.bkColor = ZXColor.attrColor(Tool.hexToInt(this.caveData.bkColor), 56, 8);
     this.bkColorForRestore = this.bkColor;
 
     // light beam
     if ('lightBeam' in data) {
       this.initData.lightBeam = [];
-      var penColor = this.app.platform.penColorByAttr(Tool.hexToInt(data.lightBeam.attribute));
-      var bkColor = this.app.platform.bkColorByAttr(Tool.hexToInt(data.lightBeam.attribute));
+      var penColor = ZXColor.penAttrColor(Tool.hexToInt(data.lightBeam.attribute));
+      var bkColor = ZXColor.bkAttrColor(Tool.hexToInt(data.lightBeam.attribute));
       var entity = new AbstractEntity(this, data.lightBeam.init.x, data.lightBeam.init.y, data.lightBeam.init.width, data.lightBeam.init.height, penColor, bkColor);
       this.addEntity(entity);
       this.spriteEntities.lightBeam.push(entity);
@@ -181,7 +183,7 @@ export class GameAreaEntity extends AbstractEntity {
     // Willy
     this.initData.willy = [];
     if (!this.demo) {
-      var penColor = this.app.platform.penColorByAttr(Tool.hexToInt(data.willy.attribute));
+      var penColor = ZXColor.penAttrColor(Tool.hexToInt(data.willy.attribute));
       var entity = new SpriteEntity(this, data.willy.init.x+data.willy.paintCorrections.x, data.willy.init.y, penColor, false, data.willy.init.frame, data.willy.init.direction);
       this.addEntity(entity);
       entity.setGraphicsData(data.willy);
@@ -221,7 +223,7 @@ export class GameAreaEntity extends AbstractEntity {
       for (var column = 0; column < row.length/2; column++) {
         var attr = row.substring(column*2, column*2+2);
         if (attr != data.bkColor) {
-          var penColor = this.app.platform.penColorByAttr(Tool.hexToInt(attr));
+          var penColor = ZXColor.penAttrColor(Tool.hexToInt(attr));
           switch (data.graphicData[attr].kind) {
             case 'floor':
               this.initData.floors.push({x: column*8, y: r*8, width: 8, height: 8});
@@ -261,7 +263,7 @@ export class GameAreaEntity extends AbstractEntity {
     // conveyor
     this.initData.conveyors = [];
     if (conveyorData !== false) {
-      var penColor = this.app.platform.penColorByAttr(Tool.hexToInt(conveyorData.attr));
+      var penColor = ZXColor.penAttrColor(Tool.hexToInt(conveyorData.attr));
       var entity = new SpriteEntity(this, conveyorData.x*8, conveyorData.y*8, penColor, false, 0, 0);
       entity.setFixSize(8, 8);
       entity.setRepeatX(conveyorData.length);
@@ -293,18 +295,18 @@ export class GameAreaEntity extends AbstractEntity {
     this.initData.items = [];
     data.items.data.forEach((item) => {
       var itemColor = Tool.hexToInt(item.initAttribute)&7;
-      var bkColor = this.app.platform.bkColorByAttr(Tool.hexToInt(item.initAttribute));
-      if (bkColor == this.app.platform.bkColorByAttr(Tool.hexToInt(data.bkColor))) {
+      var bkColor = ZXColor.bkAttrColor(Tool.hexToInt(item.initAttribute));
+      if (bkColor == ZXColor.bkAttrColor(Tool.hexToInt(data.bkColor))) {
         bkColor = false;
       }
       var tmpColor = itemColor;
-      var penColor0 = this.app.platform.color(tmpColor);
+      var penColor0 = ZXColor.color(tmpColor);
       tmpColor = Tool.cycleInc(tmpColor, 3, 6);
-      var penColor1 = this.app.platform.color(tmpColor);
+      var penColor1 = ZXColor.color(tmpColor);
       tmpColor = Tool.cycleInc(tmpColor, 3, 6);
-      var penColor2 = this.app.platform.color(tmpColor);
+      var penColor2 = ZXColor.color(tmpColor);
       tmpColor = Tool.cycleInc(tmpColor, 3, 6);
-      var penColor3 = this.app.platform.color(tmpColor);
+      var penColor3 = ZXColor.color(tmpColor);
       var entity = new SpriteEntity(this, item.x*8, item.y*8, false, bkColor, 0, 0);
       this.addEntity(entity);
       entity.setSharedPalette({'#': {0: penColor0, 1: penColor1, 2: penColor2, 3: penColor3}});
@@ -323,7 +325,7 @@ export class GameAreaEntity extends AbstractEntity {
       if (guardianType in data.guardians) {
         var guardianTypeData = data.guardians[guardianType];
         guardianTypeData.figures.forEach((guardian) => {
-          var penColor = this.app.platform.penColorByAttr(Tool.hexToInt(guardian.attribute));
+          var penColor = ZXColor.penAttrColor(Tool.hexToInt(guardian.attribute));
           var paintCorrectionsX = 0;
           var paintCorrectionsY = 0;
           if ('paintCorrections' in guardianTypeData) {
@@ -382,8 +384,8 @@ export class GameAreaEntity extends AbstractEntity {
     this.initData.barriers = [];
     if ('barriers' in data) {
       data.barriers.data.forEach((barrier) => {
-        var penColor = this.app.platform.penColorByAttr(Tool.hexToInt(barrier.attribute));
-        var bkColor = this.app.platform.bkColorByAttr(Tool.hexToInt(barrier.attribute));
+        var penColor = ZXColor.penAttrColor(Tool.hexToInt(barrier.attribute));
+        var bkColor = ZXColor.bkAttrColor(Tool.hexToInt(barrier.attribute));
         var entity = new SpriteEntity(this, barrier.x*8, barrier.y*8, penColor, bkColor, 0, 0);
         this.addEntity(entity);
         entity.setGraphicsData(barrier);
@@ -406,8 +408,8 @@ export class GameAreaEntity extends AbstractEntity {
     this.initData.switches = [];
     if ('switches' in data) {
       data.switches.data.forEach((swtch) => {
-        var penColor = this.app.platform.penColorByAttr(Tool.hexToInt(swtch.attribute));
-        var bkColor = this.app.platform.bkColorByAttr(Tool.hexToInt(swtch.attribute));
+        var penColor = ZXColor.penAttrColor(Tool.hexToInt(swtch.attribute));
+        var bkColor = ZXColor.bkAttrColor(Tool.hexToInt(swtch.attribute));
         var entity = new SpriteEntity(this, swtch.x*8, swtch.y*8, penColor, bkColor, 0, 0);
         this.addEntity(entity);
         entity.setGraphicsData(data.switches);
@@ -428,8 +430,8 @@ export class GameAreaEntity extends AbstractEntity {
 
     // portal
     this.initData.portal = [];
-    var penColor = this.app.platform.penColorByAttr(Tool.hexToInt(data.portal.attribute));
-    var bkColor = this.app.platform.bkColorByAttr(Tool.hexToInt(data.portal.attribute));
+    var penColor = ZXColor.penAttrColor(Tool.hexToInt(data.portal.attribute));
+    var bkColor = ZXColor.bkAttrColor(Tool.hexToInt(data.portal.attribute));
     var entity = new SpriteEntity(this, data.portal.x*8, data.portal.y*8, false, false, 0, 0);
     this.addEntity(entity);
     entity.setSharedPalette({'-': {0: bkColor, 1: penColor}, '#': {0: penColor, 1: bkColor}});
@@ -483,7 +485,7 @@ export class GameAreaEntity extends AbstractEntity {
             var palette = {};
             palette[spriteEntity.penChar] = {};
             object.action.data.forEach((attr, frame) => {
-              palette[spriteEntity.penChar][frame] = this.app.platform.penColorByAttr(Tool.hexToInt(attr));
+              palette[spriteEntity.penChar][frame] = ZXColor.penAttrColor(Tool.hexToInt(attr));
             });
             spriteEntity.setSharedPalette(palette);
             break;
@@ -504,14 +506,14 @@ export class GameAreaEntity extends AbstractEntity {
     if (this.monochromeColor) {
       return this.monochromeColor;
     }
-    return this.app.platform.penColorByAttr(attr);
+    return ZXColor.penAttrColor(attr);
   } // penColorByAttr
 
   bkColorByAttr(attr) {
     if (this.monochromeColor) {
       return false;
     }
-    return this.app.platform.bkColorByAttr(attr);
+    return ZXColor.bkAttrColor(attr);
   } // bkColorByAttr
 
   restoreBkColor() {

@@ -7,6 +7,7 @@ const { GameInfoEntity } = await import('./gameInfoEntity.js?ver='+window.srcVer
 const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 const { SpriteTool } = await import('./svision/js/spriteTool.js?ver='+window.srcVersion);
+const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import Tool from './svision/js/tool.js';
@@ -16,6 +17,7 @@ import GameInfoEntity from './gameInfoEntity.js';
 import PauseGameEntity from './pauseGameEntity.js';
 import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
 import SpriteTool from './svision/js/spriteTool.js';
+import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
 /**/
 // begin code
 
@@ -56,8 +58,8 @@ export class CaveModel extends AbstractModel {
   init() {
     super.init();
 
-    this.borderEntity.bkColor = this.app.platform.colorByName('black');
-    this.desktopEntity.bkColor = this.app.platform.colorByName('black');
+    this.borderEntity.bkColor = ZXColor.black;
+    this.desktopEntity.bkColor = ZXColor.black;
     this.gameAreaEntity = new GameAreaEntity(this.desktopEntity, 0, 0, 32*8, 16*8, this.caveNumber, this.initData, this.demo);
     this.desktopEntity.addEntity(this.gameAreaEntity);
     this.gameInfoEntity = new GameInfoEntity(this.desktopEntity, 0, 16*8, 32*8, 8*8);
@@ -93,7 +95,7 @@ export class CaveModel extends AbstractModel {
     this.app.caveName = data.data.name;
     this.gameClock = (256-Tool.hexToInt(data.data.gameClock))/4;
     this.airSupply = Tool.hexToInt(data.data.airSupply);
-    this.borderEntity.bkColor = this.app.platform.zxColorByAttr(Tool.hexToInt(data.data.borderColor), 7, 1);
+    this.borderEntity.bkColor = ZXColor.attrColor(Tool.hexToInt(data.data.borderColor), 7, 1);
     for (var l = 0; l < 16; l++) {
       this.gameInfoEntity.liveEntities[l].setGraphicsData(data.data.willy);
     }
@@ -300,8 +302,8 @@ export class CaveModel extends AbstractModel {
         }
         this.gameAreaEntity.spriteEntities.portal[0].frame = 0;
         this.sendEvent(0, {id: 'stopAllAudioChannels'});
-        this.borderEntity.bkColor = this.app.platform.color(0);
-        this.gameAreaEntity.setMonochromeColors(this.app.platform.color(15), this.app.platform.color(0));
+        this.borderEntity.bkColor = ZXColor.color(0);
+        this.gameAreaEntity.setMonochromeColors(ZXColor.color(15), ZXColor.color(0));
         this.sendEvent(0, {id: 'playSound', channel: 'sounds', sound: 'crashSound', options: false});
         this.animationTime = this.timer;
         this.animationType = 'crash';
@@ -330,11 +332,11 @@ export class CaveModel extends AbstractModel {
           this.animationType = 'swordFish';
           var portal = this.gameAreaEntity.spriteEntities.portal[0];
           portal.hide = true;
-          var fishEntity = new SpriteEntity(this.gameAreaEntity, portal.x, portal.y, this.app.platform.penColorByAttr(Tool.hexToInt(this.app.globalData.escape.fish.attribute)), false, 0, 0);
+          var fishEntity = new SpriteEntity(this.gameAreaEntity, portal.x, portal.y, ZXColor.penAttrColor(Tool.hexToInt(this.app.globalData.escape.fish.attribute)), false, 0, 0);
           this.gameAreaEntity.addEntity(fishEntity);
           fishEntity.setGraphicsData(this.app.globalData.escape.fish);
           this.gameAreaEntity.spriteEntities.swordFish.push(fishEntity);
-          var swordEntity = new SpriteEntity(this.gameAreaEntity, portal.x, portal.y+8, this.app.platform.penColorByAttr(Tool.hexToInt(this.app.globalData.escape.sword.attribute)), false, 0, 0);
+          var swordEntity = new SpriteEntity(this.gameAreaEntity, portal.x, portal.y+8, ZXColor.penAttrColor(Tool.hexToInt(this.app.globalData.escape.sword.attribute)), false, 0, 0);
           this.gameAreaEntity.addEntity(swordEntity);
           swordEntity.setGraphicsData(this.app.globalData.escape.sword);
           this.gameAreaEntity.spriteEntities.swordFish.push(swordEntity);
@@ -342,7 +344,7 @@ export class CaveModel extends AbstractModel {
         break;
 
       case 'animationCaveDone':
-        this.gameAreaEntity.setMonochromeColors(this.app.platform.color(3), this.app.platform.color(7));
+        this.gameAreaEntity.setMonochromeColors(ZXColor.color(3), ZXColor.color(7));
         this.animationTime = this.timer;
         this.animationType = 'caveDone';
         break;
@@ -350,7 +352,7 @@ export class CaveModel extends AbstractModel {
       case 'animationDemoCaveDone':
         this.sendEvent(0, {id: 'stopAllAudioChannels'});
         this.sendWorkerMessage({id: 'reset'});
-        this.gameAreaEntity.setMonochromeColors(this.app.platform.color(3), this.app.platform.color(7));
+        this.gameAreaEntity.setMonochromeColors(ZXColor.color(3), ZXColor.color(7));
         this.animationTime = this.timer;
         this.animationType = 'demoCaveDone';
         break;
@@ -471,7 +473,7 @@ export class CaveModel extends AbstractModel {
           if (monochromeColor < 8) {
             monochromeColor = 0;
           }
-          this.gameAreaEntity.setMonochromeColors(this.app.platform.color(monochromeColor), this.app.platform.colorByName('black'));
+          this.gameAreaEntity.setMonochromeColors(ZXColor.color(monochromeColor), ZXColor.black);
           if (animTime > 240) {
             this.animationTime = false;
             this.animationType = false;
@@ -493,11 +495,11 @@ export class CaveModel extends AbstractModel {
           if (monochromeAttr < 1) {
             monochromeAttr = 1;
           }
-          var penColor = this.app.platform.penColorByAttr(monochromeAttr);
-          var bkColor = this.app.platform.bkColorByAttr(monochromeAttr);
+          var penColor = ZXColor.penAttrColor(monochromeAttr);
+          var bkColor = ZXColor.bkAttrColor(monochromeAttr);
           this.gameAreaEntity.setMonochromeColors(penColor, bkColor);
           if (animTime > 500) {
-            this.borderEntity.bkColor = this.app.platform.colorByName('black');
+            this.borderEntity.bkColor = ZXColor.black;
             if (this.animationType == 'caveDone') {
               this.sendEvent(1, {id: 'changeRemainingAirSupplyToScore'});
             } else {
@@ -547,7 +549,7 @@ export class CaveModel extends AbstractModel {
     switch (event.data.id) {
       case 'update':
         if (this.bkAnimation !== false) {
-          this.gameAreaEntity.bkColor = this.app.platform.color(this.bkAnimation);
+          this.gameAreaEntity.bkColor = ZXColor.color(this.bkAnimation);
           if (this.bkAnimation >= 0) {
             this.bkAnimation--;
           } else {

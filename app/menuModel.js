@@ -12,6 +12,7 @@ const { ZXVolumeEntity } = await import('./svision/js/platform/canvas2D/zxSpectr
 const { ZXControlsEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxControlsEntity.js?ver='+window.srcVersion);
 const { AboutEntity } = await import('./aboutEntity.js?ver='+window.srcVersion);
 const { ZXWaitForAudioEventEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxWaitForAudioEventEntity.js?ver='+window.srcVersion);
+const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import AbstractEntity from './svision/js/abstractEntity.js';
@@ -26,6 +27,7 @@ import ZXVolumeEntity from './svision/js/platform/canvas2D/zxSpectrum/zxVolumeEn
 import ZXControlsEntity from './svision/js/platform/canvas2D/zxSpectrum/zxControlsEntity.js';
 import AboutEntity from './aboutEntity.js';
 import ZXWaitForAudioEventEntity from './svision/js/platform/canvas2D/zxSpectrum/zxWaitForAudioEventEntity.js';
+import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
 /**/
 // begin code
 
@@ -56,11 +58,11 @@ export class MenuModel extends AbstractModel {
       t2Width: 114,
       t2RightMargin: 3,
       t2TopMargin: 2, 
-      textColor: this.app.platform.colorByName('blue'),
-      selectionTextColor: this.app.platform.colorByName('brightWhite'),
-      selectionBarColor: this.app.platform.colorByName('brightBlue'),
+      textColor: ZXColor.blue,
+      selectionTextColor: ZXColor.brightWhite,
+      selectionBarColor: ZXColor.brightBlue,
       hoverColor: '#a9a9a9ff',
-      selectionHoverColor: this.app.platform.colorByName('blue'),
+      selectionHoverColor: ZXColor.blue,
       clickColor: '#9a9a9aff',
       selectionClickColor: '#0a2277ff',
       selection: selectionItem
@@ -87,16 +89,16 @@ export class MenuModel extends AbstractModel {
   init() {
     super.init();
 
-    this.borderEntity.bkColor = this.app.platform.colorByName('white');
-    this.desktopEntity.bkColor = this.app.platform.colorByName('white');
+    this.borderEntity.bkColor = ZXColor.white;
+    this.desktopEntity.bkColor = ZXColor.white;
 
-    this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 13, 0, 230, 154, false, this.app.platform.colorByName('blue')));
+    this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 13, 0, 230, 154, false, ZXColor.blue));
     this.desktopEntity.addEntity(new MenuEntity(this.desktopEntity, 14, 14, 228, 139, this.desktopEntity.bkColor, this.menuOptions, this, this.getMenuData));
 
     this.signboardEntity = new SignboardEntity(this.desktopEntity, 98, 4, 61, 7, 'menuLabel');
     this.desktopEntity.addEntity(this.signboardEntity);
 
-    this.copyrightEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 23*8, 32*8, 8, this.app.copyright, this.app.platform.colorByName('black'), false, {align: 'center'});
+    this.copyrightEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 23*8, 32*8, 8, this.app.copyright, ZXColor.black, false, {align: 'center'});
     this.desktopEntity.addEntity(this.copyrightEntity);
 
     this.animationObjects.forEach((object, o) => {
@@ -174,7 +176,7 @@ export class MenuModel extends AbstractModel {
           return true;
         } else {
           if (this.app.inputEventsManager.needEventForAudio()) {
-            this.desktopEntity.addModalEntity(new ZXWaitForAudioEventEntity(this.desktopEntity, 64, 75, 128, 45, this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('magenta'), 'startGame2'));
+            this.desktopEntity.addModalEntity(new ZXWaitForAudioEventEntity(this.desktopEntity, 64, 75, 128, 45, ZXColor.brightWhite, ZXColor.magenta, 'startGame2'));
             return true;
           }
         }
@@ -204,7 +206,7 @@ export class MenuModel extends AbstractModel {
 
       case 'startTapeLoading':
         if (this.app.inputEventsManager.needEventForAudio()) {
-          this.desktopEntity.addModalEntity(new ZXWaitForAudioEventEntity(this.desktopEntity, 64, 75, 128, 45, this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('magenta'), 'startTapeLoading2'));
+          this.desktopEntity.addModalEntity(new ZXWaitForAudioEventEntity(this.desktopEntity, 64, 75, 128, 45, ZXColor.brightWhite, ZXColor.magenta, 'startTapeLoading2'));
           return true;
         }
       case 'startTapeLoading2':

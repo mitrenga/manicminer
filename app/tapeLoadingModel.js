@@ -3,11 +3,13 @@ const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+wind
 const { BorderEntity } = await import('./borderEntity.js?ver='+window.srcVersion);
 const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
 const { SignboardEntity } = await import('./signboardEntity.js?ver='+window.srcVersion);
+const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import BorderEntity from './borderEntity.js';
 import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
 import SignboardEntity from './signboardEntity.js';
+import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
 /**/
 // begin code
 
@@ -62,17 +64,17 @@ export class TapeLoadingModel extends AbstractModel {
   init() {
     super.init();
 
-    this.inputLineEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 23*8, 32*8, 8, this.app.copyright, this.app.platform.colorByName('black'), false, {align: 'center'});
+    this.inputLineEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 23*8, 32*8, 8, this.app.copyright, ZXColor.black, false, {align: 'center'});
     this.desktopEntity.addEntity(this.inputLineEntity);
 
-    this.programNameEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 1*8, 32*8, 8, 'Program: MANICMINER', this.app.platform.colorByName('black'), false, {leftMargin: 1});
+    this.programNameEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 1*8, 32*8, 8, 'Program: MANICMINER', ZXColor.black, false, {leftMargin: 1});
     this.programNameEntity.hide = true;
     this.desktopEntity.addEntity(this.programNameEntity);
 
-    this.copyrightLine1 = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8Mono, 6*8, 18*8, 20*8, 8, ' ©SOFTWARE PROJECTS ', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {align: 'center'});
+    this.copyrightLine1 = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8Mono, 6*8, 18*8, 20*8, 8, ' ©SOFTWARE PROJECTS ', ZXColor.brightWhite, ZXColor.brightBlue, {align: 'center'});
     this.copyrightLine1.hide = true;
     this.desktopEntity.addEntity(this.copyrightLine1);
-    this.copyrightLine2 = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8Mono, 6*8, 19*8, 20*8, 8, '  by Matthew Smith  ', this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightBlue'), {align: 'center'});
+    this.copyrightLine2 = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8Mono, 6*8, 19*8, 20*8, 8, '  by Matthew Smith  ', ZXColor.brightWhite, ZXColor.brightBlue, {align: 'center'});
     this.copyrightLine2.hide = true;
     this.desktopEntity.addEntity(this.copyrightLine2);
 
@@ -162,9 +164,9 @@ export class TapeLoadingModel extends AbstractModel {
         this.programNameEntity = null;
         this.copyrightLine1.hide = false;
         this.copyrightLine2.hide = false;
-        this.desktopEntity.bkColor = this.app.platform.colorByName('black');
-        this.borderEntity.bkColor = this.app.platform.colorByName('black');
-        this.inputLineEntity.setPenColor(this.app.platform.colorByName('white'));
+        this.desktopEntity.bkColor = ZXColor.black;
+        this.borderEntity.bkColor = ZXColor.black;
+        this.inputLineEntity.setPenColor(ZXColor.white);
         this.tapeBreakLine = '10:7';
         return true;
 

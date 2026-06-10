@@ -4,12 +4,14 @@ const { BorderEntity } = await import('./borderEntity.js?ver='+window.srcVersion
 const { CaveMapEntity } = await import('./caveMapEntity.js?ver='+window.srcVersion);
 const { CaveSelectionEntity } = await import('./caveSelectionEntity.js?ver='+window.srcVersion);
 const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcVersion);
+const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import BorderEntity from './borderEntity.js';
 import CaveMapEntity from './caveMapEntity.js';
 import CaveSelectionEntity from './caveSelectionEntity.js';
 import PauseGameEntity from './pauseGameEntity.js';
+import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
 /**/
 // begin code
 
@@ -38,7 +40,7 @@ export class CavesMapModel extends AbstractModel {
   init() {
     super.init();
 
-    this.borderEntity.bkColor = this.app.platform.colorByName('cyan');
+    this.borderEntity.bkColor = ZXColor.cyan;
     this.desktopEntity.bkColor = false;
     for (var y = 0; y < 5; y++) {
       this.cavesMapEntities.push([]);

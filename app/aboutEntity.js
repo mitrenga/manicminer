@@ -2,10 +2,12 @@
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
 const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
 const { ButtonEntity } = await import('./svision/js/platform/canvas2D/buttonEntity.js?ver='+window.srcVersion);
+const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
 /*/
 import AbstractEntity from './svision/js/abstractEntity.js';
 import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
 import ButtonEntity from './svision/js/platform/canvas2D/buttonEntity.js';
+import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
 /**/
 // begin code
 
@@ -21,19 +23,19 @@ export class AboutEntity extends AbstractEntity {
   init() {
     super.init();
     
-    this.addEntity(new AbstractEntity(this, 0, 0, this.width, this.height, false, this.app.platform.colorByName('black')));
-    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, 0, 0, this.width, 9, 'ABOUT GAME', {id: 'clickLabel'}, [], this.app.platform.colorByName('brightWhite'), false, {align: 'center', topMargin: 2, member: 'titleBar', hoverColor: this.app.platform.colorByName('black'), clickColor: this.app.platform.colorByName('black')}));
-    this.addEntity(new AbstractEntity(this, 1, 9, this.width-2, this.height-10, false, this.app.platform.colorByName('yellow')));
+    this.addEntity(new AbstractEntity(this, 0, 0, this.width, this.height, false, ZXColor.black));
+    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, 0, 0, this.width, 9, 'ABOUT GAME', {id: 'clickLabel'}, [], ZXColor.brightWhite, false, {align: 'center', topMargin: 2, member: 'titleBar', hoverColor: ZXColor.black, clickColor: ZXColor.black}));
+    this.addEntity(new AbstractEntity(this, 1, 9, this.width-2, this.height-10, false, ZXColor.yellow));
 
     this.aboutText = 'MANIC MINER IS A REMAKE OF THE ORIGINAL 1983 GAME FOR THE SINCLAIR ZX SPECTRUM BY MATTHEW SMITH.\n' +
                     'THIS GAME HAS FASCINATED ME EVER SINCE I\u00A0SAW IT FOR THE FIRST TIME. ' +
                     'I BELIEVE THAT MANY PLAYERS WILL ENJOY REMINISCING ABOUT THIS LEGENDARY GAME, AND NOT JUST OUT OF NOSTALGIA.\n' +
                     'IN THIS REMAKE, YOU ALSO HAVE THE OPTION TO CONTINUE IN THE CAVE FROM WHERE YOU LEFT OFF IN YOUR PREVIOUS GAME. ' +
                     'THIS GIVES YOU THE CHANCE TO TRY COMPLETING ALL THE CAVES.';
-    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 1, 9, this.width-2, this.height-25, this.aboutText, this.app.platform.colorByName('black'), false, {align: 'justify', textWrap: true, margin: 2, member: 'aboutText'}));
+    this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 1, 9, this.width-2, this.height-25, this.aboutText, ZXColor.black, false, {align: 'justify', textWrap: true, margin: 2, member: 'aboutText'}));
     this.addEntity(new ButtonEntity(this, this.app.fonts.fonts3x3, 1, this.height-8, 97, 7, 'github:mitrenga/manicminer', {id: 'openGithub'}, [], '#777777', false, {margin:2, hoverColor: '#f3de25', clickColor: '#cc9410'}));
     
-    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-39, this.height-16, 36, 13, 'CLOSE', {id: 'closeAbout'}, ['Enter', 'Escape', ' ', 'GamepadOK', 'GamepadExit'], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('blue'), {align: 'center', margin: 4}));
+    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-39, this.height-16, 36, 13, 'CLOSE', {id: 'closeAbout'}, ['Enter', 'Escape', ' ', 'GamepadOK', 'GamepadExit'], ZXColor.brightWhite, ZXColor.blue, {align: 'center', margin: 4}));
 
     this.statsText = 'error:\nstatistics data not available!';
     this.fetchData('stats.db', false, {});

@@ -7,6 +7,7 @@ const { PillarEntity } = await import('./pillarEntity.js?ver='+window.srcVersion
 const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
 const { ButtonEntity } = await import('./svision/js/platform/canvas2D/buttonEntity.js?ver='+window.srcVersion);
 const { Tool } = await import('./svision/js/tool.js?ver='+window.srcVersion);
+const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import AbstractEntity from './svision/js/abstractEntity.js';
@@ -16,6 +17,7 @@ import PillarEntity from './pillarEntity.js';
 import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
 import ButtonEntity from './svision/js/platform/canvas2D/buttonEntity.js';
 import Tool from './svision/js/tool.js';
+import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
 /**/
 // begin code
 
@@ -44,50 +46,50 @@ export class GameOverModel extends AbstractModel {
   init() {
     super.init();
 
-    this.desktopEntity.bkColor = this.app.platform.colorByName('black'); 
-    this.borderEntity.bkColor = this.app.platform.colorByName('black');
+    this.desktopEntity.bkColor = ZXColor.black; 
+    this.borderEntity.bkColor = ZXColor.black;
     this.gameInfoEntity = new GameInfoEntity(this.desktopEntity, 0, 16*8, 32*8, 8*8);
     this.desktopEntity.addEntity(this.gameInfoEntity);
     this.gameInfoEntity.caveNameEntity.setText(this.app.caveName);
     this.gameInfoEntity.airEntity.value = this.app.airValue;
 
     if (this.shoeAnimation) {
-      var plinthEntity = new SpriteEntity(this.desktopEntity, 15*8, 14*8, this.app.platform.penColorByAttr(Tool.hexToInt(this.app.globalData.gameOver.plinth.attribute)), false, 0, 0);
+      var plinthEntity = new SpriteEntity(this.desktopEntity, 15*8, 14*8, ZXColor.penAttrColor(Tool.hexToInt(this.app.globalData.gameOver.plinth.attribute)), false, 0, 0);
       this.desktopEntity.addEntity(plinthEntity);
       plinthEntity.setGraphicsData(this.app.globalData.gameOver.plinth);
-      var willyEntity = new SpriteEntity(this.desktopEntity, 15*8+3, 12*8, this.app.platform.penColorByAttr(Tool.hexToInt(this.app.globalData.gameOver.willy.attribute)), false, 0, 0);
+      var willyEntity = new SpriteEntity(this.desktopEntity, 15*8+3, 12*8, ZXColor.penAttrColor(Tool.hexToInt(this.app.globalData.gameOver.willy.attribute)), false, 0, 0);
       this.desktopEntity.addEntity(willyEntity);
       willyEntity.setGraphicsData(this.app.globalData.gameOver.willy);
       this.shoeEntity = new AbstractEntity(this.desktopEntity, 15*8, 0, 16, 16, false, this.desktopEntity.bkColor);
       this.desktopEntity.addEntity(this.shoeEntity);
-      var shoeSpriteEntity = new SpriteEntity(this.shoeEntity, 0, 0, this.app.platform.penColorByAttr(Tool.hexToInt(this.app.globalData.gameOver.shoe.attribute)), false, 0, 0);
+      var shoeSpriteEntity = new SpriteEntity(this.shoeEntity, 0, 0, ZXColor.penAttrColor(Tool.hexToInt(this.app.globalData.gameOver.shoe.attribute)), false, 0, 0);
       this.shoeEntity.addEntity(shoeSpriteEntity);
       shoeSpriteEntity.setGraphicsData(this.app.globalData.gameOver.shoe);
-      this.pillarEntity = new PillarEntity(this.desktopEntity, 15*8, 0, 16, 0, this.app.platform.penColorByAttr(Tool.hexToInt(this.app.globalData.gameOver.pillar.attribute)), this.app.globalData.gameOver.pillar);
+      this.pillarEntity = new PillarEntity(this.desktopEntity, 15*8, 0, 16, 0, ZXColor.penAttrColor(Tool.hexToInt(this.app.globalData.gameOver.pillar.attribute)), this.app.globalData.gameOver.pillar);
       this.desktopEntity.addEntity(this.pillarEntity);
     }
 
     var penColorsMap = {};
     for (var ch = 0; ch < 4; ch++) {
-      penColorsMap[ch] = this.app.platform.penColorByAttr(this.colorCounter);
+      penColorsMap[ch] = ZXColor.penAttrColor(this.colorCounter);
       this.colorCounter = Tool.cycleInc(this.colorCounter, 65, 71);
     }
-    this.gameEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 10*8, 6*8, 4*8, 8, 'Game', this.app.platform.colorByName('brightWhite'), false, {penColorsMap: penColorsMap, hide: true});
+    this.gameEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 10*8, 6*8, 4*8, 8, 'Game', ZXColor.brightWhite, false, {penColorsMap: penColorsMap, hide: true});
     this.desktopEntity.addEntity(this.gameEntity);
     penColorsMap = {};
     for (var ch = 0; ch < 4; ch++) {
-      penColorsMap[ch] = this.app.platform.penColorByAttr(this.colorCounter);
+      penColorsMap[ch] = ZXColor.penAttrColor(this.colorCounter);
       this.colorCounter = Tool.cycleInc(this.colorCounter, 65, 71);
     }
-    this.overEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 18*8, 6*8, 4*8, 8, 'Over', this.app.platform.colorByName('brightWhite'), false, {penColorsMap: penColorsMap, hide: true});
+    this.overEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 18*8, 6*8, 4*8, 8, 'Over', ZXColor.brightWhite, false, {penColorsMap: penColorsMap, hide: true});
     this.desktopEntity.addEntity(this.overEntity);
-    this.contiueEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 21*8, 32*8, 8, 'Continue in the last cave?', this.app.platform.colorByName('brightWhite'), false, {align: 'center', hide: true});
+    this.contiueEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 21*8, 32*8, 8, 'Continue in the last cave?', ZXColor.brightWhite, false, {align: 'center', hide: true});
     this.desktopEntity.addEntity(this.contiueEntity);
-    this.buttonYesEntity = new ButtonEntity(this.desktopEntity, this.app.fonts.zxFonts8x8Mono, 42, 23*8-4, 70, 12, 'YES', {id: 'restartCave'}, ['Enter', 'y', 'Y', 'GamepadOK'], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightGreen'), {topMargin: 2, align: 'center', hide: true});
+    this.buttonYesEntity = new ButtonEntity(this.desktopEntity, this.app.fonts.zxFonts8x8Mono, 42, 23*8-4, 70, 12, 'YES', {id: 'restartCave'}, ['Enter', 'y', 'Y', 'GamepadOK'], ZXColor.brightWhite, ZXColor.brightGreen, {topMargin: 2, align: 'center', hide: true});
     this.desktopEntity.addEntity(this.buttonYesEntity);
-    this.buttonNoEntity = new ButtonEntity(this.desktopEntity, this.app.fonts.zxFonts8x8Mono, 256-(42+70), 23*8-4, 70, 12, 'NO', {id: this.nextModel}, ['Escape', 'n', 'N', 'GamepadExit'], this.app.platform.colorByName('brightWhite'), this.app.platform.colorByName('brightRed'), {topMargin: 2, align: 'center', hide: true});
+    this.buttonNoEntity = new ButtonEntity(this.desktopEntity, this.app.fonts.zxFonts8x8Mono, 256-(42+70), 23*8-4, 70, 12, 'NO', {id: this.nextModel}, ['Escape', 'n', 'N', 'GamepadExit'], ZXColor.brightWhite, ZXColor.brightRed, {topMargin: 2, align: 'center', hide: true});
     this.desktopEntity.addEntity(this.buttonNoEntity);
-    this.timerEntity = new TextEntity(this.buttonNoEntity, this.app.fonts.fonts5x5, 8, 4, 10, 5, '10', this.app.platform.colorByName('white'), false, {align: 'center'});
+    this.timerEntity = new TextEntity(this.buttonNoEntity, this.app.fonts.fonts5x5, 8, 4, 10, 5, '10', ZXColor.white, false, {align: 'center'});
     this.buttonNoEntity.addEntity(this.timerEntity);
 
     if (this.shoeAnimation) {
@@ -159,12 +161,12 @@ export class GameOverModel extends AbstractModel {
       if (timestamp-this.colorTimer > 50) {
         this.colorTimer = timestamp;
         for (var ch = 0; ch < 4; ch++) {
-          this.gameEntity.options.penColorsMap[ch] = this.app.platform.penColorByAttr(this.colorCounter);
+          this.gameEntity.options.penColorsMap[ch] = ZXColor.penAttrColor(this.colorCounter);
           this.colorCounter = Tool.cycleInc(this.colorCounter, 65, 71);
         }
         this.gameEntity.drawingCache[0].cleanCache();
         for (var ch = 0; ch < 4; ch++) {
-          this.overEntity.options.penColorsMap[ch] = this.app.platform.penColorByAttr(this.colorCounter);
+          this.overEntity.options.penColorsMap[ch] = ZXColor.penAttrColor(this.colorCounter);
           this.colorCounter = Tool.cycleInc(this.colorCounter, 65, 71);
         }
         this.overEntity.drawingCache[0].cleanCache();
@@ -176,7 +178,7 @@ export class GameOverModel extends AbstractModel {
         this.timerEntity.setText(countdown.toString());
       }
     }
-    this.desktopEntity.bkColor = this.app.platform.color((Math.floor((this.fallTimer%200)/50)));
+    this.desktopEntity.bkColor = ZXColor.color((Math.floor((this.fallTimer%200)/50)));
     if (this.shoeAnimation) {
       this.shoeEntity.bkColor = this.desktopEntity.bkColor;
       this.shoeEntity.y = Math.round(12*8*this.fallTimer/2000);

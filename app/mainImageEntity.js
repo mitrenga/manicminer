@@ -1,9 +1,11 @@
 /**/
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
 const { Tool } = await import('./svision/js/tool.js?ver='+window.srcVersion);
+const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
 /*/
 import AbstractEntity from './svision/js/abstractEntity.js';
 import Tool from './svision/js/tool.js';
+import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
 /**/
 // begin code
 
@@ -172,8 +174,8 @@ export class MainImageEntity extends AbstractEntity {
         for (var row = 0; row < 8; row++) {
           for (var column = 0; column < 32; column++) {
             var attr = Tool.hexToInt(this.introImageAttributes[block*8+row].substring(column*2, column*2+2));
-            var bkColor = this.app.platform.bkColorByAttr(attr);
-            var penColor = this.app.platform.penColorByAttr(attr);
+            var bkColor = ZXColor.bkAttrColor(attr);
+            var penColor = ZXColor.penAttrColor(attr);
             this.app.layout.paintRect(this.drawingCache[0].ctx, column*8, (block*8+row)*8, 8, 8, bkColor);
             for (var line = 0; line < 8; line++) {
               var binMask = Tool.hexToBin(this.introImageData[block*64+row+line*8].substring(column*2, column*2+2))
