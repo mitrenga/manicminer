@@ -2,10 +2,12 @@
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
 const { ButtonEntity } = await import('./svision/js/platform/canvas2D/buttonEntity.js?ver='+window.srcVersion);
 const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
+const { Tool } = await import('./svision/js/tool.js?ver='+window.srcVersion);
 /*/
 import AbstractEntity from './svision/js/abstractEntity.js';
 import ButtonEntity from './svision/js/platform/canvas2D/buttonEntity.js';
 import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
+import Tool from './svision/js/tool.js';
 /**/
 // begin code
 
@@ -132,7 +134,7 @@ export class BorderEntity  extends AbstractEntity {
         return true;
       case 'moveStripes':
         this.stripes = [];
-        this.diff = this.app.rotateInc(this.diff, 0, 19);
+        this.diff = Tool.cycleInc(this.diff, 0, 19);
         if (this.animation !== false) {
           this.sendEvent(0, 50, {id: 'moveStripes'});
         }

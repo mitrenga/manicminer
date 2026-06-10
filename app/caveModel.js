@@ -91,9 +91,9 @@ export class CaveModel extends AbstractModel {
 
     this.gameInfoEntity.caveNameEntity.setText(data.data.name);
     this.app.caveName = data.data.name;
-    this.gameClock = (256-this.app.hexToInt(data.data.gameClock))/4;
-    this.airSupply = this.app.hexToInt(data.data.airSupply);
-    this.borderEntity.bkColor = this.app.platform.zxColorByAttr(this.app.hexToInt(data.data.borderColor), 7, 1);
+    this.gameClock = (256-Tool.hexToInt(data.data.gameClock))/4;
+    this.airSupply = Tool.hexToInt(data.data.airSupply);
+    this.borderEntity.bkColor = this.app.platform.zxColorByAttr(Tool.hexToInt(data.data.borderColor), 7, 1);
     for (var l = 0; l < 16; l++) {
       this.gameInfoEntity.liveEntities[l].setGraphicsData(data.data.willy);
     }
@@ -330,11 +330,11 @@ export class CaveModel extends AbstractModel {
           this.animationType = 'swordFish';
           var portal = this.gameAreaEntity.spriteEntities.portal[0];
           portal.hide = true;
-          var fishEntity = new SpriteEntity(this.gameAreaEntity, portal.x, portal.y, this.app.platform.penColorByAttr(this.app.hexToInt(this.app.globalData.escape.fish.attribute)), false, 0, 0);
+          var fishEntity = new SpriteEntity(this.gameAreaEntity, portal.x, portal.y, this.app.platform.penColorByAttr(Tool.hexToInt(this.app.globalData.escape.fish.attribute)), false, 0, 0);
           this.gameAreaEntity.addEntity(fishEntity);
           fishEntity.setGraphicsData(this.app.globalData.escape.fish);
           this.gameAreaEntity.spriteEntities.swordFish.push(fishEntity);
-          var swordEntity = new SpriteEntity(this.gameAreaEntity, portal.x, portal.y+8, this.app.platform.penColorByAttr(this.app.hexToInt(this.app.globalData.escape.sword.attribute)), false, 0, 0);
+          var swordEntity = new SpriteEntity(this.gameAreaEntity, portal.x, portal.y+8, this.app.platform.penColorByAttr(Tool.hexToInt(this.app.globalData.escape.sword.attribute)), false, 0, 0);
           this.gameAreaEntity.addEntity(swordEntity);
           swordEntity.setGraphicsData(this.app.globalData.escape.sword);
           this.gameAreaEntity.spriteEntities.swordFish.push(swordEntity);

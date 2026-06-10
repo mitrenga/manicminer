@@ -12,6 +12,7 @@ const { CaveModel } = await import('./caveModel.js?ver='+window.srcVersion);
 const { GameOverModel } = await import('./gameOverModel.js?ver='+window.srcVersion);
 const { TapeLoadingModel } = await import('./tapeLoadingModel.js?ver='+window.srcVersion);
 const { ZXErrorEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxErrorEntity.js?ver='+window.srcVersion);
+const { Tool } = await import('./svision/js/tool.js?ver='+window.srcVersion);
 /*/
 import AbstractApp from './svision/js/abstractApp.js';
 import AudioManager from './audioManager.js';
@@ -26,6 +27,7 @@ import CaveModel from './caveModel.js';
 import GameOverModel from './gameOverModel.js';
 import TapeLoadingModel from './tapeLoadingModel.js';
 import ZXErrorEntity from './svision/js/platform/canvas2D/zxSpectrum/zxErrorEntity.js';
+import Tool from './svision/js/tool.js';
 /**/
 // begin code
 
@@ -151,7 +153,7 @@ export class GameApp extends AbstractApp {
     this.caveName = '';
     this.cavesCompleted = 0;
     this.cavesOpened = 0;
-    var cavesOpenedCookie = this.readCookie('cavesOpened', false);
+    var cavesOpenedCookie = Tool.readCookie('cavesOpened', false);
     if (cavesOpenedCookie !== false) {
       try {
         this.cavesOpened = (parseInt(cavesOpenedCookie, 5)-6912)/16384;
@@ -169,7 +171,7 @@ export class GameApp extends AbstractApp {
     this.score = 0;
     this.hiScore = 0;
     this.lastBonusScore = 0;
-    this.playerName = this.readCookie('playerName', '');
+    this.playerName = Tool.readCookie('playerName', '');
     this.globalData = false;
     this.setModel('LoadingModel');
   } // constructor
@@ -196,7 +198,7 @@ export class GameApp extends AbstractApp {
       case 'keyboard':
       case 'mouse':
       case 'touchscreen':
-        var cfgString = this.readCookie(device, false);
+        var cfgString = Tool.readCookie(device, false);
         if (cfgString !== false) {
           try {
             var cfg = JSON.parse(cfgString);
@@ -212,7 +214,7 @@ export class GameApp extends AbstractApp {
         }
         break;
       case 'gamepads':
-        var devicesString = this.readCookie('gamepads', false);
+        var devicesString = Tool.readCookie('gamepads', false);
         if (devicesString !== false) {
           try {
             var devices = JSON.parse(devicesString);
@@ -221,7 +223,7 @@ export class GameApp extends AbstractApp {
           } finally {
             if (Array.isArray(devices)) {
               devices.forEach((id) => {
-                var deviceString = this.readCookie(id, false);
+                var deviceString = Tool.readCookie(id, false);
                 if (deviceString !== false) {
                   try {
                     var device = JSON.parse(deviceString);
@@ -266,7 +268,7 @@ export class GameApp extends AbstractApp {
       case 'CaveModel':
         if (!this.demo && this.caveNumber > this.cavesOpened) {
           this.cavesOpened = this.caveNumber;
-          this.writeCookie('cavesOpened', (this.cavesOpened*16384+6912).toString(5).padStart(8, '0'));
+          Tool.writeCookie('cavesOpened', (this.cavesOpened*16384+6912).toString(5).padStart(8, '0'));
         }
         this.model = new CaveModel(this, this.caveNumber, this.demo);
         break;

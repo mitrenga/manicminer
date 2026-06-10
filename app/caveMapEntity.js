@@ -3,11 +3,13 @@ const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+wi
 const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 const { SpriteTool } = await import('./svision/js/spriteTool.js?ver='+window.srcVersion);
+const { Tool } = await import('./svision/js/tool.js?ver='+window.srcVersion);
 /*/
 import AbstractEntity from './svision/js/abstractEntity.js';
 import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
 import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
 import SpriteTool from './svision/js/spriteTool.js';
+import Tool from './svision/js/tool.js';
 /**/
 // begin code
 
@@ -50,7 +52,7 @@ export class CaveMapEntity extends AbstractEntity {
 
   drawEntity() {
     if (this.caveData) {
-      this.bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(this.caveData.bkColor));
+      this.bkColor = this.app.platform.bkColorByAttr(Tool.hexToInt(this.caveData.bkColor));
       this.app.layout.paint(this, 0, 0, this.width, this.height-6, this.bkColor);
 
       if (this.drawingCache[0].needToRefresh(this, this.width, this.height)) {
@@ -61,14 +63,14 @@ export class CaveMapEntity extends AbstractEntity {
             var attr = row.substring(column*2, column*2+2);
             if (attr != this.caveData.bkColor) {
               if (this.mapKinds.includes(this.caveData.graphicData[attr].kind)) {
-                var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(attr));
+                var bkColor = this.app.platform.bkColorByAttr(Tool.hexToInt(attr));
                 if (bkColor == this.bkColor) {
                   bkColor = false;
                 }
                 if (bkColor != false) {
                   this.app.layout.paintRect(this.drawingCache[0].ctx, column*2, r*2, 2, 2, bkColor);
                 }
-                var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(attr));
+                var penColor = this.app.platform.penColorByAttr(Tool.hexToInt(attr));
                 switch (this.caveData.graphicData[attr].kind) {
                   case 'floor':
                   case 'crumblingFloor':
@@ -101,7 +103,7 @@ export class CaveMapEntity extends AbstractEntity {
         if ('image' in this.caveData) {
           for (var row = 0; row < 8; row++) {
             for (var column = 0; column < 32; column++) {
-              var attr = this.app.hexToInt(this.caveData.image.attributes[row].substring(column*2, column*2+2));
+              var attr = Tool.hexToInt(this.caveData.image.attributes[row].substring(column*2, column*2+2));
               var penColor = this.app.platform.penColorByAttr(attr);
               var bkColor = this.app.platform.bkColorByAttr(attr);
               if (bkColor != this.bkColor) {
@@ -112,7 +114,7 @@ export class CaveMapEntity extends AbstractEntity {
                   var points = 0;
                   for (var y = 0; y < 4; y++) {
                     for (var x = 0; x < 4; x++) {
-                      var binMask = this.app.hexToBin(this.caveData.image.data[row+line*32+y*8].substring(column*2, column*2+2))
+                      var binMask = Tool.hexToBin(this.caveData.image.data[row+line*32+y*8].substring(column*2, column*2+2))
                       if (binMask[point*4+x] == '1') {
                         points++;
                       }
@@ -121,13 +123,13 @@ export class CaveMapEntity extends AbstractEntity {
                   if (points > 7) {
                     this.app.layout.paintRect(this.drawingCache[0].ctx, column*2+point, row*2+line, 1, 1, penColor);
                   } else {
-                    var redColor1 = this.app.hexToInt(penColor.substring(1, 3));
-                    var greenColor1 = this.app.hexToInt(penColor.substring(3, 5));
-                    var blueColor1 = this.app.hexToInt(penColor.substring(5, 7));
-                    var redColor2 = this.app.hexToInt(bkColor.substring(1, 3));
-                    var greenColor2 = this.app.hexToInt(bkColor.substring(3, 5));
-                    var blueColor2 = this.app.hexToInt(bkColor.substring(5, 7));
-                    var mixColor = '#'+this.app.intToHex(Math.floor((redColor1*points+redColor2*(16-points))/16), 2)+this.app.intToHex(Math.floor((greenColor1*points+greenColor2*(16-points))/16), 2)+this.app.intToHex(Math.floor((blueColor1*points+blueColor2*(16-points))/16), 2);
+                    var redColor1 = Tool.hexToInt(penColor.substring(1, 3));
+                    var greenColor1 = Tool.hexToInt(penColor.substring(3, 5));
+                    var blueColor1 = Tool.hexToInt(penColor.substring(5, 7));
+                    var redColor2 = Tool.hexToInt(bkColor.substring(1, 3));
+                    var greenColor2 = Tool.hexToInt(bkColor.substring(3, 5));
+                    var blueColor2 = Tool.hexToInt(bkColor.substring(5, 7));
+                    var mixColor = '#'+Tool.intToHex(Math.floor((redColor1*points+redColor2*(16-points))/16), 2)+Tool.intToHex(Math.floor((greenColor1*points+greenColor2*(16-points))/16), 2)+Tool.intToHex(Math.floor((blueColor1*points+blueColor2*(16-points))/16), 2);
                     this.app.layout.paintRect(this.drawingCache[0].ctx, column*2+point, row*2+line, 1, 1, mixColor.toLowerCase());
                   }
                 }
@@ -138,7 +140,7 @@ export class CaveMapEntity extends AbstractEntity {
 
         // light beam
         if ('lightBeam' in this.caveData) {
-          var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(this.caveData.lightBeam.attribute));
+          var bkColor = this.app.platform.bkColorByAttr(Tool.hexToInt(this.caveData.lightBeam.attribute));
           this.app.layout.paintRect(
             this.drawingCache[0].ctx,
             Math.round(this.caveData.lightBeam.init.x/4),
@@ -151,8 +153,8 @@ export class CaveMapEntity extends AbstractEntity {
 
         // items
         this.caveData.items.data.forEach((item) => {
-          var itemColor = this.app.platform.color(this.app.hexToInt(item.initAttribute)&7);
-          var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(item.initAttribute));
+          var itemColor = this.app.platform.color(Tool.hexToInt(item.initAttribute)&7);
+          var bkColor = this.app.platform.bkColorByAttr(Tool.hexToInt(item.initAttribute));
           if (bkColor == this.bkColor) {
             bkColor = false;
           }
@@ -168,7 +170,7 @@ export class CaveMapEntity extends AbstractEntity {
           if (guardianType in this.caveData.guardians) {
             var guardianTypeData = this.caveData.guardians[guardianType];
             guardianTypeData.figures.forEach((guardian) => {
-              var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(guardian.attribute));
+              var penColor = this.app.platform.penColorByAttr(Tool.hexToInt(guardian.attribute));
               if ('mapSprite' in guardianTypeData) {
                 for (var r = 0; r < guardianTypeData.mapSprite.length; r++) {
                   for (var c = 0; c < guardianTypeData.mapSprite[r].length; c++) {
@@ -198,8 +200,8 @@ export class CaveMapEntity extends AbstractEntity {
         // barriers
         if ('barriers' in this.caveData) {
           this.caveData.barriers.data.forEach((barrier) => {
-            var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(barrier.attribute));
-            var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(barrier.attribute));
+            var penColor = this.app.platform.penColorByAttr(Tool.hexToInt(barrier.attribute));
+            var bkColor = this.app.platform.bkColorByAttr(Tool.hexToInt(barrier.attribute));
             for (var x = 0; x < Math.round(barrier.width/8); x++) {
               for (var y = 0; y < Math.round(barrier.height/8); y++) {
                 this.app.layout.paintRect(this.drawingCache[0].ctx, (barrier.x+x)*2, (barrier.y+y)*2, 2, 2, bkColor);
@@ -213,8 +215,8 @@ export class CaveMapEntity extends AbstractEntity {
         // switches
         if ('switches' in this.caveData) {
           this.caveData.switches.data.forEach((swtch) => {
-            var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(swtch.attribute));
-            var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(swtch.attribute));
+            var penColor = this.app.platform.penColorByAttr(Tool.hexToInt(swtch.attribute));
+            var bkColor = this.app.platform.bkColorByAttr(Tool.hexToInt(swtch.attribute));
             if (bkColor == this.bkColor) {
               bkColor = false;
             }
@@ -227,8 +229,8 @@ export class CaveMapEntity extends AbstractEntity {
         }
 
         // portal
-        var penColor = this.app.platform.penColorByAttr(this.app.hexToInt(this.caveData.portal.attribute));
-        var bkColor = this.app.platform.bkColorByAttr(this.app.hexToInt(this.caveData.portal.attribute));
+        var penColor = this.app.platform.penColorByAttr(Tool.hexToInt(this.caveData.portal.attribute));
+        var bkColor = this.app.platform.bkColorByAttr(Tool.hexToInt(this.caveData.portal.attribute));
         this.app.layout.paintRect(this.drawingCache[0].ctx, this.caveData.portal.x*2, this.caveData.portal.y*2, 4, 4, bkColor);
         this.app.layout.paintRect(this.drawingCache[0].ctx, this.caveData.portal.x*2+1, this.caveData.portal.y*2+1, 2, 2, penColor);
       }

@@ -8,6 +8,7 @@ const { AirEntity } = await import('./airEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 const { SpriteTool } = await import('./svision/js/spriteTool.js?ver='+window.srcVersion);
 const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcVersion);
+const { Tool } = await import('./svision/js/tool.js?ver='+window.srcVersion);
 /*/
 import AbstractModel from './svision/js/abstractModel.js';
 import AbstractEntity from './svision/js/abstractEntity.js';
@@ -18,6 +19,7 @@ import AirEntity from './airEntity.js';
 import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
 import SpriteTool from './svision/js/spriteTool.js';
 import PauseGameEntity from './pauseGameEntity.js';
+import Tool from './svision/js/tool.js';
 /**/
 // begin code
 
@@ -45,12 +47,12 @@ export class MainModel extends AbstractModel {
     if (this.app.controls.keyboard.music != 'NoKey') {
       this.slidingText = this.slidingText+
         '      ' +
-        this.app.prettyKey(this.app.controls.keyboard.music)+' = Mute music';
+        Tool.prettyKey(this.app.controls.keyboard.music)+' = Mute music';
     }
     if (this.app.controls.keyboard.sounds != 'NoKey') {
       this.slidingText = this.slidingText+
         '      ' +
-        this.app.prettyKey(this.app.controls.keyboard.sounds)+' = Mute sounds';
+        Tool.prettyKey(this.app.controls.keyboard.sounds)+' = Mute sounds';
     }
     this.slidingText = this.slidingText+
       '      ' +
