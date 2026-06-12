@@ -194,7 +194,7 @@ export class GameAreaEntity extends AbstractEntity {
         width: data.willy.width,
         height: data.willy.height,
         paintCorrections: data.willy.paintCorrections,
-        touchCorrections: data.willy.touchCorrections,
+        blankMargins: SpriteTool.buildBlankMargins(data.willy),
         frame: data.willy.init.frame,
         frames: data.willy.frames,
         direction: data.willy.init.direction,
@@ -353,9 +353,7 @@ export class GameAreaEntity extends AbstractEntity {
           if ('paintCorrections' in guardianTypeData) {
             guardianInitData.paintCorrections = guardianTypeData.paintCorrections;
           }
-          if ('touchCorrections' in guardianTypeData) {
-            guardianInitData.touchCorrections = guardianTypeData.touchCorrections;
-          }
+          guardianInitData.blankMargins = SpriteTool.buildBlankMargins(guardianTypeData);
           switch (guardianType) {
             case 'horizontal':
               guardianInitData.limitLeft = guardian.limits.left;

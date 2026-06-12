@@ -34,6 +34,12 @@ var counter, counter2, counter4, counter6, gameData,
     mustMovingDirection, canMovingDirection, previousDirection,
     completed, bonus, pause, loopCounter,nextLoop, ended;
 
+/**
+ * Resets all module-level game state to its initial values, ready for a new
+ * cave run. The `controls` object is intentionally left untouched here so any
+ * held keys survive a restart.
+ * @returns {void}
+ */
 function resetData() {
   counter = 0;
   counter2 = 0;
@@ -55,6 +61,13 @@ function resetData() {
   ended = false;
 } // resetData
 
+/**
+ * Main game tick. Schedules the next frame (unless paused or ended), advances
+ * the frame counters (gameData.info[0..3]), runs every per-frame subsystem
+ * (conveyors, items, Willy, guardians, light beam, barriers and the collision
+ * checks) and posts the updated gameData back to the main thread.
+ * @returns {void}
+ */
 function gameLoop() {
   loopCounter++;
   if (ended) {
@@ -115,6 +128,10 @@ function gameLoop() {
   }
 } // gameLoop
 
+/**
+ * Advances every conveyor's animation frame (cycles 0→3).
+ * @returns {void}
+ */
 function conveyors() {
   gameData.conveyors.forEach((conveyor) => {
     if (conveyor.frame == 3) {
@@ -125,6 +142,10 @@ function conveyors() {
   });
 } // conveyors
 
+/**
+ * Advances every collectable item's animation frame (cycles 0→3).
+ * @returns {void}
+ */
 function items() {
   gameData.items.forEach((item) => {
     if (item.frame == 3) {
@@ -135,6 +156,14 @@ function items() {
   });
 } // items
 
+/**
+ * Updates Willy for the current frame: resolves what he is standing on, applies
+ * falling/gravity, the jump arc (jumpMap), conveyor-forced movement and
+ * left/right walking from the controls, plays the matching sounds and may set
+ * the crash flag on a hard landing. Mutates gameData.willy[0] and the
+ * module-level movement state.
+ * @returns {void}
+ */
 function willy() {
   var willy = gameData.willy[0];
 
@@ -283,6 +312,12 @@ function willy() {
   }
 } // willy
 
+/**
+ * Advances every guardian according to its `type` (horizontal, vertical,
+ * forDropping, falling): updates position, animation frame and direction,
+ * reversing at its movement limits.
+ * @returns {void}
+ */
 function guardians() {
   gameData.guardians.forEach((guardian) => {
     if ('action' in guardian) {
@@ -472,6 +507,13 @@ function guardians() {
   });
 } // guardians
 
+/**
+ * Recomputes the segmented light beam for the current frame. Starting at the
+ * source it traces alternating downward/leftward segments (via
+ * doesLightBeamHit) until one is blocked by a wall or floor, sizing each
+ * gameData.lightBeam part and hiding any unused trailing parts.
+ * @returns {void}
+ */
 function lightBeam() {
   if ('lightBeam' in gameData) {
     var lbData = {x: 0, y: 0, cancel: false, touch: false};
@@ -514,6 +556,12 @@ function lightBeam() {
   }
 } // lightBeam
 
+/**
+ * Advances any opening barrier's animation; once a barrier finishes opening it
+ * is hidden and its configured `actions` (e.g. setValue) are applied to
+ * gameData.
+ * @returns {void}
+ */
 function barriers() {
   if ('barriers' in gameData) {
     gameData.barriers.forEach((barrier) => {
@@ -537,35 +585,26 @@ function barriers() {
   }
 } // barriers
 
+/**
+ * Axis-aligned bounding-box overlap test of the rectangle (x, y, width, height)
+ * against every non-hidden object in the given lists.
+ * @param {number} x - Left edge of the test rectangle.
+ * @param {number} y - Top edge of the test rectangle.
+ * @param {number} width - Rectangle width.
+ * @param {number} height - Rectangle height.
+ * @param {Array<Array<{x:number,y:number,width:number,height:number,hide?:boolean}>>} objectsArray - Lists of objects to test against.
+ * @returns {number} 1-based index of the first overlapping object within its list, or 0 if none overlap.
+ */
 function isTouching(x, y, width, height, objectsArray) {
   for (var a = 0; a < objectsArray.length; a++) {
     var objects = objectsArray[a];
     for (var o = 0; o < objects.length; o++) {
       var obj = objects[o];
       if (!('hide' in obj) || !obj.hide) {
-        var d = obj.direction;
-        if (d+1 > obj.directions) {
-          d = 0;
-        }
-        var f = obj.frame+d*obj.frames;
         var x1 = obj.x;
         var x2 = obj.x+obj.width;
         var y1 = obj.y;
         var y2 = obj.y+obj.height;
-        if ('touchCorrections' in obj) {
-          if ('x1' in obj.touchCorrections[f]) {
-            x1 += obj.touchCorrections[f].x1;
-          }
-          if ('y1' in obj.touchCorrections[f]) {
-            y1 += obj.touchCorrections[f].y1;
-          }
-          if ('x2' in obj.touchCorrections[f]) {
-            x2 = obj.x+obj.touchCorrections[f].x2;
-          }
-          if ('y2' in obj.touchCorrections[f]) {
-            y2 = obj.y+obj.touchCorrections[f].y2;
-          }
-        }
         if (!(x+width <= x1 || y+height <= y1 || x >= x2 || y >= y2)) {
           return o+1;
         }
@@ -576,6 +615,16 @@ function isTouching(x, y, width, height, objectsArray) {
 } // isTouching
 
 /*
+ * Like isTouching, but tests full containment: returns whether the rectangle
+ * (x, y, width, height) lies entirely inside a non-hidden object. Currently
+ * unused (the whole function is disabled).
+ * @param {number} x - Left edge of the test rectangle.
+ * @param {number} y - Top edge of the test rectangle.
+ * @param {number} width - Rectangle width.
+ * @param {number} height - Rectangle height.
+ * @param {Array<Array<{x:number,y:number,width:number,height:number,hide?:boolean}>>} objectsArray - Lists of objects to test against.
+ * @returns {number} 1-based index of the first containing object within its list, or 0 if none contain it.
+ *
 function isInside(x, y, width, height, objectsArray) {
   for (var a = 0; a < objectsArray.length; a++) {
     var objects = objectsArray[a];
@@ -592,6 +641,17 @@ function isInside(x, y, width, height, objectsArray) {
 } // isInside
 */
 
+/**
+ * Finds the objects the rectangle (x, y, width, height) is resting on — those
+ * it overlaps horizontally and whose top edge its bottom edge sits exactly on.
+ * Returns an empty list while Willy is ascending in a jump.
+ * @param {number} x - Left edge.
+ * @param {number} y - Top edge.
+ * @param {number} width - Rectangle width.
+ * @param {number} height - Rectangle height.
+ * @param {Array<Array<object>>} objectsArray - Lists of objects to test against.
+ * @returns {object[]} The objects being stood on (possibly empty).
+ */
 function isStandingOn(x, y, width, height, objectsArray) {
   var result = [];
 
@@ -613,6 +673,15 @@ function isStandingOn(x, y, width, height, objectsArray) {
   return result;
 } // isStandingOn
 
+/**
+ * Marches the light-beam probe in (moveX, moveY) steps until it hits a guardian
+ * (sets lbData.touchLight) or is blocked by a wall or floor (sets
+ * lbData.cancelLight), advancing lbData.x/lbData.y in place.
+ * @param {{x:number,y:number,touchLight:(number|boolean),cancelLight:(number|boolean)}} lbData - Probe state, mutated in place.
+ * @param {number} moveX - Horizontal step per iteration.
+ * @param {number} moveY - Vertical step per iteration.
+ * @returns {void}
+ */
 function doesLightBeamHit(lbData, moveX, moveY) {
   while (!lbData.touchLight && !lbData.cancelLight) {
     if (!lbData.touchLight && !lbData.cancelLight) {
@@ -631,10 +700,23 @@ function doesLightBeamHit(lbData, moveX, moveY) {
   }
 } // doesLightBeamHit
 
+/**
+ * Tests whether Willy could move by (moveX, moveY) without his 10×16 body
+ * entering a wall or barrier.
+ * @param {number} moveX - Horizontal offset to test.
+ * @param {number} moveY - Vertical offset to test.
+ * @returns {boolean} True if the target position is clear.
+ */
 function canMove(moveX, moveY) {
   return !isTouching(gameData.willy[0].x+moveX, gameData.willy[0].y+moveY, 10, 16, [gameData.walls, gameData.barriers]);
 } // canMove
 
+/**
+ * If Willy overlaps a collectable item, hides it, awards points and advances
+ * the completed-items count; collecting the last item activates the portal and
+ * runs its configured actions.
+ * @returns {void}
+ */
 function isTouchingItem() {
   var touchId = isTouching(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.items]);
   if (touchId) {
@@ -662,11 +744,110 @@ function isTouchingItem() {
   }
 } // isTouchingItem
 
+/**
+ * Maps a sprite's logical (frame, direction) to the flat index used by
+ * per-frame data such as blankMargins, matching the frame+direction layout used
+ * when the sprite is drawn. Falls back to direction 0 when the object has fewer
+ * directions than its current `direction`.
+ * @param {{frame:number,direction:number,directions:number,frames:number}} obj - The sprite-bearing object.
+ * @returns {number} The flat frame index.
+ */
+function collisionFrameIndex(obj) {
+  var d = obj.direction;
+  if (d+1 > obj.directions) {
+    d = 0;
+  }
+  return obj.frame+d*obj.frames;
+} // collisionFrameIndex
+
+/**
+ * Tests whether the local pixel (x, y) is solid according to a blank-margin
+ * map. A pixel is solid when it lies inside both the row span (left/right) and
+ * the column span (top/bottom), so interior holes count as solid.
+ * @param {{left:number[],right:number[],top:number[],bottom:number[]}} map - Blank-margin map for one sprite frame.
+ * @param {number} x - Local x within the sprite.
+ * @param {number} y - Local y within the sprite.
+ * @returns {boolean} True if the pixel is solid.
+ */
+function isMarginSolid(map, x, y) {
+  var width = map.top.length;
+  var height = map.left.length;
+  if (x < 0 || x >= width || y < 0 || y >= height) {
+    return false;
+  }
+  return map.left[y] <= x && x < width-map.right[y] && map.top[x] <= y && y < height-map.bottom[x];
+} // isMarginSolid
+
+/**
+ * Pixel-perfect collision test between two sprites. Broad phase: intersect
+ * their paint-corrected pixel rectangles; narrow phase: scan the overlap for a
+ * pixel that is solid in both sprites' blank-margin maps. Returns false if
+ * either sprite has no blankMargins.
+ * @param {object} a - First sprite (needs blankMargins, x, y, frame/direction).
+ * @param {object} b - Second sprite (same requirements).
+ * @returns {boolean} True if the sprites overlap on a mutually solid pixel.
+ */
+function isPixelColliding(a, b) {
+  if (!a.blankMargins || !b.blankMargins) {
+    return false;
+  }
+  var ma = a.blankMargins[collisionFrameIndex(a)];
+  var mb = b.blankMargins[collisionFrameIndex(b)];
+  var ba = paintCorrectedBox(a);
+  var bb = paintCorrectedBox(b);
+  var ax = ba.x;
+  var ay = ba.y;
+  var bx = bb.x;
+  var by = bb.y;
+  var x0 = Math.max(ax, bx);
+  var y0 = Math.max(ay, by);
+  var x1 = Math.min(ax+ma.top.length, bx+mb.top.length);
+  var y1 = Math.min(ay+ma.left.length, by+mb.left.length);
+  for (var y = y0; y < y1; y++) {
+    for (var x = x0; x < x1; x++) {
+      if (isMarginSolid(ma, x-ax, y-ay) && isMarginSolid(mb, x-bx, y-by)) {
+        return true;
+      }
+    }
+  }
+  return false;
+} // isPixelColliding
+
+/**
+ * Computes a sprite's on-screen rectangle. paintCorrections shifts the origin
+ * and the renderer compensates the size, so the result matches the region the
+ * sprite actually occupies (and that isPixelColliding scans). Sprites without
+ * paintCorrections are treated as a zero offset.
+ * @param {{x:number,y:number,width:number,height:number,paintCorrections?:{x:number,y:number}}} obj
+ * @returns {{x:number,y:number,width:number,height:number}} The corrected rectangle.
+ */
+function paintCorrectedBox(obj) {
+  var px = obj.paintCorrections ? obj.paintCorrections.x : 0;
+  var py = obj.paintCorrections ? obj.paintCorrections.y : 0;
+  return {x: obj.x+px, y: obj.y+py, width: obj.width-px, height: obj.height-py};
+} // paintCorrectedBox
+
+/**
+ * Detects whether Willy is killed this frame: a broad-phase bounding-box test
+ * against each guardian, confirmed by a pixel-perfect check, plus bounding-box
+ * tests against nasties (touching or standing on). On a hit it sets the crash
+ * flag (gameData.info[5]) and posts a 'crash' message.
+ * @returns {void}
+ */
 function isColliding() {
   var willy = gameData.willy[0];
-  var f = willy.frame+willy.direction*willy.frames;
-  if (isTouching(willy.x+willy.touchCorrections[f].x1, willy.y, willy.touchCorrections[f].x2-willy.touchCorrections[f].x1, 16, [gameData.guardians])) {
-    gameData.info[5] = true;
+  var w = paintCorrectedBox(willy);
+  for (var g = 0; g < gameData.guardians.length; g++) {
+    var guardian = gameData.guardians[g];
+    if (('hide' in guardian) && guardian.hide) {
+      continue;
+    }
+    // Broad phase: paint-corrected bounding-box test; only then confirm pixel-perfect.
+    if (isTouching(w.x, w.y, w.width, w.height, [[paintCorrectedBox(guardian)]]) &&
+        isPixelColliding(willy, guardian)) {
+      gameData.info[5] = true;
+      break;
+    }
   }
   if (isTouching(willy.x, willy.y, 10, 16, [gameData.nasties])) {
     gameData.info[5] = true;
@@ -680,6 +861,11 @@ function isColliding() {
   }
 } // isColliding
 
+/**
+ * Once the portal is active (flashing), checks whether Willy overlaps it and,
+ * if so, ends the cave with a 'caveDone' message.
+ * @returns {void}
+ */
 function isOnPlatform() {
   if (gameData.portal[0].flashShiftFrames) {
     var willy = gameData.willy[0];
@@ -691,6 +877,11 @@ function isOnPlatform() {
   }
 } // isOnPlatform
 
+/**
+ * If Willy is within the light beam, increases the light-beam exposure counter
+ * (gameData.info[7]).
+ * @returns {void}
+ */
 function isTouchingLightBeam() {
   if ('lightBeam' in gameData) {
     var touchId = isTouching(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.lightBeam]);
@@ -700,6 +891,11 @@ function isTouchingLightBeam() {
   }
 } // isTouchingLightBeam
 
+/**
+ * If Willy touches an un-flipped switch, flips it and runs its configured
+ * actions (setValue, bonus, playSound).
+ * @returns {void}
+ */
 function isTouchingSwitch() {
   var touchId = isTouching(gameData.willy[0].x, gameData.willy[0].y, 10, 16, [gameData.switches]);
   if (touchId) {
@@ -723,6 +919,13 @@ function isTouchingSwitch() {
   }
 } // isTouchingSwitch
 
+/**
+ * Worker message handler for commands from the main thread: 'init' (load the
+ * initial data and start the loop), 'controls' (update a control flag or
+ * predicate), 'pause', 'continue' and 'reset'.
+ * @param {MessageEvent} event - Message carrying a `data.id` command and payload.
+ * @returns {void}
+ */
 onmessage = (event) => {
   switch (event.data.id) {
     case 'init':
