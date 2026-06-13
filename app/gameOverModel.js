@@ -93,7 +93,7 @@ export class GameOverModel extends AbstractModel {
     this.buttonNoEntity.addEntity(this.timerEntity);
 
     if (this.shoeAnimation) {
-      this.sendEvent(0, {id: 'playSound', channel: 'sounds', sound: 'gameOverSound', options: false});
+      this.sendEvent(0, {id: 'playSound', bus: 'sounds', sound: 'gameOverSound', options: false});
     }
 
     if (this.app.score) {
@@ -103,7 +103,7 @@ export class GameOverModel extends AbstractModel {
 
   shutdown() {
     super.shutdown();
-    this.sendEvent(0, {id: 'stopAllAudioChannels'});
+    this.sendEvent(0, {id: 'stopAllAudioBuses'});
   } // shutdown
 
   setData(data) {

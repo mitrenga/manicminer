@@ -69,9 +69,9 @@ export class CaveModel extends AbstractModel {
     this.sendEvent(330, {id: 'changeFlashState'});
 
     if (this.demo) {
-      this.sendEvent(0, {id: 'playSound', channel: 'music', sound: 'inGameMelody', options: {caveNumber: this.caveNumber, demo: true}});
+      this.sendEvent(0, {id: 'playSound', bus: 'music', sound: 'inGameMelody', options: {caveNumber: this.caveNumber, demo: true}});
     } else {
-      this.sendEvent(0, {id: 'playSound', channel: 'music', sound: 'inGameMelody', options: {repeat: true, caveNumber: this.caveNumber, demo: false}});
+      this.sendEvent(0, {id: 'playSound', bus: 'music', sound: 'inGameMelody', options: {repeat: true, caveNumber: this.caveNumber, demo: false}});
     }
 
     var caveId = 'cave'+this.caveNumber.toString().padStart(2, '0');
@@ -81,7 +81,7 @@ export class CaveModel extends AbstractModel {
   shutdown() {
     super.shutdown();
     this.sendWorkerMessage({id: 'reset'});
-    this.sendEvent(0, {id: 'stopAllAudioChannels'});
+    this.sendEvent(0, {id: 'stopAllAudioBuses'});
   } // shutdown
 
   newBorderEntity() {
@@ -114,13 +114,13 @@ export class CaveModel extends AbstractModel {
 
       case 'blurWindow':
         this.sendWorkerMessage({id: 'pause'});
-        this.sendEvent(0, {id: 'pauseAllAudioChannels'});
+        this.sendEvent(0, {id: 'pauseAllAudioBuses'});
         this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 52, 40, 153, 85, 'PAUSE GAME', 'GameExitModel'));
         return true;
 
       case 'continueGame':        
         this.sendWorkerMessage({id: 'continue'});
-        this.sendEvent(0, {id: 'continueAllAudioChannels'});
+        this.sendEvent(0, {id: 'continueAllAudioBuses'});
         return true;
 
       case 'keyPress':
@@ -149,7 +149,7 @@ export class CaveModel extends AbstractModel {
           case 'Escape':
           case 'GamepadExit':
             this.sendWorkerMessage({id: 'pause'});
-            this.sendEvent(0, {id: 'pauseAllAudioChannels'});
+            this.sendEvent(0, {id: 'pauseAllAudioBuses'});
             this.desktopEntity.addModalEntity(new PauseGameEntity(this.desktopEntity, 52, 40, 153, 85, 'PAUSE GAME', 'GameExitModel'));
             return true;
 
@@ -206,13 +206,13 @@ export class CaveModel extends AbstractModel {
 
           case this.app.controls.keyboard.music:
             this.app.muted.music = !this.app.muted.music;
-            this.sendEvent(0, {id: 'muteAudioChannel', channel: 'music', muted: this.app.muted.music});
+            this.sendEvent(0, {id: 'muteAudioBus', bus: 'music', muted: this.app.muted.music});
             return true;
 
           case this.app.controls.keyboard.sounds:
             this.app.muted.sounds = !this.app.muted.sounds;
-            this.sendEvent(0, {id: 'muteAudioChannel', channel: 'sounds', muted: this.app.muted.sounds});
-            this.sendEvent(0, {id: 'muteAudioChannel', channel: 'extra', muted: this.app.muted.sounds});
+            this.sendEvent(0, {id: 'muteAudioBus', bus: 'sounds', muted: this.app.muted.sounds});
+            this.sendEvent(0, {id: 'muteAudioBus', bus: 'extra', muted: this.app.muted.sounds});
             return true;
         }
         break;
@@ -301,17 +301,17 @@ export class CaveModel extends AbstractModel {
           this.gameAreaEntity.spriteEntities.willy[0].hide = true;
         }
         this.gameAreaEntity.spriteEntities.portal[0].frame = 0;
-        this.sendEvent(0, {id: 'stopAllAudioChannels'});
+        this.sendEvent(0, {id: 'stopAllAudioBuses'});
         this.borderEntity.bkColor = ZXColor.color(0);
         this.gameAreaEntity.setMonochromeColors(ZXColor.color(15), ZXColor.color(0));
-        this.sendEvent(0, {id: 'playSound', channel: 'sounds', sound: 'crashSound', options: false});
+        this.sendEvent(0, {id: 'playSound', bus: 'sounds', sound: 'crashSound', options: false});
         this.animationTime = this.timer;
         this.animationType = 'crash';
         return true;
 
       case 'caveDone':
         if (this.animationTime == false) {
-          this.sendEvent(0, {id: 'stopAllAudioChannels'});
+          this.sendEvent(0, {id: 'stopAllAudioBuses'});
           this.sendWorkerMessage({id: 'reset'});
           if (!this.demo) {
             this.gameAreaEntity.spriteEntities.willy[0].hide = true;
@@ -340,7 +340,7 @@ export class CaveModel extends AbstractModel {
           this.gameAreaEntity.addEntity(swordEntity);
           swordEntity.setGraphicsData(this.app.globalData.escape.sword);
           this.gameAreaEntity.spriteEntities.swordFish.push(swordEntity);
-          this.sendEvent(0, {id: 'playSound', channel: 'sounds', sound: 'escapeSound', options: false});
+          this.sendEvent(0, {id: 'playSound', bus: 'sounds', sound: 'escapeSound', options: false});
         break;
 
       case 'animationCaveDone':
@@ -350,7 +350,7 @@ export class CaveModel extends AbstractModel {
         break;
 
       case 'animationDemoCaveDone':
-        this.sendEvent(0, {id: 'stopAllAudioChannels'});
+        this.sendEvent(0, {id: 'stopAllAudioBuses'});
         this.sendWorkerMessage({id: 'reset'});
         this.gameAreaEntity.setMonochromeColors(ZXColor.color(3), ZXColor.color(7));
         this.animationTime = this.timer;
@@ -361,7 +361,7 @@ export class CaveModel extends AbstractModel {
         this.animationTime = this.timer;
         this.animationType = 'airSupply';
         var remainingAirSupply = 36+Math.round(this.undisplayedScore/(256/4));
-        this.sendEvent(0, {id: 'playSound', channel: 'sounds', sound: 'airSupplySound', options: {remainingAirSupply: remainingAirSupply}});
+        this.sendEvent(0, {id: 'playSound', bus: 'sounds', sound: 'airSupplySound', options: {remainingAirSupply: remainingAirSupply}});
         break;
 
       case 'durationAirSupplySound':
@@ -601,11 +601,11 @@ export class CaveModel extends AbstractModel {
         break;
 
       case 'playSound':
-        this.sendEvent(0, {id: 'playSound', channel: event.data.channel, sound: event.data.sound, options: false});
+        this.sendEvent(0, {id: 'playSound', bus: event.data.bus, sound: event.data.sound, options: false});
         break;
 
-      case 'stopAudioChannel':
-        this.sendEvent(0, {id: 'stopAudioChannel', channel: event.data.channel});
+      case 'stopAudioBus':
+        this.sendEvent(0, {id: 'stopAudioBus', bus: event.data.bus});
         break;
 
       case 'caveDone':

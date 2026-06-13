@@ -151,7 +151,7 @@
                },
                {
                   "type":"playSound",
-                  "channel":"extra",
+                  "bus":"extra",
                   "sound":"fallingKongSound",
                   "options":false
                }

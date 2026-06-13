@@ -111,15 +111,15 @@ export class MainModel extends AbstractModel {
     this.spaceEntity.setGraphicsData(SpriteTool.decode('lP101300809010502060E070309040123101124056665078002622202228002116502620238110322620238601002350280021502350505012232622125'));
     this.blackBoxEntity.addEntity(this.spaceEntity);
 
-    this.sendEvent(0, {id: 'openAudioChannel', channel: 'music', options: {muted: this.app.muted.music}});
-    this.sendEvent(0, {id: 'openAudioChannel', channel: 'sounds', options: {muted: this.app.muted.sounds}});
-    this.sendEvent(0, {id: 'openAudioChannel', channel: 'extra', options: {muted: this.app.muted.sounds}});
-    this.sendEvent(0, {id: 'playSound', channel: 'music', sound: 'titleScreenMelody', options: false});
+    this.sendEvent(0, {id: 'openAudioBus', bus: 'music', options: {muted: this.app.muted.music}});
+    this.sendEvent(0, {id: 'openAudioBus', bus: 'sounds', options: {muted: this.app.muted.sounds}});
+    this.sendEvent(0, {id: 'openAudioBus', bus: 'extra', options: {muted: this.app.muted.sounds}});
+    this.sendEvent(0, {id: 'playSound', bus: 'music', sound: 'titleScreenMelody', options: false});
   } // init
 
   shutdown() {
     super.shutdown();
-    this.sendEvent(0, {id: 'stopAllAudioChannels'});
+    this.sendEvent(0, {id: 'stopAllAudioBuses'});
   } // shutdown
 
   newBorderEntity() {
@@ -190,12 +190,12 @@ export class MainModel extends AbstractModel {
               return true;
             case this.app.controls.keyboard.music:
               this.app.muted.music = !this.app.muted.music;
-              this.sendEvent(0, {id: 'muteAudioChannel', channel: 'music', muted: this.app.muted.music});
+              this.sendEvent(0, {id: 'muteAudioBus', bus: 'music', muted: this.app.muted.music});
               return true;
             case this.app.controls.keyboard.sounds:
               this.app.muted.sounds = !this.app.muted.sounds;
-              this.sendEvent(0, {id: 'muteAudioChannel', channel: 'sounds', muted: this.app.muted.sounds});
-              this.sendEvent(0, {id: 'muteAudioChannel', channel: 'extra', muted: this.app.muted.sounds});
+              this.sendEvent(0, {id: 'muteAudioBus', bus: 'sounds', muted: this.app.muted.sounds});
+              this.sendEvent(0, {id: 'muteAudioBus', bus: 'extra', muted: this.app.muted.sounds});
               return true;
           }
         }
@@ -234,7 +234,7 @@ export class MainModel extends AbstractModel {
         this.app.startCave(true, true, true);
         return true;
 
-      case 'errorAudioChannel':
+      case 'errorAudioBus':
         this.app.showErrorMessage(event.error, 'reopen');
         return true;
     }

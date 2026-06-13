@@ -212,7 +212,7 @@ function willy() {
         mustMovingDirection = canMovingDirection;
       }
       fallingDirection = 0;
-      postMessage({id: 'stopAudioChannel', channel: 'sounds'});
+      postMessage({id: 'stopAudioBus', bus: 'sounds'});
     } else {
       willy.y += 4;
       fallingCounter++;
@@ -221,7 +221,7 @@ function willy() {
     if (!jumpCounter && !standing.length) {
       fallingCounter = 1;
       fallingDirection = 0;
-      postMessage({id: 'playSound', channel: 'sounds', sound: 'fallingSound'});
+      postMessage({id: 'playSound', bus: 'sounds', sound: 'fallingSound'});
     }
   }
 
@@ -232,7 +232,7 @@ function willy() {
         mustMovingDirection = canMovingDirection;
       }
       jumpDirection = 0;
-      postMessage({id: 'stopAudioChannel', channel: 'sounds'});
+      postMessage({id: 'stopAudioBus', bus: 'sounds'});
     }
   }
 
@@ -245,7 +245,7 @@ function willy() {
       jumpDirection = 0;
       fallingCounter = 1;
       fallingDirection = 0;
-      postMessage({id: 'playSound', channel: 'sounds', sound: 'fallingSound'});
+      postMessage({id: 'playSound', bus: 'sounds', sound: 'fallingSound'});
     }
   }
 
@@ -303,7 +303,7 @@ function willy() {
     if (canMove(0, jumpMap[jumpCounter])) {
       jumpCounter = 1;
       willy.y += jumpMap[jumpCounter-1]; 
-      postMessage({id: 'playSound', channel: 'sounds', sound: 'jumpSound'});
+      postMessage({id: 'playSound', bus: 'sounds', sound: 'jumpSound'});
     }
   }
 
@@ -740,7 +740,7 @@ function isTouchingItem() {
         });
       }
     }
-    postMessage({id: 'playSound', channel: 'extra', sound: 'itemSound'});
+    postMessage({id: 'playSound', bus: 'extra', sound: 'itemSound'});
   }
 } // isTouchingItem
 
@@ -911,7 +911,7 @@ function isTouchingSwitch() {
             bonus += action.value;
             break;
           case 'playSound':
-            postMessage({id: 'playSound', channel: action.channel, sound: action.sound, options: action.options});
+            postMessage({id: 'playSound', bus: action.bus, sound: action.sound, options: action.options});
             break;
         }
       });
