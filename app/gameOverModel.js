@@ -103,7 +103,7 @@ export class GameOverModel extends AbstractModel {
 
   shutdown() {
     super.shutdown();
-    this.app.audioManager.stopAllChannels();
+    this.sendEvent(0, {id: 'stopAllAudioChannels'});
   } // shutdown
 
   setData(data) {

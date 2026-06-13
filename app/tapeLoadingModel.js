@@ -90,7 +90,7 @@ export class TapeLoadingModel extends AbstractModel {
   } // init
 
   shutdown() {
-    this.app.audioManager.closeAllChannels();
+    this.sendEvent(0, {id: 'closeAllAudioChannels'});
   } // shutdown
 
   handleEvent(event) {
