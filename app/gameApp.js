@@ -177,7 +177,10 @@ export class GameApp extends AbstractApp {
     this.lastBonusScore = 0;
     this.playerName = Tool.readCookie('playerName', '');
     this.globalData = false;
+    this.id = 'GameApp';
+    this.fetchDataId = '';
     this.setModel('LoadingModel');
+    this.loadAppData();
   } // constructor
 
   getControls(device) {
@@ -247,6 +250,10 @@ export class GameApp extends AbstractApp {
   } // getControls
 
   setModel(model) {
+    if (model == 'MenuModel' && this.globalData === false) {
+      this.showErrorMessage('Game data could not be loaded.', 'restart');
+      return;
+    }
     var needResizeApp = false;
     var selectionItem = 0;
     if (this.model) {
@@ -306,8 +313,12 @@ export class GameApp extends AbstractApp {
     this.setModel('CaveModel');
   } // startCave
 
+  applyGlobalData(global) {
+    this.globalData = global;
+  } // applyGlobalData
+
   setGlobalData(data) {
-    this.globalData = data.data.global;
+    this.applyGlobalData(data.data.global);
 
     Object.keys(data.data).forEach((key) => {
       if (key == 'hiScore') {
@@ -317,6 +328,42 @@ export class GameApp extends AbstractApp {
       }
     });
   } // setGlobalData
+
+  // Load the application data: from the server when online (which also refreshes
+  // localStorage), or rehydrate the global data from localStorage when offline.
+  loadAppData() {
+    if (navigator.onLine) {
+      this.fetchDataId = this.fetchData('appData.db', false, {}, this);
+    } else {
+      this.loadGlobalDataFromStorage();
+    }
+  } // loadAppData
+
+  loadGlobalDataFromStorage() {
+    var stored = localStorage.getItem(window.appPrefix+'.global');
+    if (stored !== null) {
+      try {
+        this.applyGlobalData(JSON.parse(stored));
+        return true;
+      } catch (error) {
+        console.error(error.message);
+      }
+    }
+    return false;
+  } // loadGlobalDataFromStorage
+
+  setData(data) {
+    this.setGlobalData(data);
+  } // setData
+
+  errorData(error) {
+    // The network request failed (offline, or navigator.onLine reported a false
+    // positive). Fall back to the data cached in localStorage; if none exists,
+    // log it and let the MenuModel guard surface the error to the user.
+    if (!this.loadGlobalDataFromStorage()) {
+      console.error(error.message ? error.message : error);
+    }
+  } // errorData
 
   showErrorMessage(message, action) {
     var topModalEntity = this.model.desktopEntity.topModalEntity();
