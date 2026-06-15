@@ -173,7 +173,7 @@ export class GameApp extends AbstractApp {
     this.demo = false;
     this.lives = 2;
     this.score = 0;
-    this.hiScore = 0;
+    this.hiScore = false;
     this.lastBonusScore = 0;
     this.playerName = Tool.readCookie('playerName', '');
     this.globalData = false;

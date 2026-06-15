@@ -35,7 +35,8 @@ export class GameInfoEntity extends AbstractEntity {
     this.addEntity(this.airEntity);
     this.addEntity(new AbstractEntity(this, 0, 2*8, 32*8, 8, false, ZXColor.black));
     this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 0, 3*8, 10*8, 8, 'High Score', ZXColor.brightYellow, ZXColor.brightBlack, {leftMargin: 1}));
-    this.hiScoreEntity = new TextEntity(this, this.app.fonts.zxFonts8x8Mono, 10*8, 3*8, 10*8, 8, this.app.hiScore.toString().padStart(6, '0'), ZXColor.brightYellow, ZXColor.brightBlack, {});
+    var hiScoreText = (!navigator.onLine || this.app.hiScore === false) ? 'OFFLINE' : this.app.hiScore.toString().padStart(6, '0');
+    this.hiScoreEntity = new TextEntity(this, this.app.fonts.zxFonts8x8Mono, 10*8, 3*8, 10*8, 8, hiScoreText, ZXColor.brightYellow, ZXColor.brightBlack, {});
     this.addEntity(this.hiScoreEntity);
     this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 20*8, 3*8, 6*8, 8, 'Score', ZXColor.brightYellow, ZXColor.brightBlack, {leftMargin: 1}));
     this.scoreEntity = new TextEntity(this, this.app.fonts.zxFonts8x8Mono, 26*8, 3*8, 6*8, 8, this.app.score.toString().padStart(6, '0'), ZXColor.brightYellow, ZXColor.brightBlack, {});
