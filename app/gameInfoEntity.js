@@ -62,6 +62,10 @@ export class GameInfoEntity extends AbstractEntity {
   } // init
 
   setData(data) {
+    if (data.url != 'hallOfFame.db') {
+      super.setData(data);
+      return;
+    }
     this.app.hiScore = (data.data && data.data.length > 0) ? data.data[0].score : 0;
     this.hiScoreEntity.setText(this.app.hiScore.toString().padStart(6, '0'));
   } // setData
