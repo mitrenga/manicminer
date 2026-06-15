@@ -35,7 +35,16 @@ export class GameInfoEntity extends AbstractEntity {
     this.addEntity(this.airEntity);
     this.addEntity(new AbstractEntity(this, 0, 2*8, 32*8, 8, false, ZXColor.black));
     this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 0, 3*8, 10*8, 8, 'High Score', ZXColor.brightYellow, ZXColor.brightBlack, {leftMargin: 1}));
-    var hiScoreText = (!navigator.onLine || this.app.hiScore === false) ? 'OFFLINE' : this.app.hiScore.toString().padStart(6, '0');
+    var hiScoreText;
+    if (!navigator.onLine) {
+      hiScoreText = 'OFFLINE';
+    } else if (this.app.hiScore === false) {
+      // online but the high score was not loaded (e.g. the app booted offline) -> recover it from the hall of fame
+      hiScoreText = '......';
+      this.fetchData('hallOfFame.db', false, {});
+    } else {
+      hiScoreText = this.app.hiScore.toString().padStart(6, '0');
+    }
     this.hiScoreEntity = new TextEntity(this, this.app.fonts.zxFonts8x8Mono, 10*8, 3*8, 10*8, 8, hiScoreText, ZXColor.brightYellow, ZXColor.brightBlack, {});
     this.addEntity(this.hiScoreEntity);
     this.addEntity(new TextEntity(this, this.app.fonts.zxFonts8x8, 20*8, 3*8, 6*8, 8, 'Score', ZXColor.brightYellow, ZXColor.brightBlack, {leftMargin: 1}));
@@ -51,6 +60,15 @@ export class GameInfoEntity extends AbstractEntity {
       }
     }
   } // init
+
+  setData(data) {
+    this.app.hiScore = (data.data && data.data.length > 0) ? data.data[0].score : 0;
+    this.hiScoreEntity.setText(this.app.hiScore.toString().padStart(6, '0'));
+  } // setData
+
+  errorData(error) {
+    this.hiScoreEntity.setText('OFFLINE');
+  } // errorData
 
 } // GameInfoEntity
 
