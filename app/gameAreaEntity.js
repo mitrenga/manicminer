@@ -43,7 +43,7 @@ export class GameAreaEntity extends AbstractEntity {
 
       this.app.layout.paint(this, 0, 0, this.width, this.height, this.bkColor);
 
-      if (this.drawingCache[0].needToRefresh(this, this.width, this.height)) {
+      if (this.drawingCache[0].preparePaint(this.width, this.height)) {
         // layout - bkColor
         this.caveData.layout.forEach((row, r) => {
           for (var column = 0; column < row.length/2; column++) {
@@ -55,7 +55,7 @@ export class GameAreaEntity extends AbstractEntity {
                   bkColor = false;
                 }
                 if (bkColor != false) {
-                  this.app.layout.paintRect(this.drawingCache[0].ctx, column*8, r*8, 8, 8, bkColor);
+                  this.drawingCache[0].paint(column*8, r*8, 8, 8, bkColor);
                 }
               }
             }
@@ -67,24 +67,24 @@ export class GameAreaEntity extends AbstractEntity {
 
       super.drawSubEntities();
 
-      if (this.drawingCache[1].needToRefresh(this, this.width, this.height)) {
+      if (this.drawingCache[1].preparePaint(this.width, this.height)) {
         // layout - penColor
         this.caveData.layout.forEach((row, r) => {
           for (var column = 0; column < row.length/2; column++) {
             var attr = row.substring(column*2, column*2+2);
             if (attr != this.caveData.bkColor) {
               if (this.staticKinds.includes(this.caveData.graphicData[attr].kind)) {
-                if (this.graphicCache[attr].needToRefresh(this, 8, 8)) {
+                if (this.graphicCache[attr].preparePaint(8, 8)) {
                   var penColor = this.penColorByAttr(Tool.hexToInt(attr));
                   for (var y = 0; y < this.caveData.graphicData[attr].sprite.length; y++) {
                     for (var x = 0; x < this.caveData.graphicData[attr].sprite[y].length; x++) {
                       if (this.caveData.graphicData[attr].sprite[y][x] == '#') {
-                        this.app.layout.paintRect(this.graphicCache[attr].ctx, x, y, 1, 1, penColor);
+                        this.graphicCache[attr].paint(x, y, 1, 1, penColor);
                       }
                     }
                   }
                 }
-                this.drawingCache[1].ctx.drawImage(this.graphicCache[attr].canvas, column*8*this.app.layout.ratio, r*8*this.app.layout.ratio);
+                this.drawingCache[1].ctx.drawImage(this.graphicCache[attr].canvas, column*8, r*8);
               }
             }
           }
@@ -104,13 +104,13 @@ export class GameAreaEntity extends AbstractEntity {
                 bkColor2 = this.bkColor;
               }
               if (bkColor != this.bkColor) {
-                this.app.layout.paintRect(this.drawingCache[1].ctx, column*8, row*8, 8, 8, bkColor2);
+                this.drawingCache[1].paint(column*8, row*8, 8, 8, bkColor2);
               }
               for (var line = 0; line < 8; line++) {
                 var binMask = Tool.hexToBin(this.caveData.image.data[row+line*8].substring(column*2, column*2+2))
                 for (var point = 0; point < 8; point++) {
                   if (binMask[point] == '1') {
-                    this.app.layout.paintRect(this.drawingCache[1].ctx, column*8+point, row*8+line, 1, 1, penColor);
+                    this.drawingCache[1].paint(column*8+point, row*8+line, 1, 1, penColor);
                   }
                 }
               }

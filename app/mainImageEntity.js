@@ -169,19 +169,19 @@ export class MainImageEntity extends AbstractEntity {
   } // constructor
 
   drawEntity() {
-    if (this.drawingCache[0].needToRefresh(this, this.width, this.height)) {
+    if (this.drawingCache[0].preparePaint(this.width, this.height)) {
       for (var block = 0; block < 2; block++) {
         for (var row = 0; row < 8; row++) {
           for (var column = 0; column < 32; column++) {
             var attr = Tool.hexToInt(this.introImageAttributes[block*8+row].substring(column*2, column*2+2));
             var bkColor = ZXColor.bkAttrColor(attr);
             var penColor = ZXColor.penAttrColor(attr);
-            this.app.layout.paintRect(this.drawingCache[0].ctx, column*8, (block*8+row)*8, 8, 8, bkColor);
+            this.drawingCache[0].paint(column*8, (block*8+row)*8, 8, 8, bkColor);
             for (var line = 0; line < 8; line++) {
               var binMask = Tool.hexToBin(this.introImageData[block*64+row+line*8].substring(column*2, column*2+2))
               for (var point = 0; point < 8; point++) {
                 if (binMask[point] == '1') {
-                  this.app.layout.paintRect(this.drawingCache[0].ctx, column*8+point, block*64+row*8+line, 1, 1, penColor);
+                  this.drawingCache[0].paint(column*8+point, block*64+row*8+line, 1, 1, penColor);
                 }
               }
             }

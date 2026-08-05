@@ -123,7 +123,9 @@ export class SignboardEntity extends AbstractEntity {
     return charObject;
   } // getCharData
 
-  drawSignboard(ctx, posX, posY) {
+  // paint: callback (x, y, width, height, color) targeting either the main
+  // canvas (layout.paintRect) or a drawing cache (cache.paint)
+  drawSignboard(paint, posX, posY) {
     this.cursorX = 0;
     for (var ch = 0; ch < this.textData.length; ch++) {
       if (ch == 6 && this.animationMode == 'splashScreen') {
@@ -132,7 +134,7 @@ export class SignboardEntity extends AbstractEntity {
       var penColor = ZXColor[this.textData[ch].color];
       var charData = this.getCharData(this.textData[ch]);
       for (var x = 0; x < charData.data.length; x++) {
-        this.app.layout.paintRect(ctx, posX+this.cursorX+charData.data[x][0]*this.scale, posY+charData.data[x][1]*this.scale, charData.data[x][2]*this.scale, charData.data[x][3]*this.scale, penColor);
+        paint(posX+this.cursorX+charData.data[x][0]*this.scale, posY+charData.data[x][1]*this.scale, charData.data[x][2]*this.scale, charData.data[x][3]*this.scale, penColor);
       }
       this.cursorX += charData.width*this.scale;
     }
@@ -142,10 +144,15 @@ export class SignboardEntity extends AbstractEntity {
     super.drawEntity();
 
     if (this.animationMode == 'splashScreen' && this.loadTimer !== false) {
-      this.drawSignboard(this.app.stack.ctx, this.parentX+this.x, this.parentY+this.y);
+      this.drawSignboard((x, y, width, height, color) => {
+        this.app.layout.paintRect(this.app.stack.ctx, x, y, width, height, color);
+      }, this.parentX+this.x, this.parentY+this.y);
     } else {
-      if (this.drawingCache[this.animateState].needToRefresh(this, this.width, this.height)) {
-        this.drawSignboard(this.drawingCache[this.animateState].ctx, 0, 0);
+      var cache = this.drawingCache[this.animateState];
+      if (cache.preparePaint(this.width, this.height)) {
+        this.drawSignboard((x, y, width, height, color) => {
+          cache.paint(x, y, width, height, color);
+        }, 0, 0);
       }
       this.app.layout.paintCache(this, this.animateState);
     }
