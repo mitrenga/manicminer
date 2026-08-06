@@ -52,6 +52,9 @@ export class AboutEntity extends AbstractEntity {
     });
   } // setData
 
+  errorData(error) {
+  } // errorData
+
   updateAbout() {
     switch (Math.floor(this.clickCounter/5)) {
       case 1:
