@@ -3,6 +3,7 @@ const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+wind
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
 const { BorderEntity } = await import('./borderEntity.js?ver='+window.srcVersion);
 const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
+const { ButtonEntity } = await import('./svision/js/platform/canvas2D/buttonEntity.js?ver='+window.srcVersion);
 const { MenuEntity } = await import('./svision/js/platform/canvas2D/menuEntity.js?ver='+window.srcVersion);
 const { SignboardEntity } = await import('./signboardEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
@@ -18,6 +19,7 @@ import AbstractModel from './svision/js/abstractModel.js';
 import AbstractEntity from './svision/js/abstractEntity.js';
 import BorderEntity from './borderEntity.js';
 import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
+import ButtonEntity from './svision/js/platform/canvas2D/buttonEntity.js';
 import MenuEntity from './svision/js/platform/canvas2D/menuEntity.js';
 import SignboardEntity from './signboardEntity.js';
 import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
@@ -70,6 +72,8 @@ export class MenuModel extends AbstractModel {
 
     this.signboardEntity = null;
     this.copyrightEntity = null;
+    this.versionEntity = null;
+    this.newVersionAvailable = false;
 
     this.animationObjects = [
       {id: 'willy', x: 61, y: 160},
@@ -95,7 +99,13 @@ export class MenuModel extends AbstractModel {
     this.desktopEntity.addEntity(new AbstractEntity(this.desktopEntity, 13, 0, 230, 154, false, ZXColor.blue));
     this.desktopEntity.addEntity(new MenuEntity(this.desktopEntity, 14, 14, 228, 139, this.desktopEntity.bkColor, this.menuOptions, this, this.getMenuData));
 
-    this.desktopEntity.addEntity(new TextEntity(this.desktopEntity, this.app.fonts.fonts5x5, 180, 151, 55, 5, 'Ⓥ'+this.app.version, ZXColor.blue, ZXColor.white, {align: 'center'}));
+    this.versionEntity = new ButtonEntity(this.desktopEntity, this.app.fonts.fonts5x5, 180, 151, 55, 5, 'Ⓥ'+this.app.version, {id: 'upgradeApp'}, [], ZXColor.blue, ZXColor.white, {align: 'center'});
+    this.desktopEntity.addEntity(this.versionEntity);
+    // suppress the hover/click colors resolved in init(), so the button always
+    // looks like plain text
+    this.versionEntity.hoverColor = false;
+    this.versionEntity.clickColor = false;
+    this.checkServerVersion();
 
     this.signboardEntity = new SignboardEntity(this.desktopEntity, 98, 4, 61, 7, 'menuLabel');
     this.desktopEntity.addEntity(this.signboardEntity);
@@ -115,6 +125,24 @@ export class MenuModel extends AbstractModel {
     
     this.sendEvent(0, {id: 'closeAllAudioBuses'});
   } // init
+
+  checkServerVersion() {
+    // A dedicated receiver, so the request does not clash with the model's own
+    // menu.data fetch (one fetchDataId slot and setData per receiver).
+    var receiver = {
+      id: this.id+'Version',
+      fetchDataId: '',
+      setData: (data) => {
+        if (data.data.version && data.data.version !== 'unknown' && data.data.version !== this.app.version) {
+          this.newVersionAvailable = true;
+          this.versionEntity.setText('UPGRADE !');
+          this.versionEntity.setPenColor(ZXColor.brightRed);
+        }
+      },
+      errorData: () => {}
+    };
+    receiver.fetchDataId = this.app.fetchData('version.db', false, {}, receiver);
+  } // checkServerVersion
 
   getMenuData(self, key, row) {
     switch (key) {
@@ -219,6 +247,12 @@ export class MenuModel extends AbstractModel {
         this.desktopEntity.addModalEntity(new AboutEntity(this.desktopEntity, 27, 24, 202, 134));
         return true;
           
+      case 'upgradeApp':
+        if (this.newVersionAvailable) {
+          this.app.upgradeApp();
+        }
+        return true;
+
       case 'changeFlashState':
         this.app.stack.flashState = !this.app.stack.flashState;
         this.sendEvent(330, {id: 'changeFlashState'});
