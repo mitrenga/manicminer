@@ -11,7 +11,8 @@
     'crushing stalactites and bizarre creatures like the infamous Mutant Telephones.</p>'.
     '<p>This is a faithful remake of the later Software Projects release that runs directly in your web browser. '.
     'There is nothing to install and nothing to download — just open the page and play. '.
-    'Please enable JavaScript to start the game.</p>';
+    'Please enable JavaScript to start the game.</p>'.
+    '<p><a href="about">More about Manic Miner and this remake</a></p>';
   $appOpenGraph = [
     'image' => 'images/poster.png',
   ];
