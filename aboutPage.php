@@ -31,6 +31,12 @@ class AboutPage extends AbstractAboutPage {
             'your web browser — there is nothing to install and nothing to download, just open the page '.
             'and play, free of charge. The game supports keyboard, touch controls and gamepads.</p>',
         ],
+        [
+          'heading' => 'Other game',
+          'html' =>
+            '<p>Also try <a href="https://jetsetwilly.free/" target="_blank" rel="noopener">Jet Set Willy</a> — '.
+            'the legendary sequel to Manic Miner, remade for your browser as well.</p>',
+        ],
       ],
       'links' => [
         ['label' => 'Manic Miner on Wikipedia', 'url' => 'https://en.wikipedia.org/wiki/Manic_Miner'],
