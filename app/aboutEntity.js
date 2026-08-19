@@ -33,9 +33,8 @@ export class AboutEntity extends AbstractEntity {
                     'IN THIS REMAKE, YOU ALSO HAVE THE OPTION TO CONTINUE IN THE CAVE FROM WHERE YOU LEFT OFF IN YOUR PREVIOUS GAME. ' +
                     'THIS GIVES YOU THE CHANCE TO TRY COMPLETING ALL THE CAVES.';
     this.addEntity(new TextEntity(this, this.app.fonts.fonts5x5, 1, 9, this.width-2, this.height-25, this.aboutText, ZXColor.black, false, {align: 'justify', textWrap: true, margin: 2, member: 'aboutText'}));
-    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts3x3, 1, this.height-8, 97, 7, 'github:mitrenga/manicminer', {id: 'openGithub'}, [], '#777777', false, {margin:2, hoverColor: '#f3de25', clickColor: '#cc9410'}));
-    
-    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-39, this.height-16, 36, 13, 'CLOSE', {id: 'closeAbout'}, ['Enter', 'Escape', ' ', 'GamepadOK', 'GamepadExit'], ZXColor.brightWhite, ZXColor.blue, {align: 'center', margin: 4}));
+    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, 3, this.height-16, 54, 13, 'MORE INFO', {id: 'openAboutURL'}, ['Enter', 'GamepadOK'], ZXColor.brightWhite, ZXColor.green, {align: 'center', margin: 4}));
+    this.addEntity(new ButtonEntity(this, this.app.fonts.fonts5x5, this.width-39, this.height-16, 36, 13, 'CLOSE', {id: 'closeAbout'}, ['Escape', 'GamepadExit'], ZXColor.brightWhite, ZXColor.blue, {align: 'center', margin: 4}));
 
     this.statsText = 'error:\nstatistics data not available!';
     this.fetchData('stats.db', false, {});
@@ -109,8 +108,8 @@ export class AboutEntity extends AbstractEntity {
         }
         return false;
 
-      case 'openGithub':
-        window.open('https://github.com/mitrenga/manicminer', 'github:mm');
+      case 'openAboutURL':
+        window.location.href = 'about';
         return true;
     }
     return false;
