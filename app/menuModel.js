@@ -69,6 +69,10 @@ export class MenuModel extends AbstractModel {
       selectionClickColor: '#0a2277ff',
       selection: selectionItem
     }
+    // background colors of the dialog panels opened from the menu and of the
+    // on-screen keyboard buttons in the player-name dialog
+    this.dialogBkColor = ZXColor.yellow;
+    this.keyboardButtonsBkColor = ZXColor.brightWhite;
 
     this.signboardEntity = null;
     this.copyrightEntity = null;
@@ -202,7 +206,7 @@ export class MenuModel extends AbstractModel {
     switch (event.id) {
       case 'startGame':
         if (!this.app.playerName.length) {
-          this.desktopEntity.addModalEntity(new ZXPlayerNameEntity(this.desktopEntity, 27, 24, 202, 134, true));
+          this.desktopEntity.addModalEntity(new ZXPlayerNameEntity(this.desktopEntity, 27, 24, 202, 134, true, this.dialogBkColor, this.keyboardButtonsBkColor));
           return true;
         } else {
           if (this.app.inputEventsManager.needEventForAudio()) {
@@ -215,23 +219,23 @@ export class MenuModel extends AbstractModel {
         return true;
       
       case 'setPlayerName':
-        this.desktopEntity.addModalEntity(new ZXPlayerNameEntity(this.desktopEntity, 27, 24, 202, 134, false));
+        this.desktopEntity.addModalEntity(new ZXPlayerNameEntity(this.desktopEntity, 27, 24, 202, 134, false, this.dialogBkColor, this.keyboardButtonsBkColor));
       return true;
 
       case 'showHallOfFame':
-        this.desktopEntity.addModalEntity(new HallOfFameEntity(this.desktopEntity, 27, 24, 202, 134));
+        this.desktopEntity.addModalEntity(new HallOfFameEntity(this.desktopEntity, 27, 24, 202, 134, this.dialogBkColor));
       return true;
 
       case 'setSounds':
-        this.desktopEntity.addModalEntity(new ZXVolumeEntity(this.desktopEntity, 27, 24, 202, 134, 'sounds', 'audioBusSoundsLevel', 'exampleJumpSound'));
+        this.desktopEntity.addModalEntity(new ZXVolumeEntity(this.desktopEntity, 27, 24, 202, 134, 'sounds', 'audioBusSoundsLevel', 'exampleJumpSound', this.dialogBkColor));
         return true;
 
       case 'setMusic':
-        this.desktopEntity.addModalEntity(new ZXVolumeEntity(this.desktopEntity, 27, 24, 202, 134, 'music', 'audioBusMusicLevel', 'exampleInGameMelody'));
+        this.desktopEntity.addModalEntity(new ZXVolumeEntity(this.desktopEntity, 27, 24, 202, 134, 'music', 'audioBusMusicLevel', 'exampleInGameMelody', this.dialogBkColor));
         return true;
 
       case 'setSettings':
-        this.desktopEntity.addModalEntity(new ZXSettingsEntity(this.desktopEntity, 27, 24, 202, 134, this.app.controlsOptions));
+        this.desktopEntity.addModalEntity(new ZXSettingsEntity(this.desktopEntity, 27, 24, 202, 134, this.app.controlsOptions, this.dialogBkColor));
         return true;
 
       case 'startTapeLoading':
@@ -244,7 +248,7 @@ export class MenuModel extends AbstractModel {
         return true;
 
       case 'showAbout':
-        this.desktopEntity.addModalEntity(new AboutEntity(this.desktopEntity, 27, 24, 202, 134));
+        this.desktopEntity.addModalEntity(new AboutEntity(this.desktopEntity, 27, 24, 202, 134, this.dialogBkColor));
         return true;
           
       case 'upgradeApp':
