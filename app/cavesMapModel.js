@@ -1,18 +1,9 @@
-/**/
 const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+window.srcVersion);
 const { BorderEntity } = await import('./borderEntity.js?ver='+window.srcVersion);
 const { CaveMapEntity } = await import('./caveMapEntity.js?ver='+window.srcVersion);
 const { CaveSelectionEntity } = await import('./caveSelectionEntity.js?ver='+window.srcVersion);
 const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcVersion);
 const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
-/*/
-import AbstractModel from './svision/js/abstractModel.js';
-import BorderEntity from './borderEntity.js';
-import CaveMapEntity from './caveMapEntity.js';
-import CaveSelectionEntity from './caveSelectionEntity.js';
-import PauseGameEntity from './pauseGameEntity.js';
-import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
-/**/
 // begin code
 
 export class CavesMapModel extends AbstractModel {
@@ -201,5 +192,3 @@ export class CavesMapModel extends AbstractModel {
   } // loopModel
 
 } // CavesMapModel
-
-export default CavesMapModel;

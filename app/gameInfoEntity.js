@@ -1,16 +1,8 @@
-/**/
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
 const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
 const { AirEntity } = await import('./airEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
-/*/
-import AbstractEntity from './svision/js/abstractEntity.js';
-import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
-import AirEntity from './airEntity.js';
-import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
-import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
-/**/
 // begin code
 
 export class GameInfoEntity extends AbstractEntity {
@@ -75,5 +67,3 @@ export class GameInfoEntity extends AbstractEntity {
   } // errorData
 
 } // GameInfoEntity
-
-export default GameInfoEntity;

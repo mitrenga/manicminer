@@ -1,10 +1,5 @@
-/**/
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
 const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
-/*/
-import AbstractEntity from './svision/js/abstractEntity.js';
-import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
-/**/
 // begin code
 
 export class CaveSelectionEntity extends AbstractEntity {
@@ -32,5 +27,3 @@ export class CaveSelectionEntity extends AbstractEntity {
   } // loopEntity
 
 } // CaveSelectionEntity
-
-export default CaveSelectionEntity;

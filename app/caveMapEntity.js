@@ -1,18 +1,9 @@
-/**/
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
 const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 const { SpriteTool } = await import('./svision/js/spriteTool.js?ver='+window.srcVersion);
 const { Tool } = await import('./svision/js/tool.js?ver='+window.srcVersion);
 const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
-/*/
-import AbstractEntity from './svision/js/abstractEntity.js';
-import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
-import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
-import SpriteTool from './svision/js/spriteTool.js';
-import Tool from './svision/js/tool.js';
-import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
-/**/
 // begin code
 
 export class CaveMapEntity extends AbstractEntity {
@@ -293,5 +284,3 @@ export class CaveMapEntity extends AbstractEntity {
   } // handleEvent
 
 } // CaveMapEntity
-
-export default CaveMapEntity;

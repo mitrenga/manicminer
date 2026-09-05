@@ -1,4 +1,3 @@
-/**/
 const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+window.srcVersion);
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
 const { BorderEntity } = await import('./borderEntity.js?ver='+window.srcVersion);
@@ -14,23 +13,6 @@ const { ZXSettingsEntity } = await import('./svision/js/platform/canvas2D/zxSpec
 const { AboutEntity } = await import('./aboutEntity.js?ver='+window.srcVersion);
 const { ZXWaitForAudioEventEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxWaitForAudioEventEntity.js?ver='+window.srcVersion);
 const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
-/*/
-import AbstractModel from './svision/js/abstractModel.js';
-import AbstractEntity from './svision/js/abstractEntity.js';
-import BorderEntity from './borderEntity.js';
-import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
-import ButtonEntity from './svision/js/platform/canvas2D/buttonEntity.js';
-import MenuEntity from './svision/js/platform/canvas2D/menuEntity.js';
-import SignboardEntity from './signboardEntity.js';
-import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
-import ZXPlayerNameEntity from './svision/js/platform/canvas2D/zxSpectrum/zxPlayerNameEntity.js';
-import HallOfFameEntity from './hallOfFameEntity.js';
-import ZXVolumeEntity from './svision/js/platform/canvas2D/zxSpectrum/zxVolumeEntity.js';
-import ZXSettingsEntity from './svision/js/platform/canvas2D/zxSpectrum/zxSettingsEntity.js';
-import AboutEntity from './aboutEntity.js';
-import ZXWaitForAudioEventEntity from './svision/js/platform/canvas2D/zxSpectrum/zxWaitForAudioEventEntity.js';
-import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
-/**/
 // begin code
 
 export class MenuModel extends AbstractModel {
@@ -291,5 +273,3 @@ export class MenuModel extends AbstractModel {
   } // loopModel
 
 } // MenuModel
-
-export default MenuModel;

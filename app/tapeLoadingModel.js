@@ -1,16 +1,8 @@
-/**/
 const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+window.srcVersion);
 const { BorderEntity } = await import('./borderEntity.js?ver='+window.srcVersion);
 const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
 const { SignboardEntity } = await import('./signboardEntity.js?ver='+window.srcVersion);
 const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
-/*/
-import AbstractModel from './svision/js/abstractModel.js';
-import BorderEntity from './borderEntity.js';
-import TextEntity from './svision/js/platform/canvas2D/textEntity.js';
-import SignboardEntity from './signboardEntity.js';
-import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
-/**/
 // begin code
 
 export class TapeLoadingModel extends AbstractModel {
@@ -265,5 +257,3 @@ export class TapeLoadingModel extends AbstractModel {
   } // loopModel
 
 } // TapeLoadingModel
-
-export default TapeLoadingModel;

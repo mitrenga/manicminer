@@ -1,4 +1,3 @@
-/**/
 const { AbstractModel } = await import('./svision/js/abstractModel.js?ver='+window.srcVersion);
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
 const { BorderEntity } = await import('./borderEntity.js?ver='+window.srcVersion);
@@ -10,19 +9,6 @@ const { SpriteTool } = await import('./svision/js/spriteTool.js?ver='+window.src
 const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcVersion);
 const { Tool } = await import('./svision/js/tool.js?ver='+window.srcVersion);
 const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
-/*/
-import AbstractModel from './svision/js/abstractModel.js';
-import AbstractEntity from './svision/js/abstractEntity.js';
-import BorderEntity from './borderEntity.js';
-import MainImageEntity from './mainImageEntity.js';
-import SlidingTextEntity from './svision/js/platform/canvas2D/slidingTextEntity.js';
-import AirEntity from './airEntity.js';
-import SpriteEntity from './svision/js/platform/canvas2D/spriteEntity.js';
-import SpriteTool from './svision/js/spriteTool.js';
-import PauseGameEntity from './pauseGameEntity.js';
-import Tool from './svision/js/tool.js';
-import ZXColor from './svision/js/platform/canvas2D/zxSpectrum/zxColor.js';
-/**/
 // begin code
 
 export class MainModel extends AbstractModel {
@@ -268,5 +254,3 @@ export class MainModel extends AbstractModel {
   } // loopModel
 
 } // MainModel
-
-export default MainModel;
