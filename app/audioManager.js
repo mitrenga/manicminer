@@ -3,6 +3,7 @@ const { AudioWorkletHandler } = await import('./svision/js/audio/audioWorkletHan
 const { AudioScriptProcessorHandler } = await import('./svision/js/audio/audioScriptProcessorHandler.js?ver='+window.srcVersion);
 const { AudioSilentHandler } = await import('./svision/js/audio/audioSilentHandler.js?ver='+window.srcVersion);
 const { Tool } = await import('./svision/js/tool.js?ver='+window.srcVersion);
+const { ZXMachineSounds } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxMachineSounds.js?ver='+window.srcVersion);
 // begin code
 
 export class AudioManager extends AbstractAudioManager {
@@ -78,10 +79,10 @@ export class AudioManager extends AbstractAudioManager {
       case 'escapeSound': return this.escapeSound(sampleRate);
       case 'airSupplySound': return this.airSupplySound(sampleRate, options.remainingAirSupply);
       case 'gameOverSound': return this.gameOverSound(sampleRate);
-      case 'tapePilotToneSound': return this.tapePilotToneSound(sampleRate);
-      case 'tapeRndDataSound': return this.tapeRndDataSound(sampleRate);
+      case 'tapePilotToneSound': return ZXMachineSounds.tapePilotTone(sampleRate, this.volumeLevel(this.volume.sounds));
+      case 'tapeRndDataSound': return ZXMachineSounds.tapeRndData(sampleRate, this.volumeLevel(this.volume.sounds));
       case 'tapeScreenAttrSound': return this.tapeScreenAttrSound(sampleRate);
-      case 'keyboardSound': return this.keyboardSound(sampleRate);
+      case 'keyboardSound': return ZXMachineSounds.keyClick(sampleRate, this.volumeLevel(this.volume.sounds));
     }
     return false;
   } // audioData
@@ -580,29 +581,8 @@ export class AudioManager extends AbstractAudioManager {
     return {fragments: fragments, pulses: pulses, volume: this.volumeLevel(this.volume.sounds)};
   } // gameOverSound
 
-  tapePilotToneSound(sampleRate) {
-    // T-state is 1/3500000 = 0.0000002867 sec. 
-    // leader pulse is 2168 T-states long and is repeated 8063 times for header blocks and 3223 times for data blocks
-    var pulse = Math.ceil(sampleRate*2168/3500000);
-    var fragments = [pulse];
-    var pulses = [0];
-    return {fragments: fragments, pulses: pulses, volume: this.volumeLevel(this.volume.sounds)};
-  } // tapePilotToneSound
-
-  tapeRndDataSound(sampleRate) {
-    // two sync pulses of 667 and 735 T-states
-    var f667 = Math.ceil(sampleRate*667/3500000);
-    var f735 = Math.ceil(sampleRate*735/3500000);
-    // data is encoded as two 855 T-state pulses for binary zero, and two 1710 T-state pulses for binary one
-    var f885 = Math.ceil(sampleRate*855/3500000);
-    var f1710 = Math.ceil(sampleRate*1710/3500000);
-
-    var fragments = [f667, f735, f885, f1710];
-    var pulses = [0, 0, 1, 1];
-    return {fragments: fragments, pulses: pulses, volume: this.volumeLevel(this.volume.sounds), infinityRndPulses: {fragments: [2, 3], quantity: 2}};
-  } // tapeRndDataSound
-
   tapeScreenAttrSound(sampleRate) {
+    // the attributes of the Manic Miner loading screen, sent down the tape for real
     var screenAttr =
       '00C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0'+ 
       'C0C0D0C0C0C0D0C0C3C3C3C0C0C0E0C0C0C0E6C6C6C6C6C0C0C0C0C0C0C0C0C0'+ 
@@ -613,43 +593,7 @@ export class AudioManager extends AbstractAudioManager {
       'C0C0C5C0C0C0C5C0F0C0C0C0F2C0C0C0C2C0C0C0C0E8C0C0C4D8DCD8C0C0C0C0'+ 
       'C0C0C5C0C0C0C5C0C0C0C0C0C0C0C0C0C0C0C0C0E8E8E8C0C4C0C0C4C4C0C0C0';
 
-    // two sync pulses of 667 and 735 T-states
-    var f667 = Math.ceil(sampleRate*667/3500000);
-    var f735 = Math.ceil(sampleRate*735/3500000);
-    // data is encoded as two 855 T-state pulses for binary zero, and two 1,710 T-state pulses for binary one
-    var f885 = Math.ceil(sampleRate*855/3500000);
-    var f1710 = Math.ceil(sampleRate*1710/3500000);
-
-    var fragments = [f667, f735, f885, f1710];
-    var pulses = [];
-
-    // two sync pulses
-    pulses.push(0);
-    pulses.push(0);
-    pulses.push(1);
-    pulses.push(1);
-
-    // data
-    for (var x = 0; x < screenAttr.length/2; x++) {
-      var binByte = Tool.hexToBin(screenAttr.substring(x*2, x*2+2));
-      for (var b = 0; b < binByte.length; b++) {
-        var f = 2;
-        if (binByte[b] == '1') {
-          f = 3;
-        }
-        pulses.push(f);
-        pulses.push(f);
-      }
-    }
-
-    return {fragments: fragments, pulses: pulses, volume: this.volumeLevel(this.volume.sounds)};
+    return ZXMachineSounds.tapeData(sampleRate, this.volumeLevel(this.volume.sounds), screenAttr);
   } // tapeScreenAttrSound
-
-  keyboardSound(sampleRate) {
-    var pulse = Math.ceil(15*sampleRate/44100);
-    var fragments = [pulse];
-    var pulses = [0];
-    return {fragments: fragments, pulses: pulses, volume: this.volumeLevel(this.volume.sounds)};
-  } // keyboardSound
 
 } // AudioManager
