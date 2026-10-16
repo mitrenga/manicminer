@@ -50,13 +50,16 @@ export class TapeLoadingModel extends AbstractModel {
   } // constructor
 
   newBorderEntity() {
-    return new BorderEntity(true, false);
+    // no X in the border: a click or a touch anywhere in the border is BREAK
+    // (handleEvent), a second one goes back to the menu, and Escape or
+    // GamepadExit go back straight away
+    return new BorderEntity(false, false);
   } // newBorderEntity
 
   init() {
     super.init();
 
-    this.inputLineEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 23*8, 32*8, 8, this.app.copyright, ZXColor.black, false, {align: 'center'});
+    this.inputLineEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8Mono, 0, 23*8, 32*8, 8, '© 1982 Sinclair Research Ltd', ZXColor.black, false, {align: 'left'});
     this.desktopEntity.addEntity(this.inputLineEntity);
 
     this.programNameEntity = new TextEntity(this.desktopEntity, this.app.fonts.zxFonts8x8, 0, 1*8, 32*8, 8, 'Program: MANICMINER', ZXColor.black, false, {leftMargin: 1});
