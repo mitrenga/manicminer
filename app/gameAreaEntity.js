@@ -1,12 +1,35 @@
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
-const { DrawingCache } = await import('./svision/js/platform/canvas2D/drawingCache.js?ver='+window.srcVersion);
+const { RasterEntity } = await import('./svision/js/platform/canvas2D/rasterEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 const { SpriteTool } = await import('./svision/js/spriteTool.js?ver='+window.srcVersion);
 const { Tool } = await import('./svision/js/tool.js?ver='+window.srcVersion);
 const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
 // begin code
 
-export class GameAreaEntity extends AbstractEntity {
+/**
+ * The cave: the layout, the picture of the cave over it and the objects moving
+ * in it, drawn in three layers so that the sprites sit between the paper and
+ * the ink of the static tiles:
+ *
+ * ```
+ * cache 0 — paper of the layout cells (8x8 rectangles where a cell's paper
+ *           differs from the cave's)
+ *   |  drawSubEntities() — Willy, guardians, items, conveyors, barriers …
+ * cache 1 — ink of the static tiles (floor, wall, nasty, extra) and the
+ *           cave's picture
+ * ```
+ *
+ * Both layers are frames of a {@link RasterEntity}, painted once per cave (or
+ * per colour change) and blitted every draw. A static tile is decoded once into
+ * a `Uint32Array(64)` stamp in `graphicCache` and stamped onto cache 1 for
+ * every cell that uses it; until 2026-09-06 each stamp was its own
+ * `DrawingCache` canvas put down with `drawImage()`.
+ *
+ * The light beam recolours the pixels of the sprites it falls on: each sprite
+ * is told its lit parts (lightSprites(), SpriteEntity.setTints) and they are
+ * drawn last, above the ink — where the cell's attribute puts them.
+ */
+export class GameAreaEntity extends RasterEntity {
 
   constructor(parentEntity, x, y, width, height, caveNumber, initData, demo) {
     super(parentEntity, x, y, width, height, false, false);
@@ -19,8 +42,9 @@ export class GameAreaEntity extends AbstractEntity {
     this.bkColorForRestore = false;
     this.monochromeColor = false;
 
-    this.app.layout.newDrawingCache(this, 0); 
-    this.app.layout.newDrawingCache(this, 1); 
+    this.app.layout.newDrawingCache(this, 0);
+    this.app.layout.newDrawingCache(this, 1);
+    /** static tile attr -> Uint32Array(64) of packed pixels, 0 where transparent */
     this.graphicCache = {};
     this.staticKinds = ['floor', 'wall', 'nasty', 'extra'];
     this.backgroundKinds = ['floor', 'wall', 'nasty', 'conveyor', 'extra'];
@@ -32,9 +56,14 @@ export class GameAreaEntity extends AbstractEntity {
     if (this.caveData) {
       var caveBkColor = ZXColor.attrColor(Tool.hexToInt(this.caveData.bkColor), 56, 8);
 
+      this.lightSprites();
+
       this.app.layout.paint(this, 0, 0, this.width, this.height, this.bkColor);
 
-      if (this.drawingCache[0].preparePaint(this.width, this.height)) {
+      var paper = this.drawingCache[0];
+      if (paper.preparePaint(this.width, this.height)) {
+        var frame = this.frameBytes(paper);
+        this.pixels.fill(0);
         // layout - bkColor
         this.caveData.layout.forEach((row, r) => {
           for (var column = 0; column < row.length/2; column++) {
@@ -46,36 +75,41 @@ export class GameAreaEntity extends AbstractEntity {
                   bkColor = false;
                 }
                 if (bkColor != false) {
-                  this.drawingCache[0].paint(column*8, r*8, 8, 8, bkColor);
+                  this.paintRect(column*8, r*8, 8, 8, bkColor);
                 }
               }
             }
           }
         });
+        paper.ctx.putImageData(frame, 0, 0);
       }
 
-      this.app.layout.paintCache(this, 0);
+      this.blitCache(0);
 
-      super.drawSubEntities();
+      this.drawSubEntities();
 
-      if (this.drawingCache[1].preparePaint(this.width, this.height)) {
-        // layout - penColor
+      var ink = this.drawingCache[1];
+      if (ink.preparePaint(this.width, this.height)) {
+        var frame = this.frameBytes(ink);
+        var px = this.pixels;
+        var stride = frame.width;
+        px.fill(0);
+        // layout - penColor: every static tile stamped where the layout puts it
         this.caveData.layout.forEach((row, r) => {
           for (var column = 0; column < row.length/2; column++) {
             var attr = row.substring(column*2, column*2+2);
             if (attr != this.caveData.bkColor) {
               if (this.staticKinds.includes(this.caveData.graphicData[attr].kind)) {
-                if (this.graphicCache[attr].preparePaint(8, 8)) {
-                  var penColor = this.penColorByAttr(Tool.hexToInt(attr));
-                  for (var y = 0; y < this.caveData.graphicData[attr].sprite.length; y++) {
-                    for (var x = 0; x < this.caveData.graphicData[attr].sprite[y].length; x++) {
-                      if (this.caveData.graphicData[attr].sprite[y][x] == '#') {
-                        this.graphicCache[attr].paint(x, y, 1, 1, penColor);
-                      }
+                var stamp = this.tileStamp(attr);
+                var at = r*8*stride+column*8;
+                for (var y = 0; y < 8; y++) {
+                  for (var x = 0; x < 8; x++) {
+                    var value = stamp[y*8+x];
+                    if (value !== 0) {     // transparent pixels leave what is there, as drawImage did
+                      px[at+y*stride+x] = value;
                     }
                   }
                 }
-                this.drawingCache[1].ctx.drawImage(this.graphicCache[attr].canvas, column*8, r*8);
               }
             }
           }
@@ -95,57 +129,74 @@ export class GameAreaEntity extends AbstractEntity {
                 bkColor2 = this.bkColor;
               }
               if (bkColor != this.bkColor) {
-                this.drawingCache[1].paint(column*8, row*8, 8, 8, bkColor2);
+                this.paintRect(column*8, row*8, 8, 8, bkColor2);
               }
+              var penValue = RasterEntity.colorValue(penColor);
               for (var line = 0; line < 8; line++) {
-                var binMask = Tool.hexToBin(this.caveData.image.data[row+line*8].substring(column*2, column*2+2))
+                var bits = Tool.hexToInt(this.caveData.image.data[row+line*8].substring(column*2, column*2+2));
+                var at = (row*8+line)*stride+column*8;
                 for (var point = 0; point < 8; point++) {
-                  if (binMask[point] == '1') {
-                    this.drawingCache[1].paint(column*8+point, row*8+line, 1, 1, penColor);
+                  if (bits & (0x80 >> point)) {
+                    px[at+point] = penValue;
                   }
                 }
               }
             }
           }
         }
-        
+        ink.ctx.putImageData(frame, 0, 0);
       }
-      this.app.layout.paintCache(this, 1);
+      this.blitCache(1);
+
+      // the parts the beam lights go on last — above the ink of the tiles,
+      // where the cell's attribute puts them
+      if (!this.demo) {
+        this.spriteEntities.willy.forEach((willy) => willy.drawTints());
+      }
+      this.spriteEntities.guardians.forEach((guardian) => guardian.drawTints());
     }
 
-    // draw attribute efects on Willy and guardians due light beam
+  } // drawEntity
+
+  /**
+   * Tells Willy and the guardians which parts of them the light beam lights
+   * this frame. Called before the sprites are drawn, so a sprite paints its lit
+   * parts in the same frame the beam moved — the beam's parts are positioned by
+   * updateData() from the worker's frame, before any drawing.
+   */
+  lightSprites() {
+    // the beam changes the attributes of the cells it crosses, so a sprite
+    // standing in it takes the beam's ink there; the sprite paints its lit parts
+    // over itself (SpriteEntity.setTints), nothing here touches its pixels
     var objectsArray = [];
     if (!this.demo) {
       objectsArray.push(this.spriteEntities.willy);
     }
     objectsArray.push(this.spriteEntities.guardians);
-    var p = 0;
-    while (p < this.spriteEntities.lightBeam.length && !this.spriteEntities.lightBeam[p].hide) {
-      var part = this.spriteEntities.lightBeam[p];
-      for (var a = 0; a < objectsArray.length; a++) {
-        var objects = objectsArray[a];
-        for (var o = 0; o < objects.length; o++) {
-          var obj = objects[o];
+    for (var a = 0; a < objectsArray.length; a++) {
+      var objects = objectsArray[a];
+      for (var o = 0; o < objects.length; o++) {
+        var obj = objects[o];
+        var tints = [];
+        var p = 0;
+        while (p < this.spriteEntities.lightBeam.length && !this.spriteEntities.lightBeam[p].hide) {
+          var part = this.spriteEntities.lightBeam[p];
           if (!(obj.x+obj.width <= part.x || obj.y+obj.height <= part.y || obj.x >= part.x+part.width || obj.y >= part.y+part.height)) {
             var x = Math.max(obj.x, part.x);
             var y = Math.max(obj.y, part.y);
-            var w = Math.min(obj.x+obj.width, part.x+part.width)-x;
-            var h = Math.min(obj.y+obj.height, part.y+part.height)-y;
-            var d = obj.direction;
-            if (obj.directions == 1) {
-              d = 0;
-            }
-            obj.spriteData[obj.frame+d*obj.frames].forEach((pixel) => {
-              if (pixel.x >= x-obj.x && pixel.y >= y-obj.y && pixel.x < x-obj.x+w && pixel.y < y-obj.y+h) {
-                this.app.layout.paintRect(this.app.stack.ctx, obj.parentX+obj.x+pixel.x, obj.parentY+obj.y+pixel.y, 1, 1, part.penColor);
-              }
+            tints.push({
+              x: x-obj.x, y: y-obj.y,
+              width: Math.min(obj.x+obj.width, part.x+part.width)-x,
+              height: Math.min(obj.y+obj.height, part.y+part.height)-y,
+              color: part.penColor
             });
           }
+          p++;
         }
+        obj.setTints(tints);
       }
-      p++;
     }
-  } // drawEntity
+  } // lightSprites
 
   setData(data) {
     this.caveData = data;
@@ -178,6 +229,7 @@ export class GameAreaEntity extends AbstractEntity {
       var entity = new SpriteEntity(this, data.willy.init.x+data.willy.paintCorrections.x, data.willy.init.y, penColor, false, data.willy.init.frame, data.willy.init.direction);
       this.addEntity(entity);
       entity.setGraphicsData(data.willy);
+      entity.deferTints = true;    // lit by the beam last, see drawEntity()
       this.spriteEntities.willy.push(entity);
       this.initData.willy.push({
         x: data.willy.init.x,
@@ -193,15 +245,8 @@ export class GameAreaEntity extends AbstractEntity {
       });
     }
 
-    // prepare drawing caches for layout
-    this.drawingCache[0].cleanCache();
-    this.drawingCache[1].cleanCache();
-    this.graphicCache = {};
-    Object.keys(data.graphicData).forEach((key) => {
-      if (this.staticKinds.includes(data.graphicData[key].kind)) {
-        this.graphicCache[key] = new DrawingCache(this.app);
-      }
-    });
+    // the layout caches and the tile stamps are built again on the next draw
+    this.cleanCache();
 
     // layout
     var conveyorData = false;
@@ -327,6 +372,7 @@ export class GameAreaEntity extends AbstractEntity {
           // build with a palette so pixels carry c='#'; lets the runtime setSharedPalette action recolor per frame
           entity.setSharedPalette({'#': penColor});
           entity.setGraphicsData(guardianTypeData);
+          entity.deferTints = true;    // lit by the beam last, see drawEntity()
           this.addEntity(entity);
           this.spriteEntities.guardians.push(entity);
           var guardianInitData = {
@@ -483,15 +529,41 @@ export class GameAreaEntity extends AbstractEntity {
     });
   } // updateData
 
-  // override of AbstractEntity.cleanCache - called from setBkColor and setMonochromeColors,
-  // invalidates the layout caches so the monochrome colors get repainted
+  /**
+   * Invalidates both layout caches and throws the tile stamps away, so that a
+   * change of colour (setBkColor, setMonochromeColors) repaints everything;
+   * the stamps carry the pen colour, which is why they cannot stay.
+   */
   cleanCache() {
     this.drawingCache[0].cleanCache();
     this.drawingCache[1].cleanCache();
-    Object.keys(this.graphicCache).forEach((attr) => {
-      this.graphicCache[attr].cleanCache();
-    });
+    this.graphicCache = {};
   } // cleanCache
+
+  /**
+   * The pixels of one static tile as it is drawn now — packed colour where the
+   * tile has ink, 0 where it is transparent — decoded on first use and kept
+   * until the colours change.
+   * @param {string} attr - The tile's attribute, the key into graphicData.
+   * @returns {Uint32Array} 64 pixels, row by row.
+   */
+  tileStamp(attr) {
+    var stamp = this.graphicCache[attr];
+    if (!stamp) {
+      stamp = new Uint32Array(64);
+      var value = RasterEntity.colorValue(this.penColorByAttr(Tool.hexToInt(attr)));
+      var sprite = this.caveData.graphicData[attr].sprite;
+      for (var y = 0; y < sprite.length && y < 8; y++) {
+        for (var x = 0; x < sprite[y].length && x < 8; x++) {
+          if (sprite[y][x] == '#') {
+            stamp[y*8+x] = value;
+          }
+        }
+      }
+      this.graphicCache[attr] = stamp;
+    }
+    return stamp;
+  } // tileStamp
 
   penColorByAttr(attr) {
     if (this.monochromeColor) {

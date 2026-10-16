@@ -1,8 +1,16 @@
-const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
+const { RasterEntity } = await import('./svision/js/platform/canvas2D/rasterEntity.js?ver='+window.srcVersion);
 const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
 // begin code
 
-export class SignboardEntity extends AbstractEntity {
+/**
+ * The MANIC MINER signboard — the bouncing, flashing letters of the title and
+ * of the menu label. The letters are rectangles out of its own little font,
+ * drawn into one frame per animation state of a {@link RasterEntity} (two for
+ * the flash, four with the bounce of the menu label) and blitted from there;
+ * only the loading animation of the splash screen, which changes every frame,
+ * is painted straight onto the main canvas.
+ */
+export class SignboardEntity extends RasterEntity {
 
   constructor(parentEntity, x, y, width, height, animationMode) {
     super(parentEntity, x, y, width, height, false, false);
@@ -119,7 +127,7 @@ export class SignboardEntity extends AbstractEntity {
   } // getCharData
 
   // paint: callback (x, y, width, height, color) targeting either the main
-  // canvas (layout.paintRect) or a drawing cache (cache.paint)
+  // canvas (layout.paintRect) or the frame of a cache (RasterEntity.paintRect)
   drawSignboard(paint, posX, posY) {
     this.cursorX = 0;
     for (var ch = 0; ch < this.textData.length; ch++) {
@@ -136,7 +144,7 @@ export class SignboardEntity extends AbstractEntity {
   } // drawSignboard
 
   drawEntity() {
-    super.drawEntity();
+    this.paintBackground();
 
     if (this.animationMode == 'splashScreen' && this.loadTimer !== false) {
       this.drawSignboard((x, y, width, height, color) => {
@@ -145,13 +153,15 @@ export class SignboardEntity extends AbstractEntity {
     } else {
       var cache = this.drawingCache[this.animateState];
       if (cache.preparePaint(this.width, this.height)) {
+        var frame = this.frameBytes(cache);
+        this.pixels.fill(0);
         this.drawSignboard((x, y, width, height, color) => {
-          cache.paint(x, y, width, height, color);
+          this.paintRect(x, y, width, height, color);
         }, 0, 0);
+        cache.ctx.putImageData(frame, 0, 0);
       }
-      this.app.layout.paintCache(this, this.animateState);
+      this.blitCache(this.animateState);
     }
-
   } // drawEntity
 
 } // SignboardEntity

@@ -1,4 +1,5 @@
 const { AbstractEntity } = await import('./svision/js/abstractEntity.js?ver='+window.srcVersion);
+const { RasterEntity } = await import('./svision/js/platform/canvas2D/rasterEntity.js?ver='+window.srcVersion);
 const { TextEntity } = await import('./svision/js/platform/canvas2D/textEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 const { SpriteTool } = await import('./svision/js/spriteTool.js?ver='+window.srcVersion);
@@ -6,7 +7,14 @@ const { Tool } = await import('./svision/js/tool.js?ver='+window.srcVersion);
 const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
 // begin code
 
-export class CaveMapEntity extends AbstractEntity {
+/**
+ * The 64x38 thumbnail of one cave on the cave selection screen: the layout at a
+ * quarter of its size, with a mark per kind of tile, the items, the guardians,
+ * barriers, switches and the portal — all of it rectangles, painted once into
+ * the frame of a {@link RasterEntity} and blitted afterwards. The cave's name
+ * (a TextEntity) and the padlock of a locked cave are child entities.
+ */
+export class CaveMapEntity extends RasterEntity {
   
   constructor(parentEntity, x, y, caveNumber, locked, cavesMapX, cavesMapY) {
     super(parentEntity, x, y, 64, 38, false, false);
@@ -48,7 +56,10 @@ export class CaveMapEntity extends AbstractEntity {
       this.bkColor = ZXColor.bkAttrColor(Tool.hexToInt(this.caveData.bkColor));
       this.app.layout.paint(this, 0, 0, this.width, this.height-6, this.bkColor);
 
-      if (this.drawingCache[0].preparePaint(this.width, this.height)) {
+      var cache = this.drawingCache[0];
+      if (cache.preparePaint(this.width, this.height)) {
+        var frame = this.frameBytes(cache);
+        this.pixels.fill(0);
 
         // layout
         this.caveData.layout.forEach((row, r) => {
@@ -61,30 +72,30 @@ export class CaveMapEntity extends AbstractEntity {
                   bkColor = false;
                 }
                 if (bkColor != false) {
-                  this.drawingCache[0].paint(column*2, r*2, 2, 2, bkColor);
+                  this.paintRect(column*2, r*2, 2, 2, bkColor);
                 }
                 var penColor = ZXColor.penAttrColor(Tool.hexToInt(attr));
                 switch (this.caveData.graphicData[attr].kind) {
                   case 'floor':
                   case 'crumblingFloor':
                     if (bkColor === false || penColor != this.bkColor) {
-                      this.drawingCache[0].paint(column*2, r*2, 2, 1, penColor);
+                      this.paintRect(column*2, r*2, 2, 1, penColor);
                     }
-                    this.drawingCache[0].paint(column*2+1, r*2+1, 1, 1, penColor);
+                    this.paintRect(column*2+1, r*2+1, 1, 1, penColor);
                     break;
                   case 'wall':
-                    this.drawingCache[0].paint(column*2, r*2, 1, 1, penColor);
-                    this.drawingCache[0].paint(column*2+1, r*2+1, 1, 1, penColor);
+                    this.paintRect(column*2, r*2, 1, 1, penColor);
+                    this.paintRect(column*2+1, r*2+1, 1, 1, penColor);
                     break;
                   case 'conveyor':
-                    this.drawingCache[0].paint(column*2, r*2, 2, 1, penColor);
+                    this.paintRect(column*2, r*2, 2, 1, penColor);
                     break;
                   case 'nasty':
-                    this.drawingCache[0].paint(column*2, r*2, 2, 1, penColor);
-                    this.drawingCache[0].paint(column*2, r*2+1, 1, 1, penColor);
+                    this.paintRect(column*2, r*2, 2, 1, penColor);
+                    this.paintRect(column*2, r*2+1, 1, 1, penColor);
                     break;
                   default:
-                    this.drawingCache[0].paint(column*2, r*2, 2, 2, penColor);
+                    this.paintRect(column*2, r*2, 2, 2, penColor);
                     break;
                 }
               }
@@ -100,7 +111,7 @@ export class CaveMapEntity extends AbstractEntity {
               var penColor = ZXColor.penAttrColor(attr);
               var bkColor = ZXColor.bkAttrColor(attr);
               if (bkColor != this.bkColor) {
-                this.drawingCache[0].paint(column*2, row*2, 2, 2, bkColor);
+                this.paintRect(column*2, row*2, 2, 2, bkColor);
               }
               for (var line = 0; line < 2; line++) {
                 for (var point = 0; point < 2; point++) {
@@ -114,7 +125,7 @@ export class CaveMapEntity extends AbstractEntity {
                     }
                   }
                   if (points > 7) {
-                    this.drawingCache[0].paint(column*2+point, row*2+line, 1, 1, penColor);
+                    this.paintRect(column*2+point, row*2+line, 1, 1, penColor);
                   } else {
                     var redColor1 = Tool.hexToInt(penColor.substring(1, 3));
                     var greenColor1 = Tool.hexToInt(penColor.substring(3, 5));
@@ -123,7 +134,7 @@ export class CaveMapEntity extends AbstractEntity {
                     var greenColor2 = Tool.hexToInt(bkColor.substring(3, 5));
                     var blueColor2 = Tool.hexToInt(bkColor.substring(5, 7));
                     var mixColor = '#'+Tool.intToHex(Math.floor((redColor1*points+redColor2*(16-points))/16), 2)+Tool.intToHex(Math.floor((greenColor1*points+greenColor2*(16-points))/16), 2)+Tool.intToHex(Math.floor((blueColor1*points+blueColor2*(16-points))/16), 2);
-                    this.drawingCache[0].paint(column*2+point, row*2+line, 1, 1, mixColor.toLowerCase());
+                    this.paintRect(column*2+point, row*2+line, 1, 1, mixColor.toLowerCase());
                   }
                 }
               }
@@ -134,7 +145,7 @@ export class CaveMapEntity extends AbstractEntity {
         // light beam
         if ('lightBeam' in this.caveData) {
           var bkColor = ZXColor.bkAttrColor(Tool.hexToInt(this.caveData.lightBeam.attribute));
-          this.drawingCache[0].paint(
+          this.paintRect(
             Math.round(this.caveData.lightBeam.init.x/4),
             Math.round(this.caveData.lightBeam.init.y/4),
             Math.round(this.caveData.lightBeam.init.width/4),
@@ -151,10 +162,10 @@ export class CaveMapEntity extends AbstractEntity {
             bkColor = false;
           }
           if (bkColor != false) {
-            this.drawingCache[0].paint(item.x*2, item.y*2, 2, 2, bkColor);          
+            this.paintRect(item.x*2, item.y*2, 2, 2, bkColor);          
           }
-          this.drawingCache[0].paint(item.x*2, item.y*2, 1, 1, itemColor);
-          this.drawingCache[0].paint(item.x*2+1, item.y*2+1, 1, 1, itemColor);
+          this.paintRect(item.x*2, item.y*2, 1, 1, itemColor);
+          this.paintRect(item.x*2+1, item.y*2+1, 1, 1, itemColor);
         });
 
         // gurdians
@@ -168,15 +179,15 @@ export class CaveMapEntity extends AbstractEntity {
                   for (var c = 0; c < guardianTypeData.mapSprite[r].length; c++) {
                     if (guardianTypeData.mapSprite[r][c] == '#') {
                       if (guardian.init.direction == 1) {
-                        this.drawingCache[0].paint(Math.floor(guardian.init.x/4)+guardianTypeData.mapSprite[r].length-c-1, Math.floor(guardian.init.y/4)+r, 1, 1, penColor);
+                        this.paintRect(Math.floor(guardian.init.x/4)+guardianTypeData.mapSprite[r].length-c-1, Math.floor(guardian.init.y/4)+r, 1, 1, penColor);
                       } else {
-                        this.drawingCache[0].paint(Math.floor(guardian.init.x/4)+c, Math.floor(guardian.init.y/4)+r, 1, 1, penColor);
+                        this.paintRect(Math.floor(guardian.init.x/4)+c, Math.floor(guardian.init.y/4)+r, 1, 1, penColor);
                       }
                     }
                   }
                 }
               } else {
-                this.drawingCache[0].paint(
+                this.paintRect(
                   Math.floor(guardian.init.x/4),
                   Math.floor(guardian.init.y/4),
                   Math.floor(guardianTypeData.width/4),
@@ -195,9 +206,9 @@ export class CaveMapEntity extends AbstractEntity {
             var bkColor = ZXColor.bkAttrColor(Tool.hexToInt(barrier.attribute));
             for (var x = 0; x < Math.round(barrier.width/8); x++) {
               for (var y = 0; y < Math.round(barrier.height/8); y++) {
-                this.drawingCache[0].paint((barrier.x+x)*2, (barrier.y+y)*2, 2, 2, bkColor);
-                this.drawingCache[0].paint((barrier.x+x)*2, (barrier.y+y)*2, 1, 1, penColor);
-                this.drawingCache[0].paint((barrier.x+x)*2+1, (barrier.y+y)*2+1, 1, 1, penColor);
+                this.paintRect((barrier.x+x)*2, (barrier.y+y)*2, 2, 2, bkColor);
+                this.paintRect((barrier.x+x)*2, (barrier.y+y)*2, 1, 1, penColor);
+                this.paintRect((barrier.x+x)*2+1, (barrier.y+y)*2+1, 1, 1, penColor);
               }
             }
           });
@@ -212,20 +223,21 @@ export class CaveMapEntity extends AbstractEntity {
               bkColor = false;
             }
             if (bkColor != false) {
-              this.drawingCache[0].paint(swtch.x*2, swtch.y*2, 2, 2, bkColor);          
+              this.paintRect(swtch.x*2, swtch.y*2, 2, 2, bkColor);          
             }
-            this.drawingCache[0].paint(swtch.x*2+1, swtch.y*2, 1, 1, penColor);
-            this.drawingCache[0].paint(swtch.x*2, swtch.y*2+1, 1, 1, penColor);
+            this.paintRect(swtch.x*2+1, swtch.y*2, 1, 1, penColor);
+            this.paintRect(swtch.x*2, swtch.y*2+1, 1, 1, penColor);
           });
         }
 
         // portal
         var penColor = ZXColor.penAttrColor(Tool.hexToInt(this.caveData.portal.attribute));
         var bkColor = ZXColor.bkAttrColor(Tool.hexToInt(this.caveData.portal.attribute));
-        this.drawingCache[0].paint(this.caveData.portal.x*2, this.caveData.portal.y*2, 4, 4, bkColor);
-        this.drawingCache[0].paint(this.caveData.portal.x*2+1, this.caveData.portal.y*2+1, 2, 2, penColor);
+        this.paintRect(this.caveData.portal.x*2, this.caveData.portal.y*2, 4, 4, bkColor);
+        this.paintRect(this.caveData.portal.x*2+1, this.caveData.portal.y*2+1, 2, 2, penColor);
+        cache.ctx.putImageData(frame, 0, 0);
       }
-      this.app.layout.paintCache(this, 0);
+      this.blitCache(0);
     }
     this.drawSubEntities();
   } // drawEntity
