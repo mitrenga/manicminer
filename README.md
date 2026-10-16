@@ -16,7 +16,7 @@ Supported:
 
 
 ## Play now
-https://manicminer.free
+https://manicminer.remake.free
 
 
 ## Requirements
