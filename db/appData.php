@@ -3,7 +3,7 @@
 class DataCommand {
    
   var $files = [
-    'global', 'menu',
+    'global', 'menu', 'intro',
     'cave00', 'cave01', 'cave02', 'cave03', 'cave04', 'cave05', 'cave06', 'cave07', 'cave08', 'cave09',
     'cave10', 'cave11', 'cave12', 'cave13', 'cave14', 'cave15', 'cave16', 'cave17', 'cave18', 'cave19'
   ];
