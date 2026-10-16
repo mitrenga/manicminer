@@ -13,6 +13,8 @@ const { ZXSettingsEntity } = await import('./svision/js/platform/canvas2D/zxSpec
 const { AboutEntity } = await import('./aboutEntity.js?ver='+window.srcVersion);
 const { ZXWaitForAudioEventEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxWaitForAudioEventEntity.js?ver='+window.srcVersion);
 const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
+const { ZXDialogEntity } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxDialogEntity.js?ver='+window.srcVersion);
+const { ZXDialogProperties } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxDialogProperties.js?ver='+window.srcVersion);
 // begin code
 
 export class MenuModel extends AbstractModel {
@@ -51,10 +53,10 @@ export class MenuModel extends AbstractModel {
       selectionClickColor: '#0a2277ff',
       selection: selectionItem
     }
-    // background colors of the dialog panels opened from the menu and of the
-    // on-screen keyboard buttons in the player-name dialog
-    this.dialogBkColor = ZXColor.yellow;
-    this.keyboardButtonsBkColor = ZXColor.brightWhite;
+    // the dialogs opened from the menu: the window (ZXDialogEntity), its place
+    // and colours, and the colours of the contents from svision. Everything is
+    // the default — the defaults of ZXDialogProperties are the look of this game
+    this.dialogProperties = ZXDialogProperties.merge({});
 
     this.signboardEntity = null;
     this.copyrightEntity = null;
@@ -180,6 +182,29 @@ export class MenuModel extends AbstractModel {
     super.setData(data.data);
   } // setData
 
+  /**
+   * Opens a dialog from the menu: the window with the title (ZXDialogEntity),
+   * placed and coloured by the dialog properties, and the contents the factory
+   * makes for it, as the modal of the desktop.
+   * @param {string} title - The text of the title bar.
+   * @param {Function} contentFactory - Called with the window, returns the contents entity.
+   */
+  openDialog(title, contentFactory) {
+    var p = this.dialogProperties;
+    this.desktopEntity.addModalEntity(new ZXDialogEntity(this.desktopEntity, p.x, p.y, p.width, p.height, title, p, contentFactory));
+  } // openDialog
+
+  /**
+   * Asks for the browser's gesture for audio before an action that plays
+   * sound: ZXWaitForAudioEventEntity in a window without a title, centred on
+   * the screen, coloured by the `waitForAudioEvent` dialog properties.
+   * @param {string} continueEvent - The event sent when the gesture comes.
+   */
+  openWaitForAudioEvent(continueEvent) {
+    var p = this.dialogProperties.waitForAudioEvent;
+    this.desktopEntity.addModalEntity(new ZXDialogEntity(this.desktopEntity, 66, 77, 124, 41, false, p, (dialog) => new ZXWaitForAudioEventEntity(dialog, dialog.innerX, dialog.innerY, dialog.innerWidth, dialog.innerHeight, continueEvent, p)));
+  } // openWaitForAudioEvent
+
   handleEvent(event) {
     if (super.handleEvent(event)) {
       return true;
@@ -188,11 +213,11 @@ export class MenuModel extends AbstractModel {
     switch (event.id) {
       case 'startGame':
         if (!this.app.playerName.length) {
-          this.desktopEntity.addModalEntity(new ZXPlayerNameEntity(this.desktopEntity, 27, 24, 202, 134, true, this.dialogBkColor, this.keyboardButtonsBkColor));
+          this.openDialog('PLAYER NAME', (dialog) => new ZXPlayerNameEntity(dialog, dialog.innerX, dialog.innerY, dialog.innerWidth, dialog.innerHeight, true, this.dialogProperties));
           return true;
         } else {
           if (this.app.inputEventsManager.needEventForAudio()) {
-            this.desktopEntity.addModalEntity(new ZXWaitForAudioEventEntity(this.desktopEntity, 64, 75, 128, 45, ZXColor.brightWhite, ZXColor.magenta, 'startGame2'));
+            this.openWaitForAudioEvent('startGame2');
             return true;
           }
         }
@@ -201,28 +226,28 @@ export class MenuModel extends AbstractModel {
         return true;
       
       case 'setPlayerName':
-        this.desktopEntity.addModalEntity(new ZXPlayerNameEntity(this.desktopEntity, 27, 24, 202, 134, false, this.dialogBkColor, this.keyboardButtonsBkColor));
+        this.openDialog('PLAYER NAME', (dialog) => new ZXPlayerNameEntity(dialog, dialog.innerX, dialog.innerY, dialog.innerWidth, dialog.innerHeight, false, this.dialogProperties));
       return true;
 
       case 'showHallOfFame':
-        this.desktopEntity.addModalEntity(new HallOfFameEntity(this.desktopEntity, 27, 24, 202, 134, this.dialogBkColor));
+        this.desktopEntity.addModalEntity(new HallOfFameEntity(this.desktopEntity, 27, 24, 202, 134, this.dialogProperties.bkColor));
       return true;
 
       case 'setSounds':
-        this.desktopEntity.addModalEntity(new ZXVolumeEntity(this.desktopEntity, 27, 24, 202, 134, 'sounds', 'audioBusSoundsLevel', 'exampleJumpSound', this.dialogBkColor));
+        this.openDialog('sounds', (dialog) => new ZXVolumeEntity(dialog, dialog.innerX, dialog.innerY, dialog.innerWidth, dialog.innerHeight, 'sounds', 'audioBusSoundsLevel', 'exampleJumpSound', this.dialogProperties));
         return true;
 
       case 'setMusic':
-        this.desktopEntity.addModalEntity(new ZXVolumeEntity(this.desktopEntity, 27, 24, 202, 134, 'music', 'audioBusMusicLevel', 'exampleInGameMelody', this.dialogBkColor));
+        this.openDialog('music', (dialog) => new ZXVolumeEntity(dialog, dialog.innerX, dialog.innerY, dialog.innerWidth, dialog.innerHeight, 'music', 'audioBusMusicLevel', 'exampleInGameMelody', this.dialogProperties));
         return true;
 
       case 'setSettings':
-        this.desktopEntity.addModalEntity(new ZXSettingsEntity(this.desktopEntity, 27, 24, 202, 134, this.app.controlsOptions, this.dialogBkColor));
+        this.openDialog('SETTINGS', (dialog) => new ZXSettingsEntity(dialog, dialog.innerX, dialog.innerY, dialog.innerWidth, dialog.innerHeight, this.app.controlsOptions, this.dialogProperties));
         return true;
 
       case 'startTapeLoading':
         if (this.app.inputEventsManager.needEventForAudio()) {
-          this.desktopEntity.addModalEntity(new ZXWaitForAudioEventEntity(this.desktopEntity, 64, 75, 128, 45, ZXColor.brightWhite, ZXColor.magenta, 'startTapeLoading2'));
+          this.openWaitForAudioEvent('startTapeLoading2');
           return true;
         }
       case 'startTapeLoading2':
@@ -230,7 +255,7 @@ export class MenuModel extends AbstractModel {
         return true;
 
       case 'showAbout':
-        this.desktopEntity.addModalEntity(new AboutEntity(this.desktopEntity, 27, 24, 202, 134, this.dialogBkColor));
+        this.desktopEntity.addModalEntity(new AboutEntity(this.desktopEntity, 27, 24, 202, 134, this.dialogProperties.bkColor));
         return true;
           
       case 'upgradeApp':
