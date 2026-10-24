@@ -3,7 +3,7 @@ const { BorderEntity } = await import('./borderEntity.js?ver='+window.srcVersion
 const { CaveMapEntity } = await import('./caveMapEntity.js?ver='+window.srcVersion);
 const { CaveSelectionEntity } = await import('./caveSelectionEntity.js?ver='+window.srcVersion);
 const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcVersion);
-const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
+const { ZXColor } = await import('./svision/js/platform/canvas2D/zx/zxColor.js?ver='+window.srcVersion);
 // begin code
 
 export class CavesMapModel extends AbstractModel {

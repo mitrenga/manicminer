@@ -6,7 +6,7 @@ const { GameInfoEntity } = await import('./gameInfoEntity.js?ver='+window.srcVer
 const { PauseGameEntity } = await import('./pauseGameEntity.js?ver='+window.srcVersion);
 const { SpriteEntity } = await import('./svision/js/platform/canvas2D/spriteEntity.js?ver='+window.srcVersion);
 const { SpriteTool } = await import('./svision/js/spriteTool.js?ver='+window.srcVersion);
-const { ZXColor } = await import('./svision/js/platform/canvas2D/zxSpectrum/zxColor.js?ver='+window.srcVersion);
+const { ZXColor } = await import('./svision/js/platform/canvas2D/zx/zxColor.js?ver='+window.srcVersion);
 // begin code
 
 export class CaveModel extends AbstractModel {
