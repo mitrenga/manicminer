@@ -44,7 +44,6 @@ class AboutPage extends AbstractAboutPage {
         ['label' => 'Manic Miner on Wikipedia', 'url' => 'https://en.wikipedia.org/wiki/Manic_Miner'],
         ['label' => 'Matthew Smith on Wikipedia', 'url' => 'https://en.wikipedia.org/wiki/Matthew_Smith_(games_programmer)'],
         ['label' => 'Game archive on World of Spectrum', 'url' => 'https://worldofspectrum.net/item/0003012/'],
-        ['label' => 'Retro Games — more classic remakes playable in your browser', 'url' => 'https://retrogames.free/'],
       ],
       'footer' =>
         '<p>An unofficial fan remake. The original game and its artwork belong to their authors. '.
